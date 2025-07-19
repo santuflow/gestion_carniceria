@@ -16,8 +16,7 @@ import json
 from io import BytesIO
 
 app = Flask(__name__)
-
-
+from flask import Flask, request, redirect
 app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui_CAMBIA_ESTO_POR_UNA_CLAVE_SEGURA_Y_UNICA!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carniceria.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
