@@ -34,7 +34,7 @@
                     <p><strong>Total Tarjeta:</strong> ${{ '%.2f'|format(caja.resumen.totales['Tarjeta']) }}</p>
                     <p><strong>Total Transferencia:</strong> ${{ '%.2f'|format(caja.resumen.totales['Transferencia']) }}</p>
                     <button class="view-details-btn"
-                            onclick="window.location='{{ url_for('ver_caja', caja_index=loop.index0) }}'">
+                            onclick="window.location='{{ url_for('ver_caja', caja_id=caja.id) }}'">
                         🔍 Ver Detalles
                     </button>
                 </div>

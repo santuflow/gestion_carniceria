@@ -9,18 +9,21 @@ from flask_login import (
     LoginManager, UserMixin, login_user, logout_user,
     login_required, current_user
 )
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import json
-from io import BytesIO
+
 
 app = Flask(__name__)
-from flask import Flask, request, redirect
-app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui_CAMBIA_ESTO_POR_UNA_CLAVE_SEGURA_Y_UNICA!'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carniceria.db'
+app.secret_key = 'clave_secreta'
+
+# Base de datos
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gestion_carniceria_db_user:TWNXKoWlu6sgYHpXfVHpDZL5UjPzlbJs@dpg-d1trns2dbo4c73du9mtg-a.oregon-postgres.render.com:5432/gestion_carniceria_db?sslmode=require'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+from io import BytesIO
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'index'
@@ -56,6 +59,21 @@ class Balance(db.Model):
     fecha_creacion = db.Column(db.DateTime, default=lambda: datetime.now(arg_tz))
     # Público?
     is_public = db.Column(db.Boolean, default=False)
+
+class Caja(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    fecha_inicio = db.Column(db.DateTime, default=lambda: datetime.now(arg_tz))
+    ventas = db.relationship('Venta', backref='caja', lazy=True)
+
+
+class Venta(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    caja_id = db.Column(db.Integer, db.ForeignKey('caja.id'), nullable=False)
+    numero_venta = db.Column(db.Integer, nullable=False)
+    monto = db.Column(db.Float, nullable=False)
+    tipo_pago = db.Column(db.String(50), nullable=False)
 
 
 # ————— LOGIN —————
@@ -279,31 +297,66 @@ def actualizar_balance_publico():
 @app.route('/abrir_caja')
 @login_required
 def abrir_caja():
-    # inicializar ventas del día
     session.setdefault('ventas', [])
     return render_template('abrir_caja.html')
+
+
+@app.route('/api/iniciar_caja', methods=['POST'])
+@login_required
+def iniciar_caja():
+    nueva_caja = Caja(user_id=current_user.id)
+    db.session.add(nueva_caja)
+    db.session.commit()
+    return jsonify(success=True, caja_id=nueva_caja.id), 201
+
 
 
 @app.route('/api/ventas_dia', methods=['GET'])
 @login_required
 def api_ventas_dia():
-    return jsonify({'ventas': session.get('ventas', [])}), 200
+    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    if not caja:
+        return jsonify({'ventas': []}), 200
+
+    ventas = Venta.query.filter_by(caja_id=caja.id).all()
+    data = [{
+        'numero_venta': v.numero_venta,
+        'monto': v.monto,
+        'tipo_pago': v.tipo_pago
+    } for v in ventas]
+
+    return jsonify({'ventas': data}), 200
+
 
 
 @app.route('/api/registrar_venta', methods=['POST'])
 @login_required
 def api_registrar_venta():
     d = request.get_json(force=True)
-    ventas = session.get('ventas', [])
+
+    # Buscar la última caja abierta del usuario
+    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    if not caja:
+        return jsonify(success=False, message='Caja no iniciada'), 400
+
     try:
         monto = float(d.get('monto', 0))
+        tipo = d.get('tipo_pago') or 'Efectivo'
     except:
-        return jsonify(success=False, message='Monto inválido'), 400
-    tipo = d.get('tipo_pago') or 'Efectivo'
-    num = int(d.get('numero_venta') or len(ventas)+1)
-    venta = {'numero_venta': num, 'monto': monto, 'tipo_pago': tipo}
-    ventas.append(venta)
-    session['ventas'] = ventas
+        return jsonify(success=False, message='Datos inválidos'), 400
+
+    num = Venta.query.filter_by(caja_id=caja.id).count() + 1
+
+    venta = Venta(
+        user_id=current_user.id,
+        caja_id=caja.id,
+        numero_venta=num,
+        monto=monto,
+        tipo_pago=tipo
+    )
+
+    db.session.add(venta)
+    db.session.commit()
     return jsonify(success=True), 201
 
 
@@ -329,19 +382,53 @@ def api_cerrar_caja():
 @app.route('/historial_cajas')
 @login_required
 def historial_cajas():
-    cajas = session.get('historial_cajas', [])
-    return render_template('historial_cajas.html', cajas=cajas)
+    cajas = Caja.query.filter_by(user_id=current_user.id)\
+        .order_by(Caja.fecha_inicio.desc()).all()
+    
+    data = []
+    for c in cajas:
+        ventas = Venta.query.filter_by(caja_id=c.id).all()
+        resumen = {'Efectivo': 0.0, 'Tarjeta': 0.0, 'Transferencia': 0.0}
+        for v in ventas:
+            resumen[v.tipo_pago] += v.monto
+        data.append({
+            'id': c.id,
+            'fecha': c.fecha_inicio.strftime('%d/%m/%Y %H:%M'),
+            'ventas': ventas,
+            'resumen': resumen
+        })
+    
+    return render_template('historial_cajas.html', cajas=data)
 
 
-@app.route('/ver_caja/<int:caja_index>')
+@app.route('/ver_caja/<int:caja_id>')
 @login_required
-def ver_caja(caja_index):
-    cajas = session.get('historial_cajas', [])
-    if caja_index<0 or caja_index>=len(cajas):
-        flash('Caja no existe', 'error')
+def ver_caja(caja_id):
+    caja = Caja.query.filter_by(id=caja_id, user_id=current_user.id).first()
+    if not caja:
+        flash('Caja no encontrada o acceso no autorizado', 'error')
         return redirect(url_for('historial_cajas'))
-    caja = cajas[caja_index]
-    return render_template('ver_caja.html', caja=caja, index=caja_index)
+
+    ventas = Venta.query.filter_by(caja_id=caja.id).all()
+
+    totales = {'Efectivo': 0.0, 'Tarjeta': 0.0, 'Transferencia': 0.0}
+    for v in ventas:
+        totales[v.tipo_pago] += v.monto
+
+    resumen = {
+        'total_ventas': len(ventas),
+        'totales': totales
+    }
+
+    caja_data = {
+        'id': caja.id,
+        'fecha_inicio': caja.fecha_inicio.strftime('%d/%m/%Y %H:%M'),
+        'resumen': resumen,
+        'ventas': ventas
+    }
+
+    return render_template('ver_caja.html', caja=caja_data)
+
 
 
 # ————— ARRANQUE —————

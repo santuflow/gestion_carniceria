@@ -5,3 +5,4 @@ SQLAlchemy==1.4.49
 gunicorn==21.2.0
 pytz
 werkzeug==2.2.3
+psycopg2-binary
