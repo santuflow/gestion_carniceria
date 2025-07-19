@@ -115,26 +115,33 @@
     }
 
     ventaForm.addEventListener('submit', async e => {
-      e.preventDefault();
-      const data = {
-        numero_venta: Number(saleNumberInput.value),
-        monto: parseFloat(document.getElementById('montoVenta').value),
-        tipo_pago: document.getElementById('tipoPago').value
-      };
-      try {
-        const resp = await fetch('/api/registrar_venta', {
-          method: 'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(data)
-        });
-        if (!resp.ok) throw '';
-        appendRow(data.numero_venta, data.monto, data.tipo_pago);
-        ventaForm.reset();
-        updateSaleNumber();
-      } catch {
-        alert('Error al registrar la venta.');
-      }
+  e.preventDefault();
+
+  const monto = parseFloat(document.getElementById('montoVenta').value);
+  const tipo_pago = document.getElementById('tipoPago').value;
+
+  if (isNaN(monto) || monto <= 0) {
+    alert('Monto inválido');
+    return;
+  }
+
+  const data = { monto, tipo_pago };
+
+  try {
+    const resp = await fetch('/api/registrar_venta', {
+      method: 'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
     });
+    if (!resp.ok) throw '';
+    appendRow(saleNumberInput.value, monto, tipo_pago);
+    ventaForm.reset();
+    updateSaleNumber();
+  } catch {
+    alert('Error al registrar la venta.');
+  }
+});
+
 
     cerrarCajaBtn.addEventListener('click', async () => {
       if (!confirm('¿Cerrar caja y ver totales?')) return;
