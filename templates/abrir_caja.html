@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gestión de Carnicería – Abrir Caja</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='abrir_caja.css') }}"
+  <link rel="stylesheet" href="{{ url_for('static', filename='abrir_caja.css') }}">
 </head>
 <body class="body-balance-page">
 
@@ -44,8 +44,6 @@
 
     <section class="table-container">
       <h2>📊 Ventas del Día</h2>
-
-      <!-- justo antes de la tabla -->
       <div class="sales-container">
         <table id="ventasTabla" class="sales-table">
           <thead>
@@ -58,8 +56,6 @@
           <tbody></tbody>
         </table>
       </div>
-      <!-- justo después de la tabla -->
-
     </section>
 
     <button id="cerrarCajaBtn" class="btn-form close-caja-btn">🔒 Cerrar Caja</button>
@@ -115,33 +111,33 @@
     }
 
     ventaForm.addEventListener('submit', async e => {
-  e.preventDefault();
+      e.preventDefault();
 
-  const monto = parseFloat(document.getElementById('montoVenta').value);
-  const tipo_pago = document.getElementById('tipoPago').value;
+      const numero_venta = parseInt(saleNumberInput.value);
+      const monto = parseFloat(document.getElementById('montoVenta').value);
+      const tipo_pago = document.getElementById('tipoPago').value;
 
-  if (isNaN(monto) || monto <= 0) {
-    alert('Monto inválido');
-    return;
-  }
+      if (isNaN(monto) || monto <= 0) {
+        alert('Monto inválido');
+        return;
+      }
 
-  const data = { monto, tipo_pago };
+      const data = { numero_venta, monto, tipo_pago };
 
-  try {
-    const resp = await fetch('/api/registrar_venta', {
-      method: 'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(data)
+      try {
+        const resp = await fetch('/api/registrar_venta', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        if (!resp.ok) throw '';
+        appendRow(numero_venta, monto, tipo_pago);
+        ventaForm.reset();
+        updateSaleNumber();
+      } catch {
+        alert('Error al registrar la venta.');
+      }
     });
-    if (!resp.ok) throw '';
-    appendRow(saleNumberInput.value, monto, tipo_pago);
-    ventaForm.reset();
-    updateSaleNumber();
-  } catch {
-    alert('Error al registrar la venta.');
-  }
-});
-
 
     cerrarCajaBtn.addEventListener('click', async () => {
       if (!confirm('¿Cerrar caja y ver totales?')) return;
