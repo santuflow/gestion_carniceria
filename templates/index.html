@@ -43,9 +43,9 @@
     <a href="/abrir_caja"             class="btn">💰 Abrir Caja</a>
     <a href="/historial_cajas"       class="btn">📜 Historial Cajas</a>
   {% endif %}
-  <a href="/proveedores"              class="btn">🚚 Proveedores</a>
-  <a href="/empleados_cv"             class="btn">👥 Carniceros CV</a>
-  <a href="/subir_encontrar_trabajo"  class="btn">📄 Subir CV y Encontrar Trabajo</a>
+<button class="btn-section" onclick="mostrarModal()">🚚 Proveedores</button>
+<button class="btn-section" onclick="mostrarModal()">🧑‍🍳 Carniceros CV</button>
+<button class="btn-section" onclick="mostrarModal()">📄 Subir CV y Encontrar Trabajo</button>
   <a href="#" class="btn" onclick="abrirModalApoyo()"> Apoyar Proyecto</a>
 </div>
     </div>
@@ -274,5 +274,22 @@
         }
     });
     </script>
+    <div id="proximamenteModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h2>🚧 Próximamente</h2>
+    <p>Esta sección estará disponible en una próxima actualización.</p>
+    <button onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+<script>
+function mostrarModal() {
+  document.getElementById('proximamenteModal').style.display = 'flex';
+}
+
+function cerrarModal() {
+  document.getElementById('proximamenteModal').style.display = 'none';
+}
+</script>
+
 </body>
 </html>
