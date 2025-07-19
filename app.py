@@ -364,20 +364,21 @@ def api_registrar_venta():
 @app.route('/api/cerrar_caja', methods=['POST'])
 @login_required
 def api_cerrar_caja():
-    ventas = session.pop('ventas', [])
-    tot = {'Efectivo': 0.0, 'Tarjeta': 0.0, 'Transferencia': 0.0}
+    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    if not caja:
+        return jsonify(success=False, message='No hay caja activa'), 400
+
+    ventas = Venta.query.filter_by(caja_id=caja.id).all()
+    resumen = {
+        'total_ventas': len(ventas),
+        'totales': {'Efectivo': 0.0, 'Tarjeta': 0.0, 'Transferencia': 0.0}
+    }
+
     for v in ventas:
-        tot[v['tipo_pago']] += v['monto']
-    resumen = {'total_ventas': len(ventas), 'totales': tot}
-    # Guardar historial en sesión
-    hist = session.get('historial_cajas', [])
-    hist.append({
-        'fecha_inicio': datetime.now(arg_tz).strftime('%d/%m/%Y'),
-        'ventas': ventas,
-        'resumen': resumen
-    })
-    session['historial_cajas'] = hist
+        resumen['totales'][v.tipo_pago] += v.monto
+
     return jsonify(success=True, resumen=resumen), 200
+
 
 
 @app.route('/historial_cajas')
