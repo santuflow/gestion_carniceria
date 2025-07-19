@@ -384,23 +384,33 @@ def api_cerrar_caja():
 @app.route('/historial_cajas')
 @login_required
 def historial_cajas():
-    cajas = Caja.query.filter_by(user_id=current_user.id)\
-        .order_by(Caja.fecha_inicio.desc()).all()
-    
-    data = []
-    for c in cajas:
-        ventas = Venta.query.filter_by(caja_id=c.id).all()
-        resumen = {'Efectivo': 0.0, 'Tarjeta': 0.0, 'Transferencia': 0.0}
-        for v in ventas:
-            resumen[v.tipo_pago] += v.monto
-        data.append({
-            'id': c.id,
-            'fecha': c.fecha_inicio.strftime('%d/%m/%Y %H:%M'),
-            'ventas': ventas,
-            'resumen': resumen
-        })
-    
-    return render_template('historial_cajas.html', cajas=data)
+    cajas = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.fecha_inicio.desc()).all()
+
+    cajas_con_resumen = []
+    for caja in cajas:
+        ventas = Venta.query.filter_by(caja_id=caja.id).all()
+        resumen = {
+            'total_ventas': len(ventas),
+            'totales': {
+                'Efectivo': 0,
+                'Tarjeta': 0,
+                'Transferencia': 0
+            }
+        }
+        for venta in ventas:
+            tipo = venta.tipo_pago
+            if tipo in resumen['totales']:
+                resumen['totales'][tipo] += venta.monto
+
+        caja_data = {
+            'id': caja.id,
+            'fecha': caja.fecha_inicio.strftime('%d/%m/%Y %H:%M'),
+            'resumen': resumen if ventas else None
+        }
+        cajas_con_resumen.append(caja_data)
+
+    return render_template('historial_cajas.html', cajas=cajas_con_resumen)
+
 
 
 @app.route('/ver_caja/<int:caja_id>')

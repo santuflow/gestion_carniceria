@@ -1,52 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Cajas — Gestión de Carnicería</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='balances_page.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='modals.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Historial de Cajas — Gestión de Carnicería</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='balances_page.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='modals.css') }}">
+  <style>
+    @media screen and (max-width: 768px) {
+      .balances-grid {
+        grid-template-columns: 1fr !important;
+        padding: 0 10px;
+      }
+      .balance-card {
+        margin: 10px 0;
+      }
+    }
+  </style>
 </head>
 <body class="body-balance-page">
-    <header>
-        <div class="header-content">
-            <h1>Gestión de Carnicería</h1>
-            <nav class="auth-buttons">
-                <a href="{{ url_for('index') }}" class="btn-auth">🏠 Inicio</a>
-                <a href="{{ url_for('abrir_caja') }}" class="btn-auth">💼 Abrir Caja</a>
-            </nav>
-        </div>
-    </header>
-
-    <div class="main-content-wrapper">
-        <h1 class="page-title">📋 Historial de Cajas</h1>
-
-        {% if cajas %}
-            <div class="balances-grid">
-                {% for caja in cajas %}
-                <div class="balance-card">
-                    <h2 class="balance-card-title">
-                        Caja del {{ caja.fecha_inicio }}
-                    </h2>
-                    <p><strong>N° Ventas:</strong> {{ caja.resumen.total_ventas }}</p>
-                    <p><strong>Total Efectivo:</strong> ${{ '%.2f'|format(caja.resumen.totales['Efectivo']) }}</p>
-                    <p><strong>Total Tarjeta:</strong> ${{ '%.2f'|format(caja.resumen.totales['Tarjeta']) }}</p>
-                    <p><strong>Total Transferencia:</strong> ${{ '%.2f'|format(caja.resumen.totales['Transferencia']) }}</p>
-                    <button class="view-details-btn"
-                            onclick="window.location='{{ url_for('ver_caja', caja_id=caja.id) }}'">
-                        🔍 Ver Detalles
-                    </button>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="no-balances-message">No hay cajas registradas aún.</p>
-        {% endif %}
+  <header>
+    <div class="header-content">
+      <h1>Gestión de Carnicería</h1>
+      <nav class="auth-buttons">
+        <a href="{{ url_for('index') }}" class="btn-auth">🏠 Inicio</a>
+        <a href="{{ url_for('abrir_caja') }}" class="btn-auth">💼 Abrir Caja</a>
+      </nav>
     </div>
+  </header>
 
-    <footer>
-        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
-    </footer>
+  <div class="main-content-wrapper">
+    <h1 class="page-title">📋 Historial de Cajas</h1>
+
+    {% if cajas %}
+      <div class="balances-grid">
+        {% for caja in cajas %}
+        <div class="balance-card">
+          <h2 class="balance-card-title">
+            Caja del {{ caja.fecha }}
+          </h2>
+
+          {% if caja.resumen is defined and caja.resumen %}
+            <p><strong>N° Ventas:</strong> {{ caja.resumen.total_ventas }}</p>
+
+            {% if caja.resumen.totales is defined %}
+              <p><strong>Total Efectivo:</strong> ${{ '%.2f'|format(caja.resumen.totales.get('Efectivo', 0)) }}</p>
+              <p><strong>Total Tarjeta:</strong> ${{ '%.2f'|format(caja.resumen.totales.get('Tarjeta', 0)) }}</p>
+              <p><strong>Total Transferencia:</strong> ${{ '%.2f'|format(caja.resumen.totales.get('Transferencia', 0)) }}</p>
+            {% else %}
+              <p><em>Resumen no disponible.</em></p>
+            {% endif %}
+          {% else %}
+            <p><strong>N° Ventas:</strong> -</p>
+            <p><em>Resumen no disponible.</em></p>
+          {% endif %}
+
+          <button class="view-details-btn"
+            onclick="window.location='{{ url_for('ver_caja', caja_id=caja.id) }}'">
+            🔍 Ver Detalles
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="no-balances-message">No hay cajas registradas aún.</p>
+    {% endif %}
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+  </footer>
 </body>
 </html>
