@@ -75,7 +75,23 @@
   </footer>
 
   <script>
+  // Iniciar caja automáticamente al entrar a la página
+  async function iniciarCajaSiNoExiste() {
+    try {
+      const resp = await fetch('/api/iniciar_caja', { method: 'POST' });
+      if (resp.ok) {
+        console.log("Caja iniciada correctamente");
+      } else {
+        console.warn("No se pudo iniciar la caja");
+      }
+    } catch (e) {
+      console.error("Error al iniciar caja:", e);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    iniciarCajaSiNoExiste(); // Inicia caja apenas se carga la página
+
     const ventaForm = document.getElementById('ventaForm');
     const saleNumberInput = document.getElementById('saleNumber');
     const tablaBody       = document.querySelector('#ventasTabla tbody');
@@ -161,7 +177,8 @@
 
     loadVentas();
   });
-  </script>
+</script>
+
 
 </body>
 </html>
