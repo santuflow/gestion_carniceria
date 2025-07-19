@@ -1,0 +1,302 @@
+/* static/modals.css */
+
+.modal-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Para la transición de entrada */
+    transition: opacity 0.3s ease-out;
+}
+
+.modal-overlay.active {
+    display: flex; /* Mostrar cuando está activo */
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: rgba(30, 30, 30, 0.95); /* Fondo oscuro de la modal */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    width: 90%;
+    max-width: 450px; /* Ya estaba, buen ancho para la primera parte */
+    position: relative;
+    z-index: 1001;
+    color: #f0f0f0;
+    transform: scale(0.95); /* Pequeña escala para efecto de aparición */
+    transition: transform 0.3s ease-out;
+
+    /* AÑADIDOS/MODIFICADOS PARA CONTROLAR LA ALTURA DE LA MODAL EN GENERAL */
+    max-height: 85vh; /* Limita la altura máxima de la modal al 85% del viewport height */
+    overflow-y: auto; /* Permite el scroll si el contenido excede la altura máxima de la modal */
+    display: flex; /* Usa flexbox para organizar el contenido */
+    flex-direction: column; /* Organiza los elementos en columna */
+    box-sizing: border-box; /* Asegura que padding y border se incluyan en el width/height */
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content h2 {
+    color: #ffffff;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.modal-content .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+/* MODIFICACIÓN AQUÍ: AÑADE input[type="email"] */
+.modal-content input[type="text"],
+.modal-content input[type="password"],
+.modal-content input[type="email"] { /* <--- AÑADIDO ESTO */
+    width: calc(100% - 24px); /* Ancho completo menos padding */
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    font-size: 1em;
+    outline: none;
+    box-sizing: border-box; /* Incluir padding en el ancho */
+}
+
+/* MODIFICACIÓN AQUÍ: AÑADE input[type="email"] para el foco */
+.modal-content input[type="text"]:focus,
+.modal-content input[type="password"]:focus,
+.modal-content input[type="email"]:focus { /* <--- AÑADIDO ESTO */
+    border-color: #00FFFF;
+    box-shadow: 0 0 8px rgba(0, 0, 255, 0.7);
+}
+
+.modal-content .btn-modal-submit {
+    background-color: #000000;
+    color: white;
+    padding: 12px 25px;
+    border: 2px solid #0000FF; /* Azul para iniciar sesión */
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6);
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 15px; /* Asegura un margen superior para separar de los elementos anteriores */
+    flex-shrink: 0; /* Evita que el botón se encoja si el espacio es limitado */
+}
+.modal-content .btn-modal-submit:hover {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(0, 0, 255, 1);
+}
+.modal-content #registerModal .btn-modal-submit {
+    border-color: #00FF00; /* Verde para el botón de registro */
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+}
+.modal-content #registerModal .btn-modal-submit:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 0, 1);
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.close-button:hover {
+    color: #fff;
+}
+
+.modal-link {
+    display: block;
+    margin-top: 20px;
+    color: #00FFFF;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: color 0.3s ease;
+}
+.modal-link:hover {
+    color: #00BFFF;
+    text-decoration: underline;
+}
+
+.modal-flash-message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0; /* Oculto por defecto */
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+.modal-flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    opacity: 1;
+    max-height: 50px; /* Suficiente para un mensaje */
+}
+.modal-flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    opacity: 1;
+    max-height: 50px;
+}
+
+/* --- AÑADIDOS PARA LAS POLÍTICAS Y EL BOTÓN DE VOLVER --- */
+
+.terms-and-conditions {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+    color: #bbb;
+    /* CLAVE: limita la altura de esta sección y la hace scrollable */
+    max-height: 250px; /* Ajusta esta altura para controlar cuánto espacio ocupa el texto */
+    overflow-y: auto; /* Permite el scroll DENTRO de esta sección */
+    font-size: 0.9em;
+    line-height: 1.5;
+    flex-grow: 1; /* Permite que esta sección crezca pero respeta el max-height */
+}
+
+.terms-and-conditions h3 {
+    color: #fff;
+    margin-top: 0;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.terms-and-conditions ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.terms-and-conditions li {
+    margin-bottom: 8px;
+}
+
+.form-group.accept-terms {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar el checkbox y el texto */
+    font-size: 1em;
+}
+
+.form-group.accept-terms input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2); /* Hace el checkbox un poco más grande */
+}
+
+.btn-modal-back {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px; /* Espacio entre el botón de Finalizar y Volver */
+    flex-shrink: 0; /* Evita que el botón se encoja */
+}
+
+.btn-modal-back:hover {
+    background-color: #444;
+    border-color: #777;
+}
+/* Modal Apoyar Proyecto */
+.modal-apoyo {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9); /* fondo más oscuro */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-apoyo-content {
+  background-color: #111; /* fondo interno oscuro */
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 25px red, 0 0 15px red; /* luz roja fuerte en los bordes */
+  color: white;
+}
+
+.modal-apoyo-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 28px;
+  color: red;
+  cursor: pointer;
+}
+
+.modal-apoyo-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+.modal-apoyo-btn:hover {
+  background-color: darkred;
+}
+
+.modal-apoyo-donar {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border: 1px solid red;
+  border-radius: 6px;
+}
+
+.modal-apoyo-donar:hover {
+  background-color: red;
+  color: black;
+}

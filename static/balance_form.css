@@ -1,0 +1,530 @@
+/* Reglas globales de box-sizing para asegurar un modelo de caja consistente */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* ***** CONFIGURACIÓN DE LA IMAGEN DE FONDO ESPECÍFICA PARA BALANCE_FORM.HTML ***** */
+body.body-balance-form {
+    background-image: url('../static/fondo_formulario.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    color: #f0f0f0;
+    z-index: 1;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+body.body-balance-form::before {
+    background-color: rgba(0, 0, 0, 0.5);
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* -------------- ESTILOS ESPECÍFICOS PARA BALANCE_FORM.HTML -------------- */
+
+.form-container {
+    background-color: rgba(30, 30, 30, 0.7);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    max-width: 750px;
+    width: 90%; /* Ajuste para que ocupe más ancho en pantallas más pequeñas */
+    margin: 40px auto;
+    color: #f0f0f0;
+    z-index: 1;
+    position: relative;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    box-sizing: border-box; /* Incluye padding en el ancho total */
+}
+.form-container h1 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+.section-title {
+    margin-top: 35px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 8px;
+    font-size: 1.2em;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Estilos para las filas de formularios en general, si no son la primera sección */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+}
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+    min-width: 280px; /* Evita que los campos se achiquen demasiado en escritorio antes de envolver */
+}
+
+
+/* Estilos específicos para la sección de Datos de la Etiqueta */
+/* Usamos grid para un control preciso de columnas y espaciado */
+.section-group:first-of-type .form-row { /* Apunta específicamente a la primera sección (Datos de la Etiqueta) */
+    display: grid;
+    /* En PC, queremos 2 columnas flexibles. Cada una con un mínimo de 250px. */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 15px; /* Espacio entre las columnas y filas de la grilla */
+    margin-bottom: 15px; /* Ajustar el margen inferior de la fila de la grilla */
+}
+.section-group:first-of-type .form-row .form-group {
+    margin-bottom: 0; /* Eliminar margen inferior si es parte de la grilla, el gap lo maneja */
+    width: auto; /* Dejar que grid maneje el ancho */
+    min-width: unset; /* Desactivar min-width para que grid tenga control total */
+}
+/* Asegurar que el textarea de observaciones ocupe todo el ancho en la grilla */
+.section-group:first-of-type .form-group:has(textarea) {
+    grid-column: 1 / -1; /* Ocupar todo el ancho de la grilla */
+}
+
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+.input-with-unit {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    overflow: hidden; /* Asegura que el contenido no se salga de los bordes redondeados */
+}
+.input-with-unit input, 
+.input-with-unit select { /* Solo inputs y selects dentro de input-with-unit */
+    flex-grow: 1;
+    border: none;
+    padding: 12px;
+    margin-bottom: 0;
+    border-radius: 6px;
+    outline: none;
+    background-color: transparent;
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    width: 100%; /* Asegura que ocupen el 100% del contenedor */
+}
+.input-with-unit .unit {
+    padding: 0 12px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0 6px 6px 0;
+    color: #ffffff;
+    font-weight: bold;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    font-size: 0.9em; /* Ajuste para que las unidades se vean bien */
+}
+.input-with-unit .unit:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    border-left: none;
+    border-radius: 6px 0 0 6px;
+}
+.input-with-unit input:focus, 
+.input-with-unit select:focus { /* Añadido para el select de Tipo de Animal */
+    box-shadow: 0 0 8px rgba(0, 0, 255, 0.7), inset 0 0 5px rgba(0, 255, 255, 0.2); /* Sombra interior */
+    border-color: #00FFFF;
+}
+
+/* Estilo para el textarea de Observaciones siempre "encendido" */
+.form-group textarea {
+    box-shadow: 0 0 8px rgba(0, 0, 255, 0.7); /* Sombra azul siempre visible */
+    border-color: #00FFFF; /* Borde cian siempre visible */
+    /* Aseguramos que el textarea también tenga los estilos base de input */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    width: 100%;
+    box-sizing: border-box; /* Crucial para que el padding no desborde el ancho */
+    outline: none; /* Quitar el outline por defecto al enfocar, ya tenemos nuestro box-shadow */
+}
+
+
+/* Estilos para la tabla de Cortes */
+#fixed-cuts-container, #additional-cuts-container {
+    margin-top: 20px;
+}
+.cut-header {
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    display: grid;
+    /* CAMBIO CLAVE: Ajustar proporciones de columnas para PC */
+    grid-template-columns: 1.8fr 1.2fr 1.2fr 1.5fr 0.2fr; /* Más espacio para Peso y Precio */
+    gap: 10px;
+}
+.cut-row {
+    display: grid;
+    /* CAMBIO CLAVE: Ajustar proporciones de columnas para PC */
+    grid-template-columns: 1.8fr 1.2fr 1.2fr 1.5fr 0.2fr; /* Más espacio para Peso y Precio */
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+.cut-row:last-child {
+    border-bottom: none;
+}
+.cut-row span.cut-name {
+    font-weight: bold;
+    color: #f0f0f0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+/* Aumentar ligeramente el ancho de los inputs de número en los cortes */
+.cut-row input[type="number"], .cut-row input[type="text"] {
+    width: 100%; /* Asegurar que ocupe el 100% de su celda de grilla */
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    min-width: 70px; /* Aumentar un poco más el ancho mínimo */
+}
+.cut-row .cut-profit {
+    text-align: right;
+    font-weight: bold;
+    color: #00FFFF;
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.8);
+}
+.custom-cut .cut-name-input {
+    grid-column: 1 / 2;
+}
+.remove-cut-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+}
+.remove-cut-btn:hover {
+    background-color: #c82333;
+}
+
+/* Estilos para la Zona de Ganancia Total */
+.total-profit-area {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+}
+.total-profit-area .section-title {
+    border-bottom: none;
+    margin-top: 0;
+    padding-bottom: 0;
+}
+.total-profit-value {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #00FF00;
+    display: block;
+    margin-top: 10px;
+    text-shadow: 0 0 6px rgba(0, 255, 0, 0.9);
+}
+
+/* Estilos para los Botones del Formulario */
+.btn-form {
+    background-color: #000000;
+    color: white;
+    padding: 12px 25px;
+    border: 2px solid #0000FF;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6);
+    margin-top: 25px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+.btn-form:hover {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(0, 0, 255, 1);
+}
+.submit-btn {
+    margin-top: 30px;
+    background-color: #000000;
+    border-color: #00FF00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+}
+.submit-btn:hover {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 1);
+}
+
+/* ========================================================= */
+/* ESTILOS DEL MODAL DE CONFIRMACIÓN - SOLO LO BÁSICO AQUÍ */
+/* ========================================================= */
+.modal-overlay {
+    /* Estas propiedades son esenciales para que el overlay cubra la pantalla */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; 
+    overflow: auto; 
+    /* Las propiedades de display y animación serán manejadas por modals.css */
+}
+
+/* ========================================================= */
+/* MEDIA QUERIES PARA RESPONSIVIDAD (BALANCE_FORM.HTML) */
+/* ========================================================= */
+
+/* Para pantallas de tabletas (máximo 768px de ancho) */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px; /* Reducir padding en tabletas */
+        margin: 20px auto; /* Ajustar margen */
+        width: 95%; /* Usar más ancho de pantalla */
+    }
+    .form-container h1 {
+        font-size: 1.8em; /* Ajustar tamaño de título */
+        margin-bottom: 20px;
+    }
+    .section-title {
+        font-size: 1.1em; /* Ajustar tamaño de título de sección */
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+    /* En tabletas, la sección de etiqueta vuelve a ser columna simple */
+    .section-group:first-of-type .form-row {
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 15px; /* Espacio entre elementos apilados */
+    }
+    .form-row { /* Este es para las otras secciones, no la primera */
+        flex-direction: column; /* Apilar los elementos del formulario verticalmente */
+        gap: 15px;
+    }
+    .form-row .form-group {
+        min-width: unset; /* Permitir que los grupos de formulario se achiquen */
+        width: 100%; /* Ocupar todo el ancho disponible */
+    }
+    label {
+        font-size: 0.95em;
+    }
+    .input-with-unit input, .input-with-unit select, .form-group textarea {
+        font-size: 0.85em;
+        padding: 10px;
+    }
+    .cut-header {
+        font-size: 0.9em;
+        padding: 8px;
+        /* CAMBIO: Ajuste de columnas para que se vean mejor en tabletas */
+        grid-template-columns: 1.5fr 1fr 1fr 1.2fr 0.2fr; 
+    }
+    .cut-row {
+        gap: 8px;
+        padding: 6px 0;
+        /* CAMBIO: Ajuste de columnas para que se vean mejor en tabletas */
+        grid-template-columns: 1.5fr 1fr 1fr 1.2fr 0.2fr;
+    }
+    .cut-row span.cut-name, .cut-row input, .cut-row .cut-profit {
+        font-size: 0.8em;
+    }
+    .input-with-unit .unit { /* Ajustar tamaño de unidad en tabletas */
+        font-size: 0.8em;
+    }
+    .remove-cut-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 0.6em;
+    }
+    .total-profit-area {
+        padding: 15px;
+        margin-top: 25px;
+    }
+    .total-profit-area .section-title {
+        font-size: 1.2em;
+    }
+    .total-profit-value {
+        font-size: 2em;
+    }
+    .btn-form {
+        padding: 10px 18px;
+        font-size: 1em;
+        margin-top: 20px;
+    }
+    .modal-content {
+        padding: 20px;
+        max-width: 95%; /* Asegura que el modal se ajuste en tabletas */
+    }
+    .modal-content h2 {
+        font-size: 1.6em;
+    }
+    .modal-content p {
+        font-size: 1em;
+    }
+    .btn-modal {
+        min-width: 120px;
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+}
+
+/* Para teléfonos pequeños (máximo 480px de ancho) */
+@media (max-width: 480px) {
+    .form-container {
+        padding: 15px;
+        margin: 15px auto;
+        width: 98%;
+    }
+    .form-container h1 {
+        font-size: 1.6em;
+    }
+    .section-title {
+        font-size: 1em;
+        margin-top: 15px;
+        margin-bottom: 8px;
+    }
+    /* En teléfonos, la sección de etiqueta se mantiene en columna simple */
+    .section-group:first-of-type .form-row {
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 10px; /* Espacio entre elementos apilados */
+    }
+    .input-with-unit input, .input-with-unit select, .form-group textarea {
+        font-size: 0.75em;
+        padding: 8px;
+    }
+    .cut-header {
+        grid-template-columns: 1fr; /* Una sola columna para cabeceras en móvil */
+        gap: 5px;
+        padding: 5px;
+        text-align: left;
+    }
+    .cut-header div { /* Ocultar los encabezados individuales si se apilan */
+        display: none;
+    }
+    .cut-header span.cut-name { /* Mostrar solo el nombre del corte en el encabezado apilado */
+        display: block;
+        font-size: 0.9em;
+        text-align: center;
+    }
+    .cut-row {
+        /* CAMBIO CLAVE: Ajustar proporciones de columnas para móviles */
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1.2fr 0.2fr; /* Proporciones ajustadas para móvil */
+        gap: 5px; /* Espacio reducido entre columnas */
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+        position: relative;
+    }
+    .cut-row span.cut-name {
+        font-size: 0.85em;
+        text-align: left;
+        width: 100%;
+    }
+    .cut-row input[type="number"], .cut-row input[type="text"] {
+        width: 100%; /* Asegurar que ocupe el 100% de su celda de grilla */
+        font-size: 0.75em;
+        padding: 5px 6px;
+        min-width: 45px; /* Ajustar min-width un poco más para móvil */
+    }
+    .input-with-unit .unit { /* Ajustar tamaño de unidad en móviles */
+        font-size: 0.7em; /* Un poco más pequeño para encajar */
+        padding: 0 8px; /* Reducir padding para más espacio */
+    }
+    .cut-row .cut-profit {
+        text-align: right; /* Alinear a la derecha como en PC */
+        font-size: 0.8em;
+    }
+    .remove-cut-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.5em;
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        margin: 0;
+    }
+    .total-profit-area {
+        padding: 10px;
+        margin-top: 15px;
+    }
+    .total-profit-area .section-title {
+        font-size: 1em;
+    }
+    .total-profit-value {
+        font-size: 1.8em;
+    }
+    .btn-form {
+        padding: 8px 12px;
+        font-size: 0.9em;
+        margin-top: 15px;
+    }
+    .modal-content {
+        padding: 15px;
+    }
+    .modal-content h2 {
+        font-size: 1.4em;
+    }
+    .modal-content p {
+        font-size: 0.9em;
+    }
+    .modal-actions {
+        flex-direction: column; /* Apila los botones en pantallas muy pequeñas */
+        gap: 10px;
+    }
+    .btn-modal {
+        min-width: unset; /* Elimina el ancho mínimo para que se ajusten */
+        width: 100%; /* Ocupan todo el ancho disponible */
+    }
+    .close-button {
+        font-size: 24px;
+        top: 5px;
+        right: 10px;
+    }
+}

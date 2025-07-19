@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestión de Carnicería – Abrir Caja</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='abrir_caja.css') }}"
+</head>
+<body class="body-balance-page">
+
+  <header>
+    <div class="header-content">
+      <h1>🛒 Abrir / Registrar Ventas</h1>
+      <nav class="auth-buttons">
+        <a href="{{ url_for('index') }}" class="btn-auth">🏠 Inicio</a>
+        <a href="{{ url_for('historial_cajas') }}" class="btn-auth">📋 Historial Cajas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content-wrapper">
+    <form id="ventaForm" class="form-container">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="saleNumber">Nº Venta</label>
+          <input type="text" id="saleNumber" name="saleNumber" readonly>
+        </div>
+        <div class="form-group">
+          <label for="montoVenta">Monto ($)</label>
+          <input type="number" id="montoVenta" name="montoVenta" step="0.01" required>
+        </div>
+      </div>
+      <div class="form-group full-width">
+        <label for="tipoPago">Tipo de Pago</label>
+        <select id="tipoPago" name="tipoPago">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Tarjeta">Tarjeta</option>
+          <option value="Transferencia">Transferencia</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-form add-sale-btn">➕ Agregar Venta</button>
+    </form>
+
+    <section class="table-container">
+      <h2>📊 Ventas del Día</h2>
+
+      <!-- justo antes de la tabla -->
+      <div class="sales-container">
+        <table id="ventasTabla" class="sales-table">
+          <thead>
+            <tr>
+              <th>Nº Venta</th>
+              <th>Monto</th>
+              <th>Pago</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <!-- justo después de la tabla -->
+
+    </section>
+
+    <button id="cerrarCajaBtn" class="btn-form close-caja-btn">🔒 Cerrar Caja</button>
+
+    <section id="resumenCaja" class="resumen-caja" style="display:none">
+      <h2>📈 Resumen de Caja Cerrada</h2>
+      <div class="resumen-item"><span>Ventas Totales:</span><strong id="resumenTotalVentas">0</strong></div>
+      <div class="resumen-item"><span>Total Efectivo:</span><strong id="resumenEfectivo">$0.00</strong></div>
+      <div class="resumen-item"><span>Total Tarjeta:</span><strong id="resumenTarjeta">$0.00</strong></div>
+      <div class="resumen-item"><span>Total Transferencia:</span><strong id="resumenTransferencia">$0.00</strong></div>
+      <div class="resumen-item total-general"><span>Total General:</span><strong id="resumenTotalGeneral">$0.00</strong></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ventaForm = document.getElementById('ventaForm');
+    const saleNumberInput = document.getElementById('saleNumber');
+    const tablaBody       = document.querySelector('#ventasTabla tbody');
+    const cerrarCajaBtn   = document.getElementById('cerrarCajaBtn');
+    const resumenDiv      = document.getElementById('resumenCaja');
+    const rv              = document.getElementById('resumenTotalVentas');
+    const re              = document.getElementById('resumenEfectivo');
+    const rt              = document.getElementById('resumenTarjeta');
+    const rtr             = document.getElementById('resumenTransferencia');
+
+    function updateSaleNumber() {
+      saleNumberInput.value = tablaBody.querySelectorAll('tr').length + 1;
+    }
+
+    async function loadVentas() {
+      try {
+        const resp = await fetch('/api/ventas_dia');
+        if (!resp.ok) throw '';
+        const { ventas } = await resp.json();
+        ventas.forEach(v => appendRow(v.numero_venta, v.monto, v.tipo_pago));
+      } catch {}
+      updateSaleNumber();
+    }
+
+    function appendRow(numero, monto, pago) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${numero}</td>
+        <td>$${monto.toFixed(2)}</td>
+        <td>${pago}</td>
+      `;
+      tablaBody.appendChild(tr);
+    }
+
+    ventaForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        numero_venta: Number(saleNumberInput.value),
+        monto: parseFloat(document.getElementById('montoVenta').value),
+        tipo_pago: document.getElementById('tipoPago').value
+      };
+      try {
+        const resp = await fetch('/api/registrar_venta', {
+          method: 'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        });
+        if (!resp.ok) throw '';
+        appendRow(data.numero_venta, data.monto, data.tipo_pago);
+        ventaForm.reset();
+        updateSaleNumber();
+      } catch {
+        alert('Error al registrar la venta.');
+      }
+    });
+
+    cerrarCajaBtn.addEventListener('click', async () => {
+      if (!confirm('¿Cerrar caja y ver totales?')) return;
+      try {
+        const resp = await fetch('/api/cerrar_caja', { method:'POST' });
+        if (!resp.ok) throw '';
+        const { resumen } = await resp.json();
+        rv.textContent  = resumen.total_ventas;
+        re.textContent  = `$${resumen.totales.Efectivo.toFixed(2)}`;
+        rt.textContent  = `$${resumen.totales.Tarjeta.toFixed(2)}`;
+        rtr.textContent = `$${resumen.totales.Transferencia.toFixed(2)}`;
+        const totalGen = resumen.totales.Efectivo + resumen.totales.Tarjeta + resumen.totales.Transferencia;
+        document.getElementById('resumenTotalGeneral').textContent = `$${totalGen.toFixed(2)}`;
+        resumenDiv.style.display = 'block';
+        tablaBody.innerHTML = '';
+        updateSaleNumber();
+      } catch {
+        alert('Error de conexión al cerrar caja.');
+      }
+    });
+
+    loadVentas();
+  });
+  </script>
+
+</body>
+</html>

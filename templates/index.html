@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Carnicería - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='modals.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Gestión de Carnicería</h1>
+            <nav class="auth-buttons">
+                {% if not current_user.is_authenticated %}
+                <button id="showLoginModalBtn" class="btn-auth">🚪 Iniciar Sesión</button>
+                <button id="showRegisterModalBtn" class="btn-auth">📝 Registrarse</button>
+                {% else %}
+                <a href="{{ url_for('hacer_balance') }}" class="btn-auth">📊 Ir a Balance</a>
+                <a href="{{ url_for('logout') }}" class="btn-auth">🚪 Cerrar Sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+        <p class="subtitle">Tu herramienta integral para optimizar tu negocio</p>
+    </header>
+
+    <div class="container">
+        <div class="welcome-message">
+            <h2>Bienvenido, Carnicero</h2>
+            {% if current_user.is_authenticated %}
+            <p>¡Hola, {{ current_user.first_name }}! Elige una opción para comenzar a gestionar tu negocio.</p>
+            {% else %}
+            <p>Elige una opción para comenzar a gestionar tu negocio, o <a href="#" id="welcomeLoginLink">inicia sesión</a> para acceder a tu panel.</p>
+            {% endif %}
+        </div>
+
+<div class="button-grid">
+  <a href="/hacer_balance"           class="btn">📝 Hacer Nuevo Balance</a>
+  <a href="/balances"                 class="btn">🌐 Balances Públicos</a>
+  {% if current_user.is_authenticated %}
+    <a href="/mis_balances"           class="btn">📁 Mis Balances</a>
+    <a href="/abrir_caja"             class="btn">💰 Abrir Caja</a>
+    <a href="/historial_cajas"       class="btn">📜 Historial Cajas</a>
+  {% endif %}
+  <a href="/proveedores"              class="btn">🚚 Proveedores</a>
+  <a href="/empleados_cv"             class="btn">👥 Carniceros CV</a>
+  <a href="/subir_encontrar_trabajo"  class="btn">📄 Subir CV y Encontrar Trabajo</a>
+  <a href="#" class="btn" onclick="abrirModalApoyo()"> Apoyar Proyecto</a>
+</div>
+    </div>
+    <div id="modal-apoyo" class="modal-apoyo">
+        <div class="modal-apoyo-content">
+            <span class="modal-apoyo-close" onclick="cerrarModalApoyo()">&times;</span>
+            <h2>Apoyar el Proyecto</h2>
+            <p>
+                Esta página es 100% gratuita y todas sus herramientas también.<br>
+                Este botón de apoyo existe solo para recuperar parte de la inversión realizada para crear la web y mantenerla activa.
+            </p>
+            <button onclick="mostrarLinksPago()" class="modal-apoyo-btn">Seguir</button>
+            <div id="links-pago" style="display: none; margin-top: 20px;">
+                <p><strong>¡Gracias por tu apoyo!</strong></p>
+                <a href="https://mpago.la/329Zt1c" target="_blank" class="modal-apoyo-donar">Donar $500</a>
+                <a href="https://mpago.la/1MGn9HJ" target="_blank" class="modal-apoyo-donar">Donar $1000</a>
+                <a href="HTTPS://link.mercadopago.com.ar/carni0" target="_blank" class="modal-apoyo-donar">Donar otro monto</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function abrirModalApoyo() {
+            document.getElementById('modal-apoyo').style.display = 'flex';
+        }
+
+        function cerrarModalApoyo() {
+            document.getElementById('modal-apoyo').style.display = 'none';
+            document.getElementById('links-pago').style.display = 'none';
+        }
+
+        function mostrarLinksPago() {
+            document.getElementById('links-pago').style.display = 'block';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('modal-apoyo');
+            if (event.target === modal) {
+                cerrarModalApoyo();
+            }
+        }
+    </script>
+
+    <footer>
+        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button">&times;</button>
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Usuario:</label>
+                    <input type="text" id="loginUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña:</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn-modal-submit">Iniciar Sesión</button>
+            </form>
+            <div class="modal-footer">
+                ¿No tienes cuenta? <a href="#" id="openRegisterFromLogin">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="registerModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button">&times;</button>
+            <h2>Registrarse</h2>
+            <form id="registerForm">
+                <div id="register-step-1">
+                    <div class="form-group">
+                        <label for="registerUsername">Usuario:</label>
+                        <input type="text" id="registerUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Correo Electrónico:</label>
+                        <input type="email" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña:</label>
+                        <input type="password" id="registerPassword" name="password" required>
+                    </div>
+                    <button type="button" id="nextRegisterStepBtn" class="btn-modal-submit">Siguiente</button>
+                </div>
+
+                <div id="register-step-2" style="display: none;">
+                    <div class="terms-and-conditions">
+                        <h3>Políticas de Uso y Términos de Servicio</h3>
+                        <ul>
+                            <li><strong>Gratuidad del Servicio:</strong> Esta plataforma es gratuita para registrar usuarios y compartir balances.</li>
+                            <li><strong>Revisión de Contenido:</strong> Los balances públicos serán revisados antes de ser publicados.</li>
+                            <li><strong>CVs de Carniceros:</strong> Espacio para subir CVs. No somos intermediarios.</li>
+                            <li><strong>Proveedores:</strong> Publicaciones revisadas y sin afiliación directa.</li>
+                            <li><strong>Uso Responsable:</strong> Usar la plataforma con respeto y veracidad.</li>
+                        </ul>
+                        <div class="form-group accept-terms">
+                            <input type="checkbox" id="acceptTerms" name="accept_terms" required>
+                            <label for="acceptTerms">He leído y acepto los Términos y Condiciones</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-modal-submit">Finalizar Registro</button>
+                    <button type="button" id="backRegisterStepBtn" class="btn-modal-back">Volver</button>
+                </div>
+            </form>
+            <div class="modal-footer">
+                ¿Ya tienes cuenta? <a href="#" id="openLoginFromRegister">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para modals y formularios -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const showLoginModalBtn = document.getElementById('showLoginModalBtn');
+        const showRegisterModalBtn = document.getElementById('showRegisterModalBtn');
+        const closeButtons = document.querySelectorAll('.close-button');
+        const openRegisterFromLogin = document.getElementById('openRegisterFromLogin');
+        const openLoginFromRegister = document.getElementById('openLoginFromRegister');
+        const welcomeLoginLink = document.getElementById('welcomeLoginLink');
+
+        const registerForm = document.getElementById('registerForm');
+        const registerStep1 = document.getElementById('register-step-1');
+        const registerStep2 = document.getElementById('register-step-2');
+        const nextRegisterStepBtn = document.getElementById('nextRegisterStepBtn');
+        const backRegisterStepBtn = document.getElementById('backRegisterStepBtn');
+
+        function showModal(modal) {
+            modal.classList.add('active');
+            if (modal === registerModal) {
+                registerStep1.style.display = 'block';
+                registerStep2.style.display = 'none';
+                registerForm.reset();
+                const acceptTermsCheckbox = document.getElementById('acceptTerms');
+                if (acceptTermsCheckbox) acceptTermsCheckbox.checked = false;
+            }
+        }
+
+        function hideModal(modal) {
+            modal.classList.remove('active');
+        }
+
+        if (showLoginModalBtn) showLoginModalBtn.addEventListener('click', () => showModal(loginModal));
+        if (showRegisterModalBtn) showRegisterModalBtn.addEventListener('click', () => showModal(registerModal));
+        if (welcomeLoginLink) welcomeLoginLink.addEventListener('click', e => { e.preventDefault(); showModal(loginModal); });
+        closeButtons.forEach(btn => btn.addEventListener('click', e => hideModal(e.target.closest('.modal-overlay'))));
+        loginModal.addEventListener('click', e => { if (e.target === loginModal) hideModal(loginModal); });
+        registerModal.addEventListener('click', e => { if (e.target === registerModal) hideModal(registerModal); });
+        openRegisterFromLogin.addEventListener('click', e => { e.preventDefault(); hideModal(loginModal); showModal(registerModal); });
+        openLoginFromRegister.addEventListener('click', e => { e.preventDefault(); hideModal(registerModal); showModal(loginModal); });
+
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const data = Object.fromEntries(new FormData(loginForm).entries());
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    window.location.href = result.redirect_url || '/';
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            });
+        }
+
+        if (nextRegisterStepBtn) {
+            nextRegisterStepBtn.addEventListener('click', function() {
+                if (!registerUsername.value || !registerEmail.value || !registerPassword.value) {
+                    alert('Completa todos los campos.'); return;
+                }
+                if (!registerEmail.checkValidity()) {
+                    alert('Correo inválido.'); return;
+                }
+                registerStep1.style.display = 'none';
+                registerStep2.style.display = 'block';
+            });
+        }
+
+        if (backRegisterStepBtn) backRegisterStepBtn.addEventListener('click', () => {
+            registerStep1.style.display = 'block';
+            registerStep2.style.display = 'none';
+        });
+
+        if (registerForm) {
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (!acceptTerms.checked) {
+                    alert('Debes aceptar los términos.'); return;
+                }
+                const data = {
+                    username: registerUsername.value,
+                    email: registerEmail.value,
+                    password: registerPassword.value,
+                    accept_terms: acceptTerms.checked
+                };
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    hideModal(registerModal);
+                    showModal(loginModal);
+                } else {
+                    alert('Error: ' + (result.message || 'Error desconocido.'));
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>

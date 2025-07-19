@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Caja — Gestión de Carnicería</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='balances_page.css') }}">
+</head>
+<body class="body-balance-page">
+    <header>
+        <div class="header-content">
+            <h1>Gestión de Carnicería</h1>
+            <nav class="auth-buttons">
+                <a href="{{ url_for('index') }}" class="btn-auth">🏠 Inicio</a>
+                <a href="{{ url_for('historial_cajas') }}" class="btn-auth">📋 Volver al Historial</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content-wrapper">
+        <h1 class="page-title">🔍 Detalles de la Caja</h1>
+
+        <div class="balance-card">
+            <h2 class="balance-card-title">Caja del {{ caja.fecha_inicio }}</h2>
+            <p><strong>Total de Ventas:</strong> {{ caja.resumen.total_ventas }}</p>
+            <p><strong>Total Efectivo:</strong> ${{ '%.2f'|format(caja.resumen.totales['Efectivo']) }}</p>
+            <p><strong>Total Tarjeta:</strong> ${{ '%.2f'|format(caja.resumen.totales['Tarjeta']) }}</p>
+            <p><strong>Total Transferencia:</strong> ${{ '%.2f'|format(caja.resumen.totales['Transferencia']) }}</p>
+        </div>
+
+        <div class="sales-container">
+            <h3 class="section-title">📄 Ventas Registradas</h3>
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>N° Venta</th>
+                        <th>Monto ($)</th>
+                        <th>Tipo de Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venta in caja.ventas %}
+                    <tr>
+                        <td>{{ venta.numero_venta }}</td>
+                        <td>{{ venta.monto }}</td>
+                        <td>{{ venta.tipo_pago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

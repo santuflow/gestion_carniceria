@@ -1,0 +1,498 @@
+/* Estilos específicos para la página de balances */
+
+/* Aseguramos que HTML y Body ocupen el 100% de la altura y no tengan márgenes por defecto */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para el body de la página de balances para sobrescribir el fondo global */
+body.body-balance-page { 
+    /* Forzamos la imagen de fondo directamente en el body de esta página */
+    /* background: url('../static/tu_imagen_de_fondo.jpg') center center / cover no-repeat fixed !important; */
+    /* Separamos las propiedades para mayor claridad y control */
+    background-image: url('../static/fondo_balances.jpg') !important; /* <--- CAMBIA ESTO: Nombre de tu imagen */
+    background-size: cover !important; /* ¡CLAVE! Ajusta la imagen para cubrir toda la pantalla */
+    background-position: center center !important; /* Centra la imagen */
+    background-repeat: no-repeat !important; /* Evita que la imagen se repita */
+    background-attachment: fixed !important; /* Mantiene la imagen fija al hacer scroll */
+    background-color: transparent !important; /* Aseguramos que el color de fondo sea transparente */
+    
+    position: relative;
+    z-index: 1;
+    display: flex; /* Hacemos el body un contenedor flex para el layout principal (header, content, footer) */
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-y: auto; /* Permitir scroll si el contenido es más largo que la ventana */
+    overflow-x: hidden; /* Evitar scroll horizontal */
+    font-family: 'Inter', Arial, sans-serif; /* Un estilo de fuente más moderno */
+    color: #e0e0e0; /* Color de texto general más suave */
+}
+
+/* Overlay para la imagen de fondo de balances (se aplica al mismo body) */
+body.body-balance-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Capa semi-transparente negra (ajusta la opacidad 0.4) */
+    z-index: -1; /* Asegura que el overlay esté entre la imagen y el contenido */
+}
+
+
+/* Wrapper para el contenido principal, reemplaza el antiguo .balances-container */
+.main-content-wrapper {
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    padding: 20px;
+    max-width: 1600px; /* Ancho máximo amplio para la cuadrícula */
+    width: 100%;
+    margin: 40px auto; /* Centrar el wrapper en la página */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el título y la cuadrícula */
+    background-color: rgba(25, 25, 25, 0.7); /* Fondo semi-transparente para el contenido principal */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 255, 0.3); /* Sombra suave */
+    position: relative; /* Necesario para z-index */
+    z-index: 0; /* Asegura que el contenido esté por encima del fondo */
+}
+
+/* Título de la página */
+.page-title {
+    color: #00FFFF; /* Un azul cian brillante para el título */
+    margin-bottom: 30px;
+    font-size: 2.8em; /* Tamaño de fuente más grande y destacado */
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Sombra de texto para el brillo */
+    text-align: center;
+    width: 100%;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Contenedor de la cuadrícula de balances */
+.balances-grid {
+    display: grid;
+    /* Columnas que se ajustan automáticamente, con un mínimo de 220px por columna.
+       Permite que se muestren múltiples cuadros por fila y sean más pequeños. */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 20px; /* Espacio entre los cuadros */
+    width: 100%; /* Asegura que la cuadrícula ocupe el ancho disponible */
+    padding: 0 10px; /* Pequeño padding para los bordes de la cuadrícula */
+    box-sizing: border-box;
+    justify-content: center; /* Centra los elementos de la cuadrícula si no llenan toda la fila */
+}
+
+/* Estilos para cada "Tarjeta" de Balance (Cuadro) */
+.balance-card {
+    background-color: rgba(30, 30, 30, 0.95); /* Fondo más oscuro para la tarjeta */
+    border: 1px solid #00BFFF; /* Azul cielo para el borde */
+    border-radius: 12px; /* Esquinas más redondeadas */
+    padding: 18px; /* Padding ligeramente reducido */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 191, 255, 0.3); /* Sombra más profunda y brillo azul */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    box-sizing: border-box;
+    display: flex; /* Para organizar el contenido dentro de la tarjeta */
+    flex-direction: column;
+    justify-content: space-between; /* Empuja el botón de detalles hacia abajo */
+    height: auto; 
+    min-height: 180px; /* Altura mínima más compacta */
+    overflow: hidden; /* Asegura que nada se salga del cuadro */
+}
+
+.balance-card:hover {
+    transform: translateY(-8px) scale(1.03); /* Efecto de elevación y ligero zoom al pasar el ratón */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 191, 255, 0.7); /* Sombra y brillo más intensos */
+}
+
+.balance-card-title {
+    color: #66CCFF; /* Azul más claro para el título del balance */
+    margin-top: 0;
+    font-size: 1.4em; /* Tamaño de título más compacto */
+    border-bottom: 1px solid rgba(0, 191, 255, 0.4); /* Borde inferior más suave */
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.balance-card-meta {
+    font-size: 0.85em;
+    color: #a0a0a0; /* Gris más suave */
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.balance-card-meta strong {
+    color: #c0c0c0; /* Un poco más claro para el nombre de usuario */
+}
+
+.balance-summary {
+    flex-grow: 1; /* Permite que el resumen ocupe el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra el contenido del resumen verticalmente */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.balance-summary p {
+    margin: 4px 0; /* Espacio reducido entre párrafos */
+    font-size: 0.9em; /* Tamaño de fuente más pequeño */
+    color: #e0e0e0;
+}
+
+.balance-summary p strong {
+    color: #ffffff;
+}
+
+.profit-value {
+    font-size: 1.1em; /* Ganancia un poco más grande */
+    font-weight: bold;
+    color: #32CD32; /* Verde lima para la ganancia */
+    text-shadow: 0 0 5px rgba(50, 205, 50, 0.5);
+}
+
+/* El .registered-date ya no está en el resumen, solo en el modal */
+
+/* Estilos para el botón de ver/ocultar detalles (ahora para abrir modal) */
+.view-details-btn {
+    background-color: #007bff; /* Azul estándar */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-top: 10px; /* Margen superior para separarlo del resumen */
+    width: 100%; /* Que ocupe todo el ancho del cuadro */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+}
+
+.view-details-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos del MODAL (Ventana Emergente) */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija en la pantalla */
+    z-index: 1000; /* Por encima de todo lo demás */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Habilitar scroll si el contenido es muy grande */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+    /* Estas propiedades de flex se aplicarán cuando JS cambie display a 'flex' */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #2a2a2a; /* Fondo oscuro para el contenido del modal */
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #00BFFF; /* Borde azul brillante */
+    border-radius: 15px; /* Esquinas más redondeadas */
+    width: 90%; /* Ancho del modal */
+    max-width: 700px; /* Ancho máximo para el modal */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 191, 255, 0.5); /* Sombra y brillo */
+    position: relative;
+    animation-name: animatemodal;
+    animation-duration: 0.4s;
+    color: #e0e0e0;
+}
+
+@keyframes animatemodal {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+.close-button {
+    color: #bbb;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.modal-content h2 {
+    color: #00FFFF;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2em;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.modal-body-content {
+    margin-bottom: 20px;
+}
+
+.modal-section {
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(0, 191, 255, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 5px rgba(0, 191, 255, 0.2);
+}
+
+.modal-section h3 {
+    color: #66CCFF;
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.modal-section p {
+    margin-bottom: 8px;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.modal-section p strong {
+    color: #ffffff;
+}
+
+/* Estilos para la tabla de detalles de cortes dentro del modal */
+.modal-section .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.modal-section .details-table th, 
+.modal-section .details-table td {
+    border: 1px solid rgba(0, 191, 255, 0.2); /* Borde de tabla más suave */
+    padding: 6px;
+    text-align: left;
+}
+
+.modal-section .details-table th {
+    background-color: rgba(0, 191, 255, 0.1); /* Fondo de encabezado de tabla más suave */
+    color: #00FFFF;
+    font-weight: bold;
+}
+
+.modal-section .details-table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1); /* Rayado de tabla más sutil */
+}
+
+/* Botón de descarga */
+.modal-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-download {
+    background-color: #28a745; /* Verde para descargar */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-weight: 600;
+}
+
+.btn-download:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Mensaje cuando no hay balances */
+.no-balances-message {
+    text-align: center;
+    font-size: 1.3em;
+    color: #ccc;
+    margin-top: 50px;
+    width: 100%;
+}
+
+/* Estilos de Paginación */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    padding: 10px 0;
+    gap: 10px;
+    flex-wrap: wrap; /* Permite que los enlaces de paginación se envuelvan en pantallas pequeñas */
+}
+
+.pagination-link, .pagination-current {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #00FFFF;
+    border: 1px solid #00FFFF;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.pagination-link:hover {
+    background-color: #00FFFF;
+    color: #1a1a1a;
+    border-color: #00FFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.pagination-current {
+    background-color: #007bff; /* Color diferente para la página actual */
+    color: white;
+    border-color: #007bff;
+    cursor: default;
+    font-weight: bold;
+}
+
+.pagination-ellipsis {
+    color: #ccc;
+    padding: 8px 12px;
+    font-size: 1em;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .main-content-wrapper {
+        max-width: 1200px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-content-wrapper {
+        max-width: 90%;
+    }
+    .balances-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Más pequeños en pantallas más chicas */
+        gap: 15px;
+    }
+    .balance-card {
+        padding: 15px;
+        min-height: 180px;
+    }
+    .balance-card-title {
+        font-size: 1.3em;
+    }
+    .balance-summary p {
+        font-size: 0.85em;
+    }
+    .profit-value {
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        margin: 20px auto;
+        padding: 15px;
+    }
+    .page-title {
+        font-size: 2.2em;
+    }
+    .balances-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Aún más pequeños */
+        gap: 10px;
+    }
+    .balance-card {
+        padding: 12px;
+        min-height: 160px;
+    }
+    .balance-card-title {
+        font-size: 1.1em;
+    }
+    .balance-card-meta {
+        font-size: 0.75em;
+    }
+    .balance-summary p {
+        font-size: 0.8em;
+    }
+    .view-details-btn { /* Cambio de nombre de clase */
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+    .modal-content {
+        width: 95%; /* Modal más ancho en móviles */
+        padding: 20px;
+    }
+    .modal-content h2 {
+        font-size: 1.8em;
+    }
+    .modal-section h3 {
+        font-size: 1.1em;
+    }
+    .modal-section p {
+        font-size: 0.9em;
+    }
+    .modal-section .details-table {
+        font-size: 0.8em;
+    }
+    .details-table th, .details-table td {
+        padding: 4px;
+    }
+    .pagination-controls {
+        gap: 5px;
+    }
+    .pagination-link, .pagination-current {
+        padding: 5px 8px;
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content-wrapper {
+        margin: 10px auto;
+        padding: 10px;
+    }
+    .page-title {
+        font-size: 1.8em;
+    }
+    .balances-grid {
+        grid-template-columns: 1fr; /* Una sola columna en móviles muy pequeños */
+    }
+    .balance-card {
+        min-height: auto; /* Permitir que la altura se ajuste al contenido en una sola columna */
+    }
+    .modal-content {
+        padding: 15px;
+    }
+    .modal-content h2 {
+        font-size: 1.5em;
+    }
+    .modal-section h3 {
+        font-size: 1em;
+    }
+    .modal-section p {
+        font-size: 0.85em;
+    }
+}

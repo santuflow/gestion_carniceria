@@ -1,0 +1,288 @@
+/* Estilos Generales para el Cuerpo de la Página (GLOBAL) */
+/* MODIFICADO: Estos estilos se aplicarán a todas las páginas EXCEPTO aquellas con la clase 'body-balance-page' */
+body:not(.body-balance-page) {
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: url('../static/fondo.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    z-index: 1;
+}
+body:not(.body-balance-page)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+    z-index: -1;
+}
+header {
+    background-color: rgba(30, 30, 30, 0.9);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    position: relative;
+}
+header h1 {
+    margin: 0;
+    font-size: 2.2em;
+    text-align: center;
+    flex-grow: 1;
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+.subtitle {
+    display: none;
+}
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+}
+.btn-auth {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #00BFFF;
+    padding: 10px 18px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1em;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.4);
+    white-space: nowrap;
+    font-weight: 600;
+}
+.btn-auth:hover {
+    background-color: rgba(0, 191, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+    border-color: #00FFFF;
+}
+.container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    max-width: 900px;
+    margin: 60px auto;
+    box-shadow: 0 0 20px rgba(0, 0, 255, 0.4);
+    z-index: 1;
+    position: relative;
+    box-sizing: border-box;
+}
+.welcome-message {
+    text-align: center;
+    margin-bottom: 50px;
+    color: #ffffff;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+}
+.welcome-message h2 {
+    color: #00FFFF;
+    font-size: 2.8em;
+    margin-bottom: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.welcome-message p {
+    font-size: 1.3em;
+    line-height: 1.5;
+}
+.welcome-message p a {
+    color: #66CCFF;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+.welcome-message p a:hover {
+    color: #00FFFF;
+    text-decoration: underline;
+}
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+}
+.btn {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 25px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2em;
+    border-radius: 10px;
+    border: 2px solid #00BFFF;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 12px rgba(0, 191, 255, 0.5);
+    font-weight: 600;
+}
+.btn:hover {
+    background-color: rgba(26, 26, 26, 0.8);
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 1);
+}
+footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 2;
+    font-size: 0.9em;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.6);
+}
+
+/* ===== MEDIA QUERIES ===== */
+@media (max-width: 1024px) {
+    header h1 { font-size: 2em; }
+    .btn-auth { padding: 8px 15px; font-size: 0.9em; }
+    .container { margin: 40px auto; padding: 25px; }
+    .welcome-message h2 { font-size: 2.5em; }
+    .welcome-message p { font-size: 1.1em; }
+    .button-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .btn { padding: 20px; font-size: 1.1em; }
+}
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+        align-items: flex-start;
+    }
+    .header-content {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    header h1 {
+        font-size: 1.8em;
+        margin-bottom: 5px;
+    }
+    .subtitle {
+        display: block;
+        font-size: 0.85em;
+        color: #ddd;
+        margin-top: 0;
+        text-align: center;
+        width: 100%;
+    }
+    .auth-buttons {
+        position: static;
+        transform: none;
+        margin-top: 15px;
+        justify-content: center;
+        width: 100%;
+        gap: 8px;
+    }
+    .btn-auth {
+        padding: 8px 12px;
+        font-size: 0.85em;
+        flex-grow: 1;
+        max-width: 150px;
+    }
+    .container {
+        margin: 20px auto;
+        padding: 15px;
+        max-width: 95%;
+    }
+    .welcome-message { margin-bottom: 30px; }
+    .welcome-message h2 { font-size: 2em; }
+    .welcome-message p { font-size: 1em; }
+    .button-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .btn {
+        padding: 18px;
+        font-size: 1em;
+    }
+    footer {
+        padding: 10px 15px;
+        font-size: 0.8em;
+    }
+}
+@media (max-width: 480px) {
+    header h1 { font-size: 1.6em; }
+    .subtitle { font-size: 0.75em; }
+    .auth-buttons { flex-direction: column; align-items: center; }
+    .btn-auth {
+        width: 80%;
+        max-width: 200px;
+    }
+    .container { margin: 15px auto; padding: 10px; }
+    .welcome-message h2 { font-size: 1.7em; }
+    .welcome-message p { font-size: 0.9em; }
+    .btn {
+        padding: 15px;
+        font-size: 0.9em;
+    }
+}
+
+/* ==== MEJORA EXTRA PARA DESKTOP BOTONES CON MÁS DE 5 OPCIONES ==== */
+@media (min-width: 1025px) {
+    .button-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        max-width: 900px;
+    }
+    .btn {
+        font-size: 1.25em;
+        padding: 26px 22px;
+        border-radius: 12px;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        border: 2px solid #00bfff;
+        background: rgba(0, 30, 40, 0.65);
+        box-shadow: 0 4px 18px rgba(0,191,255,0.35), 0 0 0 1px #1ea3c1 inset;
+        transition: all 0.25s ease-in-out;
+    }
+    .btn:hover {
+        background: rgba(0,191,255,0.12);
+        border-color: #00fff2;
+        box-shadow: 0 6px 22px rgba(0,191,255,0.5), 0 0 0 2px #2ce8c1 inset;
+        transform: translateY(-3px) scale(1.03);
+        color: #fff;
+    }
+}

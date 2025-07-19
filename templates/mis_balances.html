@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Carnicería – Mis Balances</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">  {# Estilos generales #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='balances_page.css') }}">  {# Estilos específicos de balances #}
+</head>
+<body class="body-balance-page">
+    <header>
+        <div class="header-content">
+            <h1>Gestión de Carnicería</h1>
+            <nav class="auth-buttons">
+                <a href="{{ url_for('index') }}" class="btn-auth">🏠 Ir a Inicio</a>
+                <a href="{{ url_for('hacer_balance') }}" class="btn-auth">📝 Nuevo Balance</a>
+                <a href="{{ url_for('balances') }}" class="btn-auth">🌐 Balances Públicos</a>
+            </nav>
+        </div>
+        <p class="subtitle">Tu herramienta integral para optimizar tu negocio</p>
+    </header>
+
+    <div class="main-content-wrapper">
+        <h1 class="page-title">📄 Mis Balances</h1>
+
+        {% if balances %}
+            <div class="balances-grid">
+                {% for balance in balances %}
+                <div class="balance-card">
+                    <h2 class="balance-card-title">
+                        Balance del {{ balance.fecha_compra.strftime('%d/%m/%Y') }}
+                    </h2>
+                    <p class="balance-card-meta">Hecho por ti</p>
+
+                    <div class="balance-summary">
+                        <p>
+                            <strong>Ganancia Neta:</strong>
+                            <span class="profit-value">
+                                ${{ "%.2f"|format(balance.ganancias_netas_totales) }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <button class="view-details-btn"
+                            data-balance-id="{{ balance.id }}">
+                        Ver Detalles
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination-controls">
+                {% if pagination.has_prev %}
+                    <a href="{{ url_for('mis_balances', page=pagination.prev_num) }}"
+                       class="pagination-link">← Anterior</a>
+                {% endif %}
+
+                {% for p in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=3) %}
+                    {% if p %}
+                        {% if p == pagination.page %}
+                            <span class="pagination-current">{{ p }}</span>
+                        {% else %}
+                            <a href="{{ url_for('mis_balances', page=p) }}"
+                               class="pagination-link">{{ p }}</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="pagination-ellipsis">…</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                    <a href="{{ url_for('mis_balances', page=pagination.next_num) }}"
+                       class="pagination-link">Siguiente →</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="no-balances-message">
+                Aún no has registrado ningún balance. ¡Comienza ahora!
+            </p>
+            <p>
+                <a href="{{ url_for('hacer_balance') }}" class="btn-auth">
+                    📝 Nuevo Balance
+                </a>
+            </p>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal de detalles (idéntico al de balances.html) -->
+    <div id="balanceDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle">Detalles del Balance</h2>
+            <div class="modal-body-content">
+                <div class="modal-section">
+                    <h3>Datos de la Media Res Comprada</h3>
+                    <p><strong>Fecha de Compra:</strong> <span id="modalFechaCompra"></span></p>
+                    <p><strong>Precio por Kilo:</strong> $<span id="modalPrecioKilo"></span></p>
+                    <p><strong>Peso Total:</strong> <span id="modalPesoTotal"></span> KG</p>
+                    <p><strong>Costo Total Media Res:</strong> $<span id="modalCostoTotalMediaRes"></span></p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Resultados del Balance</h3>
+                    <p><strong>Ingresos Totales por Cortes:</strong> $<span id="modalIngresosTotalesCortes"></span></p>
+                    <p><strong>Ganancia Neta Total:</strong> $<span id="modalGananciaNetaTotal"></span></p>
+                    <p><strong>Registrado el:</strong> <span id="modalFechaCreacion"></span></p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Detalles de Cortes:</h3>
+                    <div id="modalDetallesCortes">
+                        <!-- Aquí se inyecta la tabla de cortes -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="downloadBalanceBtn" class="btn-download">
+                    ⬇️ Descargar Balance
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewButtons = document.querySelectorAll('.view-details-btn');
+        const modal       = document.getElementById('balanceDetailsModal');
+        const closeBtn    = modal.querySelector('.close-button');
+        const downloadBtn = document.getElementById('downloadBalanceBtn');
+
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.balanceId;
+                // limpiar modal
+                ['modalFechaCompra','modalPrecioKilo','modalPesoTotal',
+                 'modalCostoTotalMediaRes','modalIngresosTotalesCortes',
+                 'modalGananciaNetaTotal','modalFechaCreacion']
+                .forEach(el => document.getElementById(el).textContent = '');
+                document.getElementById('modalDetallesCortes').innerHTML = '';
+
+                try {
+                    const resp = await fetch(`/api/balance/${id}`);
+                    if (!resp.ok) throw new Error();
+                    const b = await resp.json();
+
+                    document.getElementById('modalFechaCompra').textContent          = b.fecha_compra;
+                    document.getElementById('modalPrecioKilo').textContent           = b.precio_kilo_media_res.toFixed(2);
+                    document.getElementById('modalPesoTotal').textContent            = b.peso_total_media_res.toFixed(2);
+                    document.getElementById('modalCostoTotalMediaRes').textContent   = b.costo_total_media_res.toFixed(2);
+                    document.getElementById('modalIngresosTotalesCortes').textContent = b.total_ingresos_cortes.toFixed(2);
+                    document.getElementById('modalGananciaNetaTotal').textContent     = b.ganancias_netas_totales.toFixed(2);
+                    document.getElementById('modalFechaCreacion').textContent        = b.fecha_creacion;
+
+                    // tabla de cortes
+                    const detallesDiv = document.getElementById('modalDetallesCortes');
+                    if (b.detalles_cortes && b.detalles_cortes.length) {
+                        let html = `
+                        <table class="details-table">
+                          <thead>
+                            <tr>
+                              <th>Corte</th>
+                              <th>Peso (kg)</th>
+                              <th>Precio ($/kg)</th>
+                              <th>Ingreso Bruto</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                        `;
+                        b.detalles_cortes.forEach(c => {
+                          html += `
+                            <tr>
+                              <td>${c.nombre}</td>
+                              <td>${c.peso.toFixed(2)}</td>
+                              <td>$${c.precio_venta.toFixed(2)}</td>
+                              <td>$${c.ingreso_bruto.toFixed(2)}</td>
+                            </tr>
+                          `;
+                        });
+                        html += `</tbody></table>`;
+                        detallesDiv.innerHTML = html;
+                    } else {
+                        detallesDiv.innerHTML = '<p>No hay detalles de cortes para este balance.</p>';
+                    }
+
+                    downloadBtn.onclick = () => {
+                        window.location.href = `/download_balance/${b.id}`;
+                    };
+
+                    modal.style.display = 'flex';
+                }
+                catch {
+                    alert('No se pudieron cargar los detalles.');
+                }
+            });
+        });
+
+        closeBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', e => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    });
+    </script>
+</body>
+</html>

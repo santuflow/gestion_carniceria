@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Carnicería - Hacer Balance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {# Estilos generales #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='balance_form.css') }}"> {# Estilos específicos del formulario de balance #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='modals.css') }}"> {# Estilos para modales, si existe #}
+</head>
+<body class="body-balance-form">
+    <header>
+        <div class="header-content">
+            <h1>Gestión de Carnicería</h1>
+            <nav class="auth-buttons">
+                <a href="{{ url_for('index') }}" class="btn-auth">🏠 Ir a Inicio</a>
+                <a href="{{ url_for('balances') }}" class="btn-auth">📄 Ver Balances</a> {# Añadido para consistencia #}
+            </nav>
+        </div>
+        <p class="subtitle">Tu herramienta integral para optimizar tu negocio</p>
+    </header>
+
+    <div class="form-container">
+        <h1>📝 Registrar Nuevo Balance de Media Res</h1>
+
+        <form id="balanceForm">
+            {# Sección: Datos de la Etiqueta #}
+            <div class="section-group"> {# Contenedor para agrupar visualmente #}
+                <h3 class="section-title">🏷️ Datos de la Etiqueta</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoAnimal">Tipo de Animal:</label>
+                        <select id="tipoAnimal" name="tipoAnimal" required>
+                            <option value="">Selecciona...</option>
+                            <option value="Vaca">🐄 Vaca</option>
+                            <option value="Toro">🐂 Toro</option>
+                            <option value="Novillo">🐃 Novillo / Novillito</option>
+                            <option value="Vaquillona">🐮 Vaquillona</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="frigorifico">Frigorífico:</label>
+                        <input type="text" id="frigorifico" name="frigorifico" placeholder="Nombre del frigorífico" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaFaena">Fecha de Faena:</label>
+                        <input type="date" id="fechaFaena" name="fechaFaena" required>
+                    </div>
+                </div>
+
+                <div class="form-group"> {# Este form-group contendrá el textarea de Observaciones #}
+                    <label for="observaciones">Observaciones (opcional):</label>
+                    <textarea id="observaciones" name="observaciones" rows="3" placeholder="Añade cualquier observación relevante"></textarea>
+                </div>
+            </div>
+
+            {# Sección: Datos de la Media Res Comprada #}
+            <div class="section-group"> {# Contenedor para agrupar visualmente #}
+                <h3 class="section-title">🥩 Datos de la Media Res Comprada</h3>
+                <div class="form-group">
+                    <label for="fecha_compra">Fecha de Compra:</label>
+                    <input type="date" id="fecha_compra" name="fecha_compra" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio_kilo_media_res">Precio por Kilo ($):</label>
+                        <div class="input-with-unit">
+                            <span class="unit">$</span>
+                            <input type="number" id="precio_kilo_media_res" name="precio_kilo_media_res" step="0.01" placeholder="Valor de lo que costó por kilo" required onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso_total_media_res">Peso Total (KG):</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="peso_total_media_res" name="peso_total_media_res" step="0.01" placeholder="Lo que pesó en total la media res" required onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                            <span class="unit">KG</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Sección: Balance de Cortes #}
+            <div class="section-group"> {# Contenedor para agrupar visualmente #}
+                <h3 class="section-title">🔪 Balance de Cortes</h3>
+                <div id="fixed-cuts-container">
+                    <div class="cut-header cut-row">
+                        <span>Corte</span>
+                        <span>Peso (kg)</span>
+                        <span>Precio Venta ($/kg)</span>
+                        <span>Ganancia del Corte</span>
+                        <span></span>
+                    </div>
+                    {# Los cortes fijos se llenarán aquí con JS #}
+                </div>
+
+                <div id="additional-cuts-container">
+                    {# Cortes adicionales se añadirán aquí con JS #}
+                </div>
+                <button type="button" id="add-custom-cut" class="btn-form">➕ Agregar Otro Corte (Personalizado)</button>
+            </div>
+
+            {# Sección: Ganancia Total #}
+            <div class="total-profit-area">
+                <h3 class="section-title">💰 Resultados del Balance</h3>
+                <p>Costo Total de Media Res: <span id="costo_total_media_res" class="total-profit-value">$0.00</span></p>
+                <p>Ganancias Totales: <span id="ganancias_netas_totales" class="total-profit-value">$0.00</span></p>
+                <p class="total-final-line">TOTAL FINAL: <span id="total_final_balance" class="total-profit-value">$0.00</span></p>
+            </div>
+
+            <button type="submit" class="btn-form submit-btn">💾 Calcular Balance y Guardar</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados.</p>
+    </footer>
+
+    {# MODAL DE CONFIRMACIÓN #}
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalBtn">&times;</span>
+            <h2>Balance Guardado Exitosamente</h2>
+            <p>¿Deseas compartir este balance y que sea público para todos los usuarios?</p>
+            <div class="modal-actions">
+                <button id="shareBalanceBtn" class="btn-modal btn-share">Sí, Compartir</button>
+                <button id="keepPrivateBtn" class="btn-modal btn-private">No, Mantener Privado</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fixedCutsList = [
+                "Entraña", "Matambre", "Paleta", "Palomita", "Osobuco", "Vacío",
+                "Asado", "Bife Ancho", "Bife Angosto", "Bife de Chorizo", "Lomo", "Nalga",
+                "Peceto", "Tapa de Nalga", "Tapa de Asado", "Cuadrada", "Bola de Lomo",
+                "Tortuguita", "Carne Picada", "Huesos"
+            ];
+
+            const fixedCutsContainer = document.getElementById('fixed-cuts-container');
+            const additionalCutsContainer = document.getElementById('additional-cuts-container');
+            const addCustomCutBtn = document.getElementById('add-custom-cut');
+            const balanceForm = document.getElementById('balanceForm');
+
+            // Inputs de la Media Res Comprada
+            const precioKiloMediaResInput = document.getElementById('precio_kilo_media_res');
+            const pesoTotalMediaResInput = document.getElementById('peso_total_media_res');
+
+            // Spans de resultados
+            const costoTotalMediaResSpan = document.getElementById('costo_total_media_res');
+            const gananciasNetasTotalesSpan = document.getElementById('ganancias_netas_totales');
+            const totalFinalBalanceSpan = document.getElementById('total_final_balance');
+
+            // Elementos del Modal
+            const confirmationModal = document.getElementById('confirmationModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const shareBalanceBtn = document.getElementById('shareBalanceBtn');
+            const keepPrivateBtn = document.getElementById('keepPrivateBtn');
+
+            let lastSavedBalanceId = null; // Variable para guardar el ID del balance recién guardado
+
+            // Función para inicializar los cortes fijos
+            function initializeFixedCuts() {
+                fixedCutsList.forEach(cutName => {
+                    const cutRow = document.createElement('div');
+                    cutRow.classList.add('cut-row');
+                    cutRow.innerHTML = `
+                        <span class="cut-name">${cutName}</span>
+                        <div class="input-with-unit">
+                            <input type="number" step="0.01" min="0" class="cut-weight" data-cut-name="${cutName}" name="${cutName.toLowerCase().replace(/ /g, '_')}_peso" value="0" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                            <span class="unit">KG</span>
+                        </div>
+                        <div class="input-with-unit">
+                            <span class="unit">$</span>
+                            <input type="number" step="0.01" min="0" class="cut-price" data-cut-name="${cutName}" name="${cutName.toLowerCase().replace(/ /g, '_')}_precio_venta" value="0" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                        </div>
+                        <span class="cut-profit">$0.00</span>
+                        <span></span>
+                    `;
+                    fixedCutsContainer.appendChild(cutRow);
+
+                    // Añadir listeners a los inputs de peso y precio de los cortes fijos
+                    const pesoInput = cutRow.querySelector('.cut-weight');
+                    const precioInput = cutRow.querySelector('.cut-price');
+                    pesoInput.addEventListener('input', updateSingleCutIncome);
+                    precioInput.addEventListener('input', updateSingleCutIncome);
+                });
+            }
+
+            // Función para añadir un corte adicional
+            addCustomCutBtn.addEventListener('click', function() {
+                const cutRow = document.createElement('div');
+                cutRow.classList.add('cut-row', 'custom-cut');
+                cutRow.innerHTML = `
+                    <div class="form-group cut-name-input">
+                        <input type="text" placeholder="Nombre del Corte" class="cut-name-input-field" name="custom_cut_name[]" required>
+                    </div>
+                    <div class="input-with-unit">
+                        <input type="number" step="0.01" min="0" class="cut-weight" name="custom_cut_peso[]" value="0" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                        <span class="unit">KG</span>
+                    </div>
+                    <div class="input-with-unit">
+                        <span class="unit">$</span>
+                        <input type="number" step="0.01" min="0" class="cut-price" value="0" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';">
+                    </div>
+                    <span class="cut-profit">$0.00</span>
+                    <button type="button" class="remove-cut-btn">✖</button>
+                `;
+                additionalCutsContainer.appendChild(cutRow);
+
+                // Añadir event listeners para los nuevos inputs y el botón de eliminar
+                const newWeightInput = cutRow.querySelector('.cut-weight');
+                const newPriceInput = cutRow.querySelector('.cut-price');
+                const newRemoveBtn = cutRow.querySelector('.remove-cut-btn');
+
+                newWeightInput.addEventListener('input', updateSingleCutIncome);
+                newPriceInput.addEventListener('input', updateSingleCutIncome);
+                newRemoveBtn.addEventListener('click', function() {
+                    cutRow.remove();
+                    calculateAndDisplayBalance(new Event('recalculate')); // Recalcular después de eliminar
+                });
+            });
+
+            // Función para actualizar el INGRESO BRUTO de un corte individual
+            function updateSingleCutIncome(event) {
+                const row = event.target.closest('.cut-row');
+                const pesoInput = row.querySelector('.cut-weight');
+                const precioVentaInput = row.querySelector('.cut-price');
+                const gananciaSpan = row.querySelector('.cut-profit');
+
+                const peso = parseFloat(pesoInput.value) || 0;
+                const precioVenta = parseFloat(precioVentaInput.value) || 0;
+                const ingresoBruto = peso * precioVenta;
+
+                gananciaSpan.textContent = `$${ingresoBruto.toFixed(2)}`;
+            }
+
+            // Función principal para calcular y mostrar el balance
+            async function calculateAndDisplayBalance(event) {
+                // Previene el envío por defecto del formulario si es un evento de submit
+                if (event && event.type === 'submit') {
+                    event.preventDefault();
+                }
+
+                const precioKiloMediaRes = parseFloat(precioKiloMediaResInput.value) || 0;
+                const pesoTotalMediaRes = parseFloat(pesoTotalMediaResInput.value) || 0;
+                const costoTotalMediaRes = precioKiloMediaRes * pesoTotalMediaRes;
+
+                let totalIngresosCortes = 0;
+
+                // Recopilar datos para cortes fijos
+                fixedCutsContainer.querySelectorAll('.cut-row').forEach(row => {
+                    const pesoInput = row.querySelector('.cut-weight');
+                    const precioVentaInput = row.querySelector('.cut-price');
+                    if (pesoInput && precioVentaInput) {
+                        const peso = parseFloat(pesoInput.value) || 0;
+                        const precioVenta = parseFloat(precioVentaInput.value) || 0;
+                        totalIngresosCortes += (peso * precioVenta);
+                    }
+                });
+
+                // Recopilar datos para cortes personalizados
+                additionalCutsContainer.querySelectorAll('.cut-row.custom-cut').forEach(row => {
+                    const pesoInput = row.querySelector('.cut-weight');
+                    const precioVentaInput = row.querySelector('.cut-price');
+                    if (pesoInput && precioVentaInput) {
+                        const peso = parseFloat(pesoInput.value) || 0;
+                        const precioVenta = parseFloat(precioVentaInput.value) || 0;
+                        totalIngresosCortes += (peso * precioVenta);
+                    }
+                });
+
+                const gananciasNetasTotales = totalIngresosCortes - costoTotalMediaRes;
+
+                // Mostrar los resultados en la página
+                costoTotalMediaResSpan.textContent = `$${costoTotalMediaRes.toFixed(2)}`;
+                gananciasNetasTotalesSpan.textContent = `$${gananciasNetasTotales.toFixed(2)}`;
+                totalFinalBalanceSpan.textContent = `$${totalIngresosCortes.toFixed(2)}`; // TOTAL FINAL es el total de ingresos de cortes
+
+                // CAMBIO CLAVE: La lógica de envío y modal SOLO debe ejecutarse si el evento es un submit
+                if (event && event.type === 'submit') {
+                    const detallesCortes = [];
+                    // Recolectar cortes fijos
+                    fixedCutsContainer.querySelectorAll('.cut-row').forEach(row => {
+                        const cutNameSpan = row.querySelector('.cut-name');
+                        const weightInput = row.querySelector('.cut-weight');
+                        const priceInput = row.querySelector('.cut-price');
+                        if (cutNameSpan && weightInput && priceInput) {
+                            const name = cutNameSpan.textContent;
+                            const weight = parseFloat(weightInput.value) || 0;
+                            const price = parseFloat(priceInput.value) || 0;
+                            detallesCortes.push({
+                                nombre: name,
+                                peso: weight,
+                                precio_venta: price,
+                                ingreso_bruto: weight * price
+                            });
+                        }
+                    });
+                    // Recolectar cortes adicionales
+                    additionalCutsContainer.querySelectorAll('.cut-row.custom-cut').forEach(row => {
+                        const nameInput = row.querySelector('.cut-name-input-field');
+                        const weightInput = row.querySelector('.cut-weight');
+                        const priceInput = row.querySelector('.cut-price');
+                        if (nameInput && weightInput && priceInput) {
+                            const name = nameInput.value;
+                            const weight = parseFloat(weightInput.value) || 0;
+                            const price = parseFloat(priceInput.value) || 0;
+                            detallesCortes.push({
+                                nombre: name,
+                                peso: weight,
+                                precio_venta: price,
+                                ingreso_bruto: weight * price
+                            });
+                        }
+                    });
+
+                    const data = {
+                        fecha_compra: document.getElementById('fecha_compra').value,
+                        precio_kilo_media_res: precioKiloMediaRes,
+                        peso_total_media_res: pesoTotalMediaRes,
+                        costo_total_media_res: costoTotalMediaRes,
+                        total_ingresos_cortes: totalIngresosCortes,
+                        ganancias_netas_totales: gananciasNetasTotales,
+                        detalles_cortes: detallesCortes,
+                        // CAMPOS DE LA ETIQUETA
+                        tipo_animal: document.getElementById('tipoAnimal').value,
+                        frigorifico: document.getElementById('frigorifico').value,
+                        fecha_faena: document.getElementById('fechaFaena').value,
+                        observaciones: document.getElementById('observaciones').value
+                    };
+
+                    try {
+                        const response = await fetch('/guardar_balance', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            lastSavedBalanceId = result.balance_id; // Guarda el ID del balance
+                            // Usar la clase 'active' para mostrar el modal, como en modals.css
+                            confirmationModal.classList.add('active'); 
+                        } else {
+                            // Si hay un error del servidor, muestra un mensaje
+                            alert('Error: ' + (result.message || 'Error desconocido al guardar el balance.'));
+                        }
+                    } catch (error) {
+                        console.error('Error al enviar el formulario:', error);
+                        // Si hay un error de conexión, muestra un mensaje
+                        alert('No se pudo conectar con el servidor para guardar el balance.');
+                    }
+                }
+            }
+
+            // Inicializar los cortes fijos al cargar la página
+            initializeFixedCuts();
+
+            // Event listeners para los inputs de la media res para calcular el costo total y ganancias
+            precioKiloMediaResInput.addEventListener('input', () => calculateAndDisplayBalance(new Event('recalculate')));
+            pesoTotalMediaResInput.addEventListener('input', () => calculateAndDisplayBalance(new Event('recalculate')));
+
+            // Event listener para el envío del formulario
+            balanceForm.addEventListener('submit', calculateAndDisplayBalance);
+
+            // ELIMINAR ESTA LÍNEA. NO QUEREMOS QUE SE CALCULE Y POTENCIALMENTE SE MUESTRE EL MODAL AL CARGAR LA PÁGINA.
+            // calculateAndDisplayBalance(new Event('recalculate')); 
+
+            // Lógica del Modal de Confirmación
+            closeModalBtn.addEventListener('click', () => {
+                confirmationModal.classList.remove('active'); // Oculta el modal usando la clase
+            });
+
+            keepPrivateBtn.addEventListener('click', () => {
+                confirmationModal.classList.remove('active'); // Oculta el modal usando la clase
+                // No hace nada más, el usuario se queda en la página
+            });
+
+            shareBalanceBtn.addEventListener('click', async () => {
+                if (lastSavedBalanceId) {
+                    try {
+                        const response = await fetch('/actualizar_balance_publico', { // Nueva ruta en Flask
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ balance_id: lastSavedBalanceId, is_public: true })
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            alert(result.message);
+                            // No redirigir, solo cerrar el modal y quedarse en la página
+                        } else {
+                            alert('Error al compartir el balance: ' + (result.message || 'Error desconocido.'));
+                        }
+                    } catch (error) {
+                        console.error('Error al intentar compartir el balance:', error);
+                        alert('No se pudo conectar con el servidor para compartir el balance.');
+                    }
+                } else {
+                    alert('No hay un balance guardado recientemente para compartir.');
+                }
+                confirmationModal.classList.remove('active'); // Oculta el modal después de la acción
+            });
+
+            // Cerrar el modal si se hace clic fuera del contenido
+            confirmationModal.addEventListener('click', (e) => {
+                if (e.target === confirmationModal) {
+                    confirmationModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
