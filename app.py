@@ -20,9 +20,11 @@ from flask import request, redirect
 
 @app.before_request
 def redirect_www():
-    if request.host.startswith("www."):
+    # Solo redirige si es www y no está en localhost (para que no falle localmente)
+    if request.host.startswith("www.") and "localhost" not in request.host:
         url = request.url.replace("://www.", "://", 1)
         return redirect(url, code=301)
+
 app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui_CAMBIA_ESTO_POR_UNA_CLAVE_SEGURA_Y_UNICA!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///carniceria.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
