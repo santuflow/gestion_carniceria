@@ -135,9 +135,16 @@ def logout():
 
 # ————— VISTAS PRINCIPALES —————
 
+from flask import render_template
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    visita = Visita.query.first()
+    if visita:
+        visita.total += 1
+        db.session.commit()
+    return render_template('index.html', visitas=visita.total)
+
 
 
 @app.route('/hacer_balance')
@@ -445,6 +452,10 @@ def ver_caja(caja_id):
 
 
 # ————— ARRANQUE —————
+
+class Visita(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    total = db.Column(db.Integer, default=0)
 
 with app.app_context():
     db.create_all()
