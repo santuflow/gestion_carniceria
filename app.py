@@ -132,10 +132,11 @@ def login():
     data = request.get_json(force=True)
     user = User.query.filter_by(username=data.get('username')).first()
     if user and check_password_hash(user.password_hash, data.get('password')):
-    login_user(user)
-    session.permanent = True  # <- mantiene la sesión iniciada por 30 días
-    return jsonify(success=True, redirect_url=url_for('index')), 200
+        login_user(user)
+        session.permanent = True  # <- mantiene la sesión iniciada por 30 días
+        return jsonify(success=True, redirect_url=url_for('index')), 200
     return jsonify(success=False, message='Credenciales inválidas'), 401
+
 
 
 @app.route('/logout')
