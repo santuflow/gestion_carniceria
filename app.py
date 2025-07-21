@@ -350,23 +350,26 @@ def api_registrar_venta():
 
     try:
         monto = float(d.get('monto', 0))
-        tipo = d.get('tipo_pago') or 'Efectivo'
-    except:
-        return jsonify(success=False, message='Datos inválidos'), 400
+        tipo = d.get('tipo_pago', '')
+        num = Venta.query.filter_by(caja_id=caja.id).count() + 1
 
-    num = Venta.query.filter_by(caja_id=caja.id).count() + 1
+        venta = Venta(
+            user_id=current_user.id,
+            caja_id=caja.id,
+            numero_venta=num,
+            monto=monto,
+            tipo_pago=tipo
+        )
 
-    venta = Venta(
-        user_id=current_user.id,
-        caja_id=caja.id,
-        numero_venta=num,
-        monto=monto,
-        tipo_pago=tipo
-    )
+        db.session.add(venta)
+        db.session.commit()
 
-    db.session.add(venta)
-    db.session.commit()
-    return jsonify(success=True), 201
+        return jsonify(success=True, message='Venta guardada'), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify(success=False, message='Error al guardar la venta'), 500
+
 
 
 @app.route('/api/cerrar_caja', methods=['POST'])
