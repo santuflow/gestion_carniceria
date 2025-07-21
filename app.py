@@ -66,7 +66,9 @@ class Caja(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     fecha_inicio = db.Column(db.DateTime, default=lambda: datetime.now(arg_tz))
+    cerrada = db.Column(db.Boolean, default=False)
     ventas = db.relationship('Venta', backref='caja', lazy=True)
+
 
 
 class Venta(db.Model):
@@ -324,7 +326,7 @@ def iniciar_caja():
 @login_required
 def api_ventas_dia():
     # Buscar la última caja abierta del usuario
-    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    caja = Caja.query.filter_by(user_id=current_user.id, cerrada=False).order_by(Caja.id.desc()).first()
     if not caja:
         return jsonify(ventas=[]), 200
 
@@ -337,7 +339,7 @@ def api_ventas_dia():
         } for v in ventas
     ]
     return jsonify(ventas=data), 200
-    
+
 
 
 
@@ -378,7 +380,7 @@ def api_registrar_venta():
 @app.route('/api/cerrar_caja', methods=['POST'])
 @login_required
 def api_cerrar_caja():
-    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    caja = Caja.query.filter_by(user_id=current_user.id, cerrada=False).order_by(Caja.id.desc()).first()
     if not caja:
         return jsonify(success=False, message='No hay caja activa'), 400
 
@@ -391,7 +393,12 @@ def api_cerrar_caja():
     for v in ventas:
         resumen['totales'][v.tipo_pago] += v.monto
 
+    # 🔒 Cerrar la caja y guardar en la base de datos
+    caja.cerrada = True
+    db.session.commit()
+
     return jsonify(success=True, resumen=resumen), 200
+
 
 
 
