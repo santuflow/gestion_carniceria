@@ -308,7 +308,7 @@ def actualizar_balance_publico():
 @app.route('/abrir_caja')
 @login_required
 def abrir_caja():
-    session.setdefault('ventas', [])
+    session.setdefault('ventas_temp', [])
     return render_template('abrir_caja.html')
 
 
