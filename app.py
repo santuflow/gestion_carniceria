@@ -323,18 +323,21 @@ def iniciar_caja():
 @app.route('/api/ventas_dia', methods=['GET'])
 @login_required
 def api_ventas_dia():
+    # Buscar la última caja abierta del usuario
     caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
     if not caja:
-        return jsonify({'ventas': []}), 200
+        return jsonify(ventas=[]), 200
 
     ventas = Venta.query.filter_by(caja_id=caja.id).all()
-    data = [{
-        'numero_venta': v.numero_venta,
-        'monto': v.monto,
-        'tipo_pago': v.tipo_pago
-    } for v in ventas]
-
-    return jsonify({'ventas': data}), 200
+    data = [
+        {
+            'numero_venta': v.numero_venta,
+            'monto': v.monto,
+            'tipo_pago': v.tipo_pago
+        } for v in ventas
+    ]
+    return jsonify(ventas=data), 200
+    
 
 
 
