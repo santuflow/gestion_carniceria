@@ -478,18 +478,20 @@ class Visita(db.Model):
 
 with app.app_context():
     db.create_all()
-    inspector = db.inspect(db.engine)
-    if 'caja' in inspector.get_table_names():
-        columnas = [col['name'] for col in inspector.get_columns('caja')]
-        if 'cerrada' not in columnas:
-            try:
-                db.session.execute("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;")
-                db.session.commit()
-                print("✅ Columna 'cerrada' agregada")
-            except Exception as e:
-                print("❌ No se pudo agregar columna 'cerrada':", str(e))
+
+    try:
+        result = db.session.execute("SELECT column_name FROM information_schema.columns WHERE table_name='caja' AND column_name='cerrada';")
+        column_exists = result.fetchone() is not None
+
+        if not column_exists:
+            db.session.execute("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;")
+            db.session.commit()
+            print("✅ Columna 'cerrada' agregada con éxito")
         else:
-            print("✅ Columna 'cerrada' ya existe")
+            print("✅ La columna 'cerrada' ya existe")
+    except Exception as e:
+        print("❌ Error al verificar/agregar la columna 'cerrada':", str(e))
+
 
 
 
