@@ -397,7 +397,7 @@ def api_cerrar_caja():
 
     for v in ventas:
         resumen['totales'][v.tipo_pago] += v.monto
-        
+
     caja.cerrada = True
     db.session.commit()
 
@@ -476,13 +476,27 @@ class Visita(db.Model):
     total = db.Column(db.Integer, default=0)
 
 with app.app_context():
+   with app.app_context():
     db.create_all()
 
     try:
-        db.session.execute("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;")
+        db.session.execute("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM information_schema.columns
+                    WHERE table_name='caja' AND column_name='cerrada'
+                ) THEN
+                    ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;
+                END IF;
+            END$$;
+        """)
         db.session.commit()
+        print("✔ Columna 'cerrada' verificada o agregada.")
     except Exception as e:
-        print("Columna 'cerrada' ya existe o no se pudo agregar:", str(e))
+        print("⚠ No se pudo modificar la tabla 'caja':", str(e))
+
+
 
 
 
