@@ -315,10 +315,16 @@ def abrir_caja():
 @app.route('/api/iniciar_caja', methods=['POST'])
 @login_required
 def iniciar_caja():
-    nueva_caja = Caja(user_id=current_user.id)
+    # Cerrar cualquier otra caja abierta antes
+    cajas_abiertas = Caja.query.filter_by(user_id=current_user.id, cerrada=False).all()
+    for c in cajas_abiertas:
+        c.cerrada = True
+
+    nueva_caja = Caja(user_id=current_user.id, cerrada=False)
     db.session.add(nueva_caja)
     db.session.commit()
     return jsonify(success=True, caja_id=nueva_caja.id), 201
+
 
 
 
@@ -348,41 +354,31 @@ def api_ventas_dia():
 def api_registrar_venta():
     d = request.get_json(force=True)
 
-    # Buscar la última caja ABERTA del usuario (cerrada=False)
+
     caja = Caja.query.filter_by(user_id=current_user.id, cerrada=False).order_by(Caja.id.desc()).first()
     if not caja:
         return jsonify(success=False, message='Caja no iniciada'), 400
 
     try:
         monto = float(d.get('monto', 0))
-        tipo = d.get('tipo_pago', '')
+        tipo = d.get('tipo_pago', 'Efectivo')
+    except:
+        return jsonify(success=False, message='Datos inválidos'), 400
 
-        # Validar tipo de pago
-        if tipo not in ['Efectivo', 'Tarjeta', 'Transferencia']:
-            return jsonify(success=False, message='Tipo de pago inválido'), 400
+    num = Venta.query.filter_by(caja_id=caja.id).count() + 1
 
-        num = Venta.query.filter_by(caja_id=caja.id).count() + 1
+    venta = Venta(
+        user_id=current_user.id,
+        caja_id=caja.id,
+        numero_venta=num,
+        monto=monto,
+        tipo_pago=tipo
+    )
 
-        venta = Venta(
-            user_id=current_user.id,
-            caja_id=caja.id,
-            numero_venta=num,
-            monto=monto,
-            tipo_pago=tipo
-        )
+    db.session.add(venta)
+    db.session.commit()
+    return jsonify(success=True), 201
 
-        db.session.add(venta)
-        db.session.commit()
-
-        return jsonify(success=True, message='Venta guardada'), 200
-
-    except Exception as e:
-        return jsonify(success=False, message='Error interno: ' + str(e)), 500
-
-
-    except Exception as e:
-        print(e)
-        return jsonify(success=False, message='Error al guardar la venta'), 500
 
 
 
@@ -401,12 +397,12 @@ def api_cerrar_caja():
 
     for v in ventas:
         resumen['totales'][v.tipo_pago] += v.monto
-
-    # 🔒 Cerrar la caja y guardar en la base de datos
+        
     caja.cerrada = True
     db.session.commit()
 
     return jsonify(success=True, resumen=resumen), 200
+
 
 
 
@@ -481,6 +477,13 @@ class Visita(db.Model):
 
 with app.app_context():
     db.create_all()
+
+    try:
+        db.session.execute("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;")
+        db.session.commit()
+    except Exception as e:
+        print("Columna 'cerrada' ya existe o no se pudo agregar:", str(e))
+
 
 
 
