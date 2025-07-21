@@ -348,14 +348,19 @@ def api_ventas_dia():
 def api_registrar_venta():
     d = request.get_json(force=True)
 
-    # Buscar la última caja abierta del usuario
-    caja = Caja.query.filter_by(user_id=current_user.id).order_by(Caja.id.desc()).first()
+    # Buscar la última caja ABERTA del usuario (cerrada=False)
+    caja = Caja.query.filter_by(user_id=current_user.id, cerrada=False).order_by(Caja.id.desc()).first()
     if not caja:
         return jsonify(success=False, message='Caja no iniciada'), 400
 
     try:
         monto = float(d.get('monto', 0))
         tipo = d.get('tipo_pago', '')
+
+        # Validar tipo de pago
+        if tipo not in ['Efectivo', 'Tarjeta', 'Transferencia']:
+            return jsonify(success=False, message='Tipo de pago inválido'), 400
+
         num = Venta.query.filter_by(caja_id=caja.id).count() + 1
 
         venta = Venta(
@@ -370,6 +375,10 @@ def api_registrar_venta():
         db.session.commit()
 
         return jsonify(success=True, message='Venta guardada'), 200
+
+    except Exception as e:
+        return jsonify(success=False, message='Error interno: ' + str(e)), 500
+
 
     except Exception as e:
         print(e)
