@@ -23,6 +23,10 @@ app.secret_key = 'clave_secreta'
 from datetime import timedelta  # asegurate de tenerlo
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+app.config['SESSION_COOKIE_SECURE'] = False  # permite cookies sin HTTPS (necesario en móviles si usás http)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # compatible con la mayoría de navegadores
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # protege la cookie de accesos por JavaScript
+
 
 
 # Base de datos
