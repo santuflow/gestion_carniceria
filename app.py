@@ -460,8 +460,7 @@ class Visita(db.Model):
 with app.app_context():
     db.create_all()
 
-from flask_login import login_required, current_user
-from flask import render_template 
+
 
 @app.route('/total_usuarios')
 @login_required
