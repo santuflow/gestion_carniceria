@@ -485,7 +485,7 @@ with app.app_context():
         column_exists = result.fetchone() is not None
 
         if not column_exists:
-            db.session.execute("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;")
+            db.session.execute(text("ALTER TABLE caja ADD COLUMN cerrada BOOLEAN DEFAULT FALSE;"))
             db.session.commit()
             print("✅ Columna 'cerrada' agregada con éxito")
         else:
