@@ -20,6 +20,11 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
 
+from datetime import timedelta  # asegurate de tenerlo
+
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+
+
 # Base de datos
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gestion_carniceria_db_user:TWNXKoWlu6sgYHpXfVHpDZL5UjPzlbJs@dpg-d1trns2dbo4c73du9mtg-a.oregon-postgres.render.com:5432/gestion_carniceria_db?sslmode=require'
 
@@ -123,8 +128,9 @@ def login():
     data = request.get_json(force=True)
     user = User.query.filter_by(username=data.get('username')).first()
     if user and check_password_hash(user.password_hash, data.get('password')):
-        login_user(user)
-        return jsonify(success=True, redirect_url=url_for('index')), 200
+    login_user(user)
+    session.permanent = True  # <- mantiene la sesión iniciada por 30 días
+    return jsonify(success=True, redirect_url=url_for('index')), 200
     return jsonify(success=False, message='Credenciales inválidas'), 401
 
 
