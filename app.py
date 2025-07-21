@@ -473,7 +473,6 @@ def total_usuarios():
     return f'Total de usuarios registrados: {cantidad}'
 
 
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
 
