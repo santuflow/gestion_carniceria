@@ -107,6 +107,7 @@
     }
 
     async function loadVentas() {
+      tablaBody.innerHTML = ''; // Limpia la tabla antes de cargar ventas nuevas
       try {
         const resp = await fetch('/api/ventas_dia');
         if (!resp.ok) throw '';
@@ -130,7 +131,7 @@
       e.preventDefault();
 
       const numero_venta = parseInt(saleNumberInput.value);
-      const monto = parseFloat(document.getElementById('montoVenta').value);
+            const monto = parseFloat(document.getElementById('montoVenta').value);
       const tipo_pago = document.getElementById('tipoPago').value;
 
       if (isNaN(monto) || monto <= 0) {
@@ -138,7 +139,7 @@
         return;
       }
 
-      const data = { numero_venta, monto, tipo_pago };
+      const data = { monto, tipo_pago };
 
       try {
         const resp = await fetch('/api/registrar_venta', {
@@ -147,12 +148,12 @@
           body: JSON.stringify(data)
         });
         if (!resp.ok) throw '';
-        appendRow(numero_venta, monto, tipo_pago);
         ventaForm.reset();
-        updateSaleNumber();
+        await loadVentas(); // 🔄 Recargar desde servidor
       } catch {
         alert('Error al registrar la venta.');
       }
+
     });
 
     cerrarCajaBtn.addEventListener('click', async () => {
