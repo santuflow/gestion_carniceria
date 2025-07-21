@@ -37,7 +37,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     balances = db.relationship('Balance', backref='user', lazy=True)
 
 
@@ -108,7 +108,7 @@ def register():
         return jsonify(success=False, message='Email registrado.'), 409
     user = User(
         username=u, email=e,
-        password_hash=generate_password_hash(p)
+        password_hash=generate_password_hash(p, method='sha256')
     )
     db.session.add(user)
     db.session.commit()
