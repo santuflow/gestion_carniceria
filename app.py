@@ -460,6 +460,20 @@ class Visita(db.Model):
 with app.app_context():
     db.create_all()
 
+from flask_login import login_required, current_user
+from flask import render_template 
+
+@app.route('/total_usuarios')
+@login_required
+def total_usuarios():
+    if current_user.email != 'santua@gmail.com' :
+        return 'Acceso denegado', 403
+
+    cantidad = User.query.count()
+    return f'Total de usuarios registrados: {cantidad}'
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
 
