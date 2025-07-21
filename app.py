@@ -13,6 +13,7 @@ import os
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 from datetime import datetime
 
 
@@ -308,7 +309,7 @@ def actualizar_balance_publico():
 @app.route('/abrir_caja')
 @login_required
 def abrir_caja():
-    session.setdefault('ventas_temp', [])
+    session.setdefault('ventas', [])
     return render_template('abrir_caja.html')
 
 
@@ -480,7 +481,7 @@ with app.app_context():
     db.create_all()
 
     try:
-        result = db.session.execute("SELECT column_name FROM information_schema.columns WHERE table_name='caja' AND column_name='cerrada';")
+        result = db.session.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='caja' AND column_name='cerrada';"))
         column_exists = result.fetchone() is not None
 
         if not column_exists:
@@ -511,4 +512,3 @@ def total_usuarios():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
-
