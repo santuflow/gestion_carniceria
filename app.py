@@ -309,22 +309,24 @@ def actualizar_balance_publico():
 @app.route('/abrir_caja')
 @login_required
 def abrir_caja():
-    
+
     return render_template('abrir_caja.html')
 
 
 @app.route('/api/iniciar_caja', methods=['POST'])
 @login_required
 def iniciar_caja():
-    # Cerrar cualquier otra caja abierta antes
-    cajas_abiertas = Caja.query.filter_by(user_id=current_user.id, cerrada=False).all()
-    for c in cajas_abiertas:
-        c.cerrada = True
+    # Verificar si ya hay una caja abierta
+    caja_abierta = Caja.query.filter_by(user_id=current_user.id, cerrada=False).first()
+    if caja_abierta:
+        return jsonify(success=True, caja_id=caja_abierta.id), 200
 
+    # Si no hay caja abierta, crear una nueva
     nueva_caja = Caja(user_id=current_user.id, cerrada=False)
     db.session.add(nueva_caja)
     db.session.commit()
     return jsonify(success=True, caja_id=nueva_caja.id), 201
+
 
 
 
