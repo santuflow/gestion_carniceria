@@ -14,6 +14,7 @@ import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from sqlalchemy import func
 from datetime import datetime
 
 
@@ -130,7 +131,8 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json(force=True)
-    user = User.query.filter_by(username=data.get('username')).first()
+    username_input = data.get('username')
+    user = User.query.filter(func.lower(User.username) == username_input.lower()).first()
     if user and check_password_hash(user.password_hash, data.get('password')):
         login_user(user)
         session.permanent = True  # <- mantiene la sesión iniciada por 30 días
