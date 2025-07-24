@@ -123,9 +123,10 @@
         <div class="cards" id="cards">
             {% for cv in cvs %}
             <div class="card" data-zona="{{ cv.zona }}">
-                <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre_real }}">
-                <div class="card-content">
-                    <h3>{{ cv.nombre_real }}</h3>
+                <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre }}">
+               <div class="card-content">
+               <h3>{{ cv.nombre }}</h3>
+
                     <p><strong>Edad:</strong>
                         {% if cv.fecha_nacimiento %}
                             {{
@@ -139,12 +140,6 @@
                     </p>
                     <p><strong>Zona:</strong> {{ cv.zona }}</p>
                     <a href="{{ url_for('ver_cv', id=cv.id) }}" class="btn-ver">Ver CV</a>
-
-                    {% if current_user.is_authenticated and current_user.is_admin %}
-                    <form action="{{ url_for('eliminar_cv', cv_id=cv.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este CV?')">Eliminar</button>
-                    </form>
-                    {% endif %}
                 </div>
             </div>
             {% endfor %}

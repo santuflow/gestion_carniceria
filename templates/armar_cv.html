@@ -77,62 +77,61 @@
         }
 
         .cv-right {
-    width: 100%;
-    max-width: 65%;
-    background-color: #1e1e1e;
-    color: #fff;
-    padding-bottom: 30px;
-}
+            width: 100%;
+            max-width: 65%;
+            background-color: #1e1e1e;
+            color: #fff;
+            padding-bottom: 30px;
+        }
 
-.cv-right h3 {
-    margin-top: 0;
-    color: #ff4d4d;
-}
+        .cv-right h3 {
+            margin-top: 0;
+            color: #ff4d4d;
+        }
 
-.cv-right .form-group {
-    margin-bottom: 15px;
-}
+        .cv-right .form-group {
+            margin-bottom: 15px;
+        }
 
-.cv-right label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    color: #fff;
-}
+        .cv-right label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
 
-.cv-right input,
-.cv-right textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #444;
-    border-radius: 6px;
-    background-color: #2b2b2b;
-    font-size: 14px;
-    color: #fff;
-}
+        .cv-right input,
+        .cv-right textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #2b2b2b;
+            font-size: 14px;
+            color: #fff;
+        }
 
-.cv-right input::placeholder,
-.cv-right textarea::placeholder {
-    color: #aaa;
-}
+        .cv-right input::placeholder,
+        .cv-right textarea::placeholder {
+            color: #aaa;
+        }
 
-select {
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #2b2b2b;
-    color: #fff;
-    padding: 8px;
-    font-size: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
+        select {
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #2b2b2b;
+            color: #fff;
+            padding: 8px;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
 
-.cv-footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    gap: 10px;
-}
-
+        .cv-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
 
         .btn {
             padding: 10px 20px;
@@ -186,13 +185,11 @@ select {
                 <input type="file" name="foto" id="foto" accept="image/*" required onchange="mostrarFoto(event)">
                 <img id="previewFoto" src="#" alt="Vista previa" style="display:none;">
                 <h2>Nombre del Carnicero</h2>
-                <label for="nombre_real">Nombre y Apellido</label>
+                <label for="nombre">Nombre y Apellido</label>
                 <input type="text" id="nombre" name="nombre" required>
 
                 <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-<input type="text" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="dd/mm/aaaa" required pattern="\d{2}/\d{2}/\d{4}">
-
-
+                <input type="text" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="dd/mm/aaaa" required pattern="\d{2}/\d{2}/\d{4}">
 
                 <h3>Puesto buscado</h3>
 
@@ -211,7 +208,7 @@ select {
                     <input type="text" name="telefono" placeholder="Ej: 11-2345-6789"><br><br>
                     <input type="email" name="email" placeholder="Ej: miemail@gmail.com"><br><br>
                     <label for="zona">📍 Zona</label>
-                    <select name="zona" id="zona" required style="width:100%; padding:8px; border-radius:5px; margin-bottom:15px;">
+                    <select name="zona" id="zona" required>
                         <option value="">Seleccioná tu zona</option>
                         <option>San Justo</option>
                         <option>La Matanza</option>
@@ -258,10 +255,14 @@ select {
 
                 <h3>🎓 Educación</h3>
                 <div class="form-group">
-                    <input type="text" name="educacion1" placeholder="Ej: Primaria completa, etc.">
+                    <label for="educacion">Estudios / Formación:</label>
+                    <textarea name="educacion" id="educacion" rows="3" placeholder="Ej: Secundaria completa, cursos de desposte, etc."></textarea>
                 </div>
+
+                <h3>📎 Adjuntar CV en PDF (opcional)</h3>
                 <div class="form-group">
-                    <input type="text" name="educacion2" placeholder="Otros estudios (opcional)">
+                    <label for="cv_archivo">Archivo PDF:</label>
+                    <input type="file" name="cv_archivo" id="cv_archivo" accept=".pdf">
                 </div>
 
                 <div class="cv-footer">

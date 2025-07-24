@@ -94,6 +94,7 @@ class CVProfesional(db.Model):
     fecha_nacimiento = db.Column(db.Date)
     zona = db.Column(db.String(100))
     descripcion = db.Column(db.Text)
+    educacion = db.Column(db.Text)
     experiencia = db.Column(db.Text)
     habilidades = db.Column(db.Text)
     telefono = db.Column(db.String(50))
@@ -416,7 +417,7 @@ def api_registrar_venta():
 @app.route('/subir_cv_profesional', methods=['POST'])
 @login_required
 def subir_cv_profesional():
-    nombre = request.form.get('nombre')
+    nombre = request.form.get('nombre') or 'No especificado'
     fecha_nacimiento_raw = request.form.get('fecha_nacimiento')
     fecha_nacimiento = None
 
@@ -437,17 +438,17 @@ def subir_cv_profesional():
             flash('Fecha de nacimiento inválida. Usá el formato DD/MM/AAAA o DD-MM-AAAA.')
             return redirect(request.referrer or url_for('index'))
 
-    zona = request.form.get('zona')
-    descripcion = request.form.get('descripcion')
-    experiencia = request.form.get('experiencia')
-    habilidades = request.form.get('habilidades')
-    telefono = request.form.get('telefono')
-    email = request.form.get('email')
+    zona = request.form.get('zona') or 'No especificado'
+    descripcion = request.form.get('descripcion') or 'Sin descripción'
+    experiencia = request.form.get('experiencia') or 'No especificado'
+    habilidades = request.form.get('habilidades') or 'No especificado'
+    telefono = request.form.get('telefono') or 'No disponible'
+    email = request.form.get('email') or current_user.email
 
     # Guardar archivo de foto si viene
     foto = request.files.get('foto')
     foto_filename = None
-    if foto:
+    if foto and foto.filename != '':
         from werkzeug.utils import secure_filename
         import os
         user_id = current_user.id
@@ -455,12 +456,32 @@ def subir_cv_profesional():
         foto_filename = f"{user_id}_{secure_filename(foto.filename)}"
         foto.save(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], foto_filename))
 
+    educacion = request.form.get('educacion') or 'No especificada'
+
+    empresa1 = request.form.get("empresa1") or ''
+    cargo1 = request.form.get("cargo1") or ''
+    exp1 = request.form.get("exp1") or ''
+
+    empresa2 = request.form.get("empresa2") or ''
+    cargo2 = request.form.get("cargo2") or ''
+    exp2 = request.form.get("exp2") or ''
+
+    experiencia = ""
+    if empresa1 or cargo1 or exp1:
+        experiencia += f"- {empresa1} ({cargo1}): {exp1}\n"
+    if empresa2 or cargo2 or exp2:
+        experiencia += f"- {empresa2} ({cargo2}): {exp2}"
+    if not experiencia.strip():
+        experiencia = "No especificado"
+
+
     nuevo_cv = CVProfesional(
         user_id=current_user.id,
         nombre=nombre,
         fecha_nacimiento=fecha_nacimiento,
         zona=zona,
         descripcion=descripcion,
+        educacion=educacion,
         experiencia=experiencia,
         habilidades=habilidades,
         telefono=telefono,
@@ -472,6 +493,7 @@ def subir_cv_profesional():
 
     flash('CV cargado exitosamente.')
     return redirect(url_for('carniceros_cv'))
+
 
 
 

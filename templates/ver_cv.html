@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CV de {{ cv.nombre }}</title>
+    <title>CV de {{ cv.nombre or 'Sin nombre' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         body {
@@ -78,40 +78,38 @@
 <body>
     <div class="cv-container">
         <div class="cv-header">
-            <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre }}">
+            {% if cv.foto %}
+                <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre or 'Usuario' }}">
+            {% else %}
+                <img src="{{ url_for('static', filename='default_user.png') }}" alt="Sin foto">
+            {% endif %}
             <div>
-                <h2>{{ cv.nombre }}</h2>
-                <p><strong>Zona:</strong> {{ cv.zona }}</p>
-                <p><strong>Teléfono:</strong> {{ cv.telefono }}</p>
-                <p><strong>Email:</strong> {{ cv.email }}</p>
-                <p><strong>Fecha de nacimiento:</strong> {{ cv.fecha_nacimiento.strftime('%d/%m/%Y') if cv.fecha_nacimiento else '' }}</p>
+                <h2>{{ cv.nombre or 'Sin nombre' }}</h2>
+                <p><strong>Zona:</strong> {{ cv.zona or 'No especificada' }}</p>
+                <p><strong>Teléfono:</strong> {{ cv.telefono or 'No disponible' }}</p>
+                <p><strong>Email:</strong> {{ cv.email or 'No disponible' }}</p>
+                <p><strong>Fecha de nacimiento:</strong> {{ cv.fecha_nacimiento.strftime('%d/%m/%Y') if cv.fecha_nacimiento else 'No especificada' }}</p>
             </div>
         </div>
 
         <div class="cv-section">
             <h3>Perfil Profesional</h3>
-            <p>{{ cv.descripcion }}</p>
+            <p>{{ cv.descripcion or 'Sin descripción' }}</p>
         </div>
 
         <div class="cv-section">
             <h3>Habilidades</h3>
-            <p>{{ cv.habilidades }}</p>
+            <p>{{ cv.habilidades or 'No especificadas' }}</p>
         </div>
 
         <div class="cv-section">
             <h3>Educación</h3>
-            <p>{{ cv.educacion }}</p>
-            {% if cv.educacion2 %}
-            <p>{{ cv.educacion2 }}</p>
-            {% endif %}
+            <p>{{ cv.educacion or 'No especificada' }}</p>
         </div>
 
         <div class="cv-section">
             <h3>Experiencia</h3>
-            <p>{{ cv.experiencia }}</p>
-            {% if cv.experiencia2 %}
-            <p>{{ cv.experiencia2 }}</p>
-            {% endif %}
+            <p>{{ cv.experiencia or 'No especificada' }}</p>
         </div>
 
         <div class="volver">
