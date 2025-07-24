@@ -162,16 +162,35 @@
         @media (max-width: 768px) {
             .cv-container {
                 flex-direction: column;
+                margin: 20px 10px;
             }
 
             .cv-left, .cv-right {
                 max-width: 100%;
                 width: 100%;
+                padding: 20px;
+            }
+
+            .cv-left img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .cv-left input, .cv-left textarea, 
+            .cv-right input, .cv-right textarea, 
+            .cv-right select {
+                font-size: 16px;
+                padding: 12px;
             }
 
             .cv-footer {
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .btn {
+                font-size: 16px;
+                padding: 12px;
             }
         }
     </style>
