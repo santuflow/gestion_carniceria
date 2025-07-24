@@ -421,12 +421,19 @@ def subir_cv_profesional():
 
     if fecha_nacimiento_raw:
         try:
-            # Siempre convertir a string por seguridad
             if isinstance(fecha_nacimiento_raw, datetime):
                 fecha_nacimiento_raw = fecha_nacimiento_raw.strftime('%d/%m/%Y')
-            fecha_nacimiento = datetime.strptime(str(fecha_nacimiento_raw), '%d/%m/%Y')
+            else:
+                fecha_nacimiento_raw = str(fecha_nacimiento_raw).strip()
+
+            if '/' in fecha_nacimiento_raw:
+                fecha_nacimiento = datetime.strptime(fecha_nacimiento_raw, '%d/%m/%Y').date()
+            elif '-' in fecha_nacimiento_raw:
+                fecha_nacimiento = datetime.strptime(fecha_nacimiento_raw, '%d-%m-%Y').date()
+            else:
+                raise ValueError("Formato inválido")
         except ValueError:
-            flash('Fecha de nacimiento inválida. Usá el formato DD/MM/AAAA.')
+            flash('Fecha de nacimiento inválida. Usá el formato DD/MM/AAAA o DD-MM-AAAA.')
             return redirect(request.referrer or url_for('index'))
 
     zona = request.form.get('zona')
@@ -447,7 +454,6 @@ def subir_cv_profesional():
         foto_filename = f"{user_id}_{secure_filename(foto.filename)}"
         foto.save(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], foto_filename))
 
-    # Guardar en la base de datos
     nuevo_cv = CVProfesional(
         user_id=current_user.id,
         nombre=nombre,
