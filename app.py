@@ -1,10 +1,7 @@
 from pytz import timezone
 arg_tz = timezone('America/Argentina/Buenos_Aires')
 
-from flask import (
-    Flask, render_template, request, redirect, url_for, flash,
-    jsonify, send_file, session
-)
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file, session
 from flask_login import (
     LoginManager, UserMixin, login_user, logout_user,
     login_required, current_user
@@ -12,11 +9,10 @@ from flask_login import (
 import os
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from sqlalchemy import func
 from datetime import datetime
-
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
@@ -90,6 +86,20 @@ class Venta(db.Model):
     monto = db.Column(db.Float, nullable=False)
     tipo_pago = db.Column(db.String(50), nullable=False)
 
+class CVProfesional(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    nombre = db.Column(db.String(100))
+    fecha_nacimiento = db.Column(db.Date)
+    zona = db.Column(db.String(100))
+    descripcion = db.Column(db.Text)
+    experiencia = db.Column(db.Text)
+    habilidades = db.Column(db.Text)
+    telefono = db.Column(db.String(50))
+    email = db.Column(db.String(100))
+    foto = db.Column(db.String(255))
+    cv_archivo = db.Column(db.String(255))
+
 
 # ————— LOGIN —————
 
@@ -131,8 +141,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json(force=True)
-    username_input = data.get('username')
-    user = User.query.filter(func.lower(User.username) == username_input.lower()).first()
+    user = User.query.filter_by(username=data.get('username')).first()
     if user and check_password_hash(user.password_hash, data.get('password')):
         login_user(user)
         session.permanent = True  # <- mantiene la sesión iniciada por 30 días
@@ -325,6 +334,13 @@ def abrir_caja():
 
     return render_template('abrir_caja.html')
 
+@app.route('/armar_cv')
+@login_required
+def armar_cv():
+    return render_template('armar_cv.html')
+
+
+
 
 @app.route('/api/iniciar_caja', methods=['POST'])
 @login_required
@@ -395,6 +411,75 @@ def api_registrar_venta():
     db.session.commit()
     return jsonify(success=True), 201
 
+
+@app.route('/subir_cv_profesional', methods=['POST'])
+@login_required
+def subir_cv_profesional():
+    nombre = request.form.get('nombre')
+    fecha_nacimiento_raw = request.form.get('fecha_nacimiento')
+    fecha_nacimiento = None
+
+    if fecha_nacimiento_raw:
+        try:
+            # Siempre convertir a string por seguridad
+            if isinstance(fecha_nacimiento_raw, datetime):
+                fecha_nacimiento_raw = fecha_nacimiento_raw.strftime('%d/%m/%Y')
+            fecha_nacimiento = datetime.strptime(str(fecha_nacimiento_raw), '%d/%m/%Y')
+        except ValueError:
+            flash('Fecha de nacimiento inválida. Usá el formato DD/MM/AAAA.')
+            return redirect(request.referrer or url_for('index'))
+
+    zona = request.form.get('zona')
+    descripcion = request.form.get('descripcion')
+    experiencia = request.form.get('experiencia')
+    habilidades = request.form.get('habilidades')
+    telefono = request.form.get('telefono')
+    email = request.form.get('email')
+
+    # Guardar archivo de foto si viene
+    foto = request.files.get('foto')
+    foto_filename = None
+    if foto:
+        from werkzeug.utils import secure_filename
+        import os
+        user_id = current_user.id
+        ext = os.path.splitext(foto.filename)[1]
+        foto_filename = f"{user_id}_{secure_filename(foto.filename)}"
+        foto.save(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], foto_filename))
+
+    # Guardar en la base de datos
+    nuevo_cv = CVProfesional(
+        user_id=current_user.id,
+        nombre=nombre,
+        fecha_nacimiento=fecha_nacimiento,
+        zona=zona,
+        descripcion=descripcion,
+        experiencia=experiencia,
+        habilidades=habilidades,
+        telefono=telefono,
+        email=email,
+        foto=foto_filename
+    )
+    db.session.add(nuevo_cv)
+    db.session.commit()
+
+    flash('CV cargado exitosamente.')
+    return redirect(url_for('carniceros_cv'))
+
+
+
+@app.route('/carniceros_cv')
+def carniceros_cv():
+    cvs = CVProfesional.query.order_by(CVProfesional.id.desc()).all()
+    zonas = sorted(set(cv.zona for cv in cvs if cv.zona))  # para el filtro por zona
+    return render_template('carniceros_cv.html', cvs=cvs, zonas=zonas, now=datetime.now())
+
+
+
+@app.route('/ver_cv/<int:id>')
+def ver_cv(id):
+    cv = CVProfesional.query.get_or_404(id)
+    return render_template('ver_cv.html', cv=cv)
 
 
 
@@ -508,8 +593,35 @@ with app.app_context():
     except Exception as e:
         print("❌ Error al verificar/agregar la columna 'cerrada':", str(e))
 
+    # Verificar y agregar columnas faltantes a la tabla cv_profesional
+    columnas_cv = {
+        'nombre': 'VARCHAR(100)',
+        'fecha_nacimiento': 'DATE',
+        'zona': 'VARCHAR(100)',
+        'descripcion': 'TEXT',
+        'experiencia': 'TEXT',
+        'habilidades': 'TEXT',
+        'telefono': 'VARCHAR(50)',
+        'email': 'VARCHAR(100)',
+        'foto': 'VARCHAR(255)',
+        'cv_archivo': 'VARCHAR(255)'
+    }
 
-
+    for columna, tipo in columnas_cv.items():
+        try:
+            resultado = db.session.execute(text(
+                f"SELECT column_name FROM information_schema.columns WHERE table_name='cv_profesional' AND column_name='{columna}'"
+            ))
+            existe = resultado.fetchone() is not None
+            if not existe:
+                db.session.execute(text(
+                    f"ALTER TABLE cv_profesional ADD COLUMN {columna} {tipo};"
+                ))
+                print(f"✅ Columna '{columna}' agregada a cv_profesional")
+            else:
+                print(f"🟢 Columna '{columna}' ya existe")
+        except Exception as e:
+            print(f"❌ Error al verificar/agregar columna '{columna}':", str(e))
 
 
 
@@ -523,7 +635,6 @@ def total_usuarios():
 
     cantidad = User.query.count()
     return f'Total de usuarios registrados: {cantidad}'
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
