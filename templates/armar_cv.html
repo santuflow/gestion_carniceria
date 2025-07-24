@@ -5,220 +5,218 @@
     <title>Armar CV - Carniceros</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        body {
-            background-image: url('../static/fondo_carniceria.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
+    body {
+        background-image: url('../static/fondo_carniceria.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
 
-        .cv-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            background-color: rgba(255, 255, 255, 0.98);
-            display: flex;
-            flex-wrap: wrap;
-            box-shadow: 0 0 20px #000;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #b30000;
-        }
-
-        .cv-left, .cv-right {
-            padding: 30px;
-            box-sizing: border-box;
-        }
-
-        .cv-left {
-            background-color: #2c3e50;
-            color: white;
-            width: 100%;
-            max-width: 35%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .cv-left img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 3px solid white;
-        }
-
-        .cv-left h2, .cv-left h3 {
-            margin: 5px 0;
-            text-align: center;
-        }
-
-        .cv-left section {
-            margin-top: 25px;
-            width: 100%;
-        }
-
-        .cv-left section h4 {
-            border-bottom: 2px solid white;
-            padding-bottom: 5px;
-            font-size: 16px;
-            color: #fff;
-        }
-
-        .cv-left textarea, .cv-left input[type="text"], .cv-left input[type="email"], .cv-left input[type="date"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 8px;
-            border-radius: 6px;
-            border: none;
-            font-size: 14px;
-            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
-        }
-
-        .cv-right {
-            width: 100%;
-            max-width: 65%;
-            background-color: #1e1e1e;
-            color: #fff;
-            padding-bottom: 30px;
-        }
-
-        .cv-right h3 {
-            margin-top: 0;
-            color: #ff4d4d;
-        }
-
-        .cv-right .form-group {
-            margin-bottom: 15px;
-        }
-
-        .cv-right label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-
-        .cv-right input,
-        .cv-right textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #444;
-            border-radius: 6px;
-            background-color: #2b2b2b;
-            font-size: 14px;
-            color: #fff;
-        }
-
-        .cv-right input::placeholder,
-        .cv-right textarea::placeholder {
-            color: #aaa;
-        }
-
-        select {
-            border: 1px solid #444;
-            border-radius: 5px;
-            background-color: #2b2b2b;
-            color: #fff;
-            padding: 8px;
-            font-size: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .cv-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-green {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-blue {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.85;
-        }
-
-        .required {
-            color: red;
-        }
-
-        @media (max-width: 768px) {
     .cv-container {
-        flex-direction: column;
-        margin: 10px;
-        border-radius: 0;
-        box-shadow: none;
-        border: none;
+        max-width: 1000px;
+        margin: 40px auto;
+        background-color: rgba(255, 255, 255, 0.98);
+        display: flex;
+        flex-wrap: wrap;
+        box-shadow: 0 0 20px #000;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #b30000;
     }
 
     .cv-left, .cv-right {
-        width: 100%;
-        padding: 20px;
-        max-width: 100%;
+        padding: 30px;
+        box-sizing: border-box;
     }
 
     .cv-left {
         background-color: #2c3e50;
-        padding-top: 30px;
-        padding-bottom: 30px;
-    }
-
-    .cv-right {
-        background-color: #1e1e1e;
+        color: white;
+        width: 100%;
+        max-width: 35%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .cv-left img {
-        width: 110px;
-        height: 110px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 3px solid white;
     }
 
-    .cv-left input,
-    .cv-left textarea,
-    .cv-right input,
-    .cv-right textarea,
-    .cv-right select {
-        font-size: 17px;
-        padding: 14px;
+    .cv-left h2, .cv-left h3 {
+        margin: 5px 0;
+        text-align: center;
     }
 
-    label, .cv-left section h4 {
+    .cv-left section {
+        margin-top: 25px;
+        width: 100%;
+    }
+
+    .cv-left section h4 {
+        border-bottom: 2px solid white;
+        padding-bottom: 5px;
         font-size: 16px;
+        color: #fff;
+    }
+
+    .cv-left textarea, .cv-left input[type="text"], .cv-left input[type="email"], .cv-left input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        margin-top: 8px;
+        border-radius: 6px;
+        border: none;
+        font-size: 14px;
+        box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
+    }
+
+    .cv-right {
+        width: 100%;
+        max-width: 65%;
+        background-color: #1e1e1e;
+        color: #fff;
+        padding-bottom: 30px;
+    }
+
+    .cv-right h3 {
+        margin-top: 0;
+        color: #ff4d4d;
+    }
+
+    .cv-right .form-group {
+        margin-bottom: 15px;
+    }
+
+    .cv-right label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .cv-right input,
+    .cv-right textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background-color: #2b2b2b;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .cv-right input::placeholder,
+    .cv-right textarea::placeholder {
+        color: #aaa;
+    }
+
+    select {
+        border: 1px solid #444;
+        border-radius: 5px;
+        background-color: #2b2b2b;
+        color: #fff;
+        padding: 8px;
+        font-size: 14px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .cv-footer {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-        margin-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 10px;
     }
 
     .btn {
-        font-size: 18px;
-        padding: 14px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        border: none;
     }
 
-    h2, h3, h4 {
-        text-align: center;
+    .btn-green {
+        background-color: #28a745;
+        color: white;
     }
-}
+
+    .btn-blue {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+    }
+
+    .required {
+        color: red;
+    }
+
+    /* --- ESTILO PARA CELULARES --- */
+    @media (max-width: 768px) {
+        .cv-container {
+            flex-direction: column;
+            margin: 15px 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #000;
+        }
+
+        .cv-left, .cv-right {
+            max-width: 100%;
+            width: 100%;
+            padding: 25px 20px;
+        }
+
+        .cv-left {
+            background-color: #2c3e50;
+        }
+
+        .cv-right {
+            background-color: #1e1e1e;
+        }
+
+        .cv-left img {
+            width: 120px;
+            height: 120px;
+        }
+
+        .cv-left input,
+        .cv-left textarea,
+        .cv-right input,
+        .cv-right textarea,
+        select {
+            font-size: 17px;
+            padding: 14px;
+        }
+
+        label, .cv-left section h4 {
+            font-size: 16px;
+        }
+
+        .cv-footer {
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            font-size: 17px;
+            padding: 14px;
+        }
+
+        h2, h3, h4 {
+            text-align: center;
+        }
+    }
 </style>
+
 
 </head>
 <body>
