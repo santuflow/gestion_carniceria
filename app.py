@@ -16,6 +16,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 from datetime import timedelta  # asegurate de tenerlo
 
