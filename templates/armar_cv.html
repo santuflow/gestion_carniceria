@@ -1,10 +1,10 @@
-<h1 style="color: red; font-size: 40px;">PRUEBA VISIBLE - 24 DE JULIO</h1>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Armar CV - CARNICEROS CAMBIO TEST</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     body {
         background-image: url('../static/fondo_carniceria.jpg');
@@ -131,7 +131,6 @@
         color: white;
     }
 
-    /* 🔧 ADAPTADO A CELULARES */
     @media (max-width: 768px) {
         .cv-container {
             flex-direction: column;
@@ -143,7 +142,7 @@
 
         .cv-left, .cv-right {
             width: 100%;
-            padding: 15px;
+            padding: 20px 15px;
         }
 
         .cv-left {
@@ -167,13 +166,13 @@
         .cv-right input,
         .cv-right select {
             font-size: 18px;
-            padding: 12px;
+            padding: 14px;
         }
 
         .cv-footer {
             flex-direction: column;
             margin-top: 20px;
-            padding: 0 15px 15px;
+            padding: 0;
         }
 
         .btn {
@@ -183,7 +182,6 @@
         }
     }
 </style>
-
 </head>
 <body>
 <form action="/subir_cv_profesional" method="POST" enctype="multipart/form-data">
@@ -194,20 +192,16 @@
             <img id="previewFoto" src="#" alt="Vista previa" style="display:none; margin-top: 10px;">
             <label for="nombre">Nombre y Apellido</label>
             <input type="text" id="nombre" name="nombre" required>
-
             <label for="fecha_nacimiento">Fecha de Nacimiento</label>
             <input type="text" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="dd/mm/aaaa" required pattern="\d{2}/\d{2}/\d{4}">
-
             <section>
                 <h4>📄 Perfil</h4>
                 <textarea name="descripcion" rows="4" placeholder="Ej: Carnicero con experiencia..."></textarea>
             </section>
-
             <section>
                 <h4>🧠 Habilidades</h4>
                 <textarea name="habilidades" rows="3" placeholder="Ej: Desposte, atención al cliente..."></textarea>
             </section>
-
             <section>
                 <h4>📞 Contacto</h4>
                 <input type="text" name="telefono" placeholder="Ej: 11-2345-6789">
@@ -215,29 +209,12 @@
                 <label for="zona">📍 Zona</label>
                 <select name="zona" id="zona" required>
                     <option value="">Seleccioná tu zona</option>
-                    <option>San Justo</option>
-                    <option>La Matanza</option>
-                    <option>Morón</option>
-                    <option>Merlo</option>
-                    <option>Ituzaingó</option>
-                    <option>Moreno</option>
-                    <option>Lomas de Zamora</option>
-                    <option>Lanús</option>
-                    <option>Avellaneda</option>
-                    <option>Florencio Varela</option>
-                    <option>Quilmes</option>
-                    <option>Berazategui</option>
-                    <option>Esteban Echeverría</option>
-                    <option>Almirante Brown</option>
-                    <option>Tigre</option>
-                    <option>San Isidro</option>
-                    <option>Vicente López</option>
-                    <option>Escobar</option>
-                    <option>Pilar</option>
-                    <option>José C. Paz</option>
-                    <option>Malvinas Argentinas</option>
-                    <option>San Miguel</option>
-                    <option>Otra / Especificar manualmente</option>
+                    <option>San Justo</option><option>La Matanza</option><option>Morón</option><option>Merlo</option>
+                    <option>Ituzaingó</option><option>Moreno</option><option>Lomas de Zamora</option><option>Lanús</option>
+                    <option>Avellaneda</option><option>Florencio Varela</option><option>Quilmes</option><option>Berazategui</option>
+                    <option>Esteban Echeverría</option><option>Almirante Brown</option><option>Tigre</option><option>San Isidro</option>
+                    <option>Vicente López</option><option>Escobar</option><option>Pilar</option><option>José C. Paz</option>
+                    <option>Malvinas Argentinas</option><option>San Miguel</option><option>Otra / Especificar manualmente</option>
                 </select>
             </section>
         </div>
@@ -256,19 +233,16 @@
                 <input type="text" name="cargo2" placeholder="Otro puesto">
                 <textarea name="exp2" rows="3" placeholder="Descripción detallada..."></textarea>
             </div>
-
             <h3>🎓 Educación</h3>
             <div class="form-group">
                 <label for="educacion">Estudios / Formación:</label>
                 <textarea name="educacion" id="educacion" rows="3" placeholder="Ej: Secundaria completa, cursos, etc."></textarea>
             </div>
-
             <h3>📎 Adjuntar CV en PDF (opcional)</h3>
             <div class="form-group">
                 <label for="cv_archivo">Archivo PDF:</label>
                 <input type="file" name="cv_archivo" id="cv_archivo" accept=".pdf">
             </div>
-
             <div class="cv-footer">
                 <button type="submit" class="btn btn-green">✔ Guardar CV</button>
                 <a href="/" class="btn btn-blue">↩ Volver al Inicio</a>
@@ -278,11 +252,11 @@
 </form>
 
 <script>
-    function mostrarFoto(event) {
-        const img = document.getElementById('previewFoto');
-        img.src = URL.createObjectURL(event.target.files[0]);
-        img.style.display = 'block';
-    }
+function mostrarFoto(event) {
+    const img = document.getElementById('previewFoto');
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.style.display = 'block';
+}
 </script>
 </body>
 </html>
