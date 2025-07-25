@@ -66,11 +66,14 @@ header {
 
 .nav-section {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
   background-color: #222;
-  padding: 10px;
+  padding: 10px 5px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .dropdown {
@@ -225,17 +228,17 @@ header {
   }
 
   .btn-auth {
-    padding: 5px 10px;
+    padding: 5px 8px;
     font-size: 12px;
   }
 
   .dropbtn {
-    padding: 8px 10px;
-    font-size: 12px;
+    padding: 6px 8px;
+    font-size: 11px;
   }
 
   .dropdown-content a {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .central-area {
@@ -248,12 +251,20 @@ header {
   }
 
   .nav-section {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    justify-content: center;
-    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 5px;
+    padding: 8px 5px;
+    overflow-x: hidden;
+  }
+
+  .dropdown {
+    flex: 1;
+    text-align: center;
   }
 }
+
 
 /* ====== BIENVENIDA ====== */
 .bienvenida-box {
