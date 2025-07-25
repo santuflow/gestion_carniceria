@@ -99,34 +99,26 @@
     .dropdown-content a:hover {
       background-color: #444;
     }
+   @media (max-width: 768px) {
+  .nav-section {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    justify-content: center;
+    padding: 10px;
+  }
 
+  .header-top-row {
+    flex-wrap: nowrap;
+  }
 
-    @media (max-width: 768px) {
-      .nav-section {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding: 8px;
-        justify-content: flex-start;
-      }
+  .header-top-row h1 {
+    font-size: 18px;
+  }
 
-      .header-top-row {
-        flex-wrap: nowrap;
-      }
-
-      .header-top-row h1 {
-        font-size: 18px;
-      }
-
-      .btn-auth {
-        padding: 5px 10px;
-        font-size: 12px;
-      }
-
-      .dropbtn {
-        padding: 8px 10px;
-        font-size: 12px;
-      }
-
+  .btn-auth {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
       .dropdown-content a {
         font-size: 13px;
       }
