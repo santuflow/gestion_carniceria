@@ -9,70 +9,67 @@
 <body>
 
 <header>
-  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; width: 100%;">
-<div class="header-left">
-  <h1>Gestión de Carnicería</h1>
-</div>
+  <div class="header-left">
+    <h1>Gestión de Carnicería</h1>
+  </div>
 
-
-    <div class="nav-section" style="display: flex; gap: 10px; flex: 2; justify-content: center; flex-wrap: wrap;">
-      <div class="dropdown">
-        <button class="dropbtn">Balances</button>
-        <div class="dropdown-content">
-          <a href="/hacer_balance">Hacer Balance</a>
-          <a href="/balances">Balances Públicos</a>
-          {% if current_user.is_authenticated %}
-          <a href="/mis_balances">Mis Balances</a>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <button class="dropbtn">Caja</button>
-        <div class="dropdown-content">
-          {% if current_user.is_authenticated %}
-          <a href="/abrir_caja">Abrir Caja</a>
-          <a href="/historial_cajas">Historial Cajas</a>
-          {% else %}
-          <a href="#" onclick="mostrarLoginDesdeCaja()">Iniciar sesión para acceder</a>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <button class="dropbtn">Empleo</button>
-        <div class="dropdown-content">
-          <a href="/carniceros_cv">Perfiles de Carniceros</a>
-          <a href="/armar_cv">Subir CV y Encontrar Trabajo</a>
-          <a href="/ofrecer_empleo">Ofrecer Empleo</a>
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <button class="dropbtn">Proveedores</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="mostrarModal()">Encontrar Proveedores</a>
-          <a href="/soy_proveedor">Soy Proveedor / Quiero Vender</a>
-        </div>
-      </div>
-
-      <div class="dropdown">
-        <button class="dropbtn">Otros</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="abrirModalApoyo()">Apoyar Proyecto</a>
-          <a href="https://chat.whatsapp.com/HRl7CKxxQEAInJ379UTiDa" target="_blank">Grupo de WhatsApp</a>
-        </div>
+  <div class="nav-section">
+    <div class="dropdown">
+      <button class="dropbtn">Balances</button>
+      <div class="dropdown-content">
+        <a href="/hacer_balance">Hacer Balance</a>
+        <a href="/balances">Balances Públicos</a>
+        {% if current_user.is_authenticated %}
+        <a href="/mis_balances">Mis Balances</a>
+        {% endif %}
       </div>
     </div>
 
-    <div class="auth-buttons" style="flex: 1; display: flex; justify-content: flex-end; padding-right: 10px;">
-      {% if not current_user.is_authenticated %}
-      <button class="btn-auth" onclick="document.getElementById('loginModal').style.display='flex'">Iniciar Sesión</button>
-      <button class="btn-auth" onclick="document.getElementById('registerModal').style.display='flex'">Registrarse</button>
-      {% else %}
-      <a href="{{ url_for('logout') }}" class="btn-auth">Cerrar Sesión</a>
-      {% endif %}
+    <div class="dropdown">
+      <button class="dropbtn">Caja</button>
+      <div class="dropdown-content">
+        {% if current_user.is_authenticated %}
+        <a href="/abrir_caja">Abrir Caja</a>
+        <a href="/historial_cajas">Historial Cajas</a>
+        {% else %}
+        <a href="#" onclick="mostrarLoginDesdeCaja()">Iniciar sesión para acceder</a>
+        {% endif %}
+      </div>
     </div>
+
+    <div class="dropdown">
+      <button class="dropbtn">Empleo</button>
+      <div class="dropdown-content">
+        <a href="/carniceros_cv">Perfiles de Carniceros</a>
+        <a href="/armar_cv">Subir CV y Encontrar Trabajo</a>
+        <a href="/ofrecer_empleo">Ofrecer Empleo</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="dropbtn">Proveedores</button>
+      <div class="dropdown-content">
+        <a href="#" onclick="mostrarModal()">Encontrar Proveedores</a>
+        <a href="/soy_proveedor">Soy Proveedor / Quiero Vender</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="dropbtn">Otros</button>
+      <div class="dropdown-content">
+        <a href="#" onclick="abrirModalApoyo()">Apoyar Proyecto</a>
+        <a href="https://chat.whatsapp.com/HRl7CKxxQEAInJ379UTiDa" target="_blank">Grupo de WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-buttons">
+    {% if not current_user.is_authenticated %}
+    <button class="btn-auth" onclick="document.getElementById('loginModal').style.display='flex'">Iniciar Sesión</button>
+    <button class="btn-auth" onclick="document.getElementById('registerModal').style.display='flex'">Registrarse</button>
+    {% else %}
+    <a href="{{ url_for('logout') }}" class="btn-auth">Cerrar Sesión</a>
+    {% endif %}
   </div>
 </header>
 
