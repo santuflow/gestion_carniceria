@@ -274,44 +274,77 @@ footer p {
 @media (max-width: 768px) {
   header {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    padding: 8px 12px;
   }
 
   .header-left {
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 8px;
-  }
-
-  header h1 {
-    font-size: 1.7em;
-    text-align: center;
-    width: 100%;
-  }
-
-  .nav-section {
-    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 12px 0;
+    padding: 0 5px;
   }
 
-  .dropbtn, .btn-auth {
-    width: 90%;
-    min-width: unset;
+  .header-left h1 {
+    font-size: 1.4em;
+    margin: 0;
+    text-align: left;
+    width: auto;
+    flex: 1;
+    color: #ff3c3c;
+    text-shadow: 0 0 6px #ff3c3c;
+    white-space: nowrap;
   }
 
   .auth-buttons {
-    flex-direction: column;
+    margin: 0;
+    padding-left: 10px;
+    flex-direction: row;
+    justify-content: flex-end;
     align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .auth-buttons .btn-auth {
+    padding: 6px 10px;
+    font-size: 13px;
+    min-width: unset;
+    white-space: nowrap;
+  }
+
+  .nav-section {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
     width: 100%;
+    padding: 10px 0;
+  }
+
+  .dropdown {
+    flex: 1 1 30%;
+    min-width: 30%;
+  }
+
+  .dropbtn {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .dropdown-content {
+    position: static;
+    transform: none;
+    opacity: 1;
+    display: none !important;
   }
 
   .central-area {
-    width: 90%;
-    padding: 25px;
+    width: 95%;
+    padding: 20px;
+    margin-top: 20px;
   }
 
   .modal-apoyo-content {
