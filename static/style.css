@@ -236,13 +236,6 @@ header {
     font-size: 13px;
   }
 
-  .nav-section {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    justify-content: flex-start;
-    padding: 10px 5px;
-  }
-
   .central-area {
     padding: 30px 10px;
   }
