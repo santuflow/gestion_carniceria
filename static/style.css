@@ -73,7 +73,6 @@ header {
   background-color: #222;
   padding: 10px 5px;
   width: 100%;
-  overflow-x: hidden;
 }
 
 .dropdown {
@@ -256,7 +255,6 @@ header {
     flex-wrap: nowrap;
     gap: 5px;
     padding: 8px 5px;
-    overflow-x: hidden;
   }
 
   .dropdown {
