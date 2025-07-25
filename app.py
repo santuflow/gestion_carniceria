@@ -121,13 +121,15 @@ def unauthorized():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json(force=True)
-    u = data.get('username'); e = data.get('email')
-    p = data.get('password'); t = data.get('accept_terms')
+    u = data.get('username', '').lower()
+    e = data.get('email')
+    p = data.get('password')
+    t = data.get('accept_terms')
     if not u or not e or not p:
         return jsonify(success=False, message='Faltan campos.'), 400
     if not t:
         return jsonify(success=False, message='Acepta términos.'), 400
-    if User.query.filter_by(username=u).first():
+    if User.query.filter(db.func.lower(User.username) == u).first():
         return jsonify(success=False, message='Usuario existe.'), 409
     if User.query.filter_by(email=e).first():
         return jsonify(success=False, message='Email registrado.'), 409
@@ -143,10 +145,11 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json(force=True)
-    user = User.query.filter_by(username=data.get('username')).first()
+    username_input = data.get('username', '').lower()
+    user = User.query.filter(db.func.lower(User.username) == username_input).first()
     if user and check_password_hash(user.password_hash, data.get('password')):
         login_user(user)
-        session.permanent = True  # <- mantiene la sesión iniciada por 30 días
+        session.permanent = True
         return jsonify(success=True, redirect_url=url_for('index')), 200
     return jsonify(success=False, message='Credenciales inválidas'), 401
 
@@ -167,10 +170,14 @@ def logout():
 @app.route('/')
 def index():
     visita = Visita.query.first()
-    if visita:
-        visita.total += 1
-        db.session.commit()
+    
+    if not (current_user.is_authenticated and current_user.username.lower() == 'santua'):
+        if visita:
+            visita.total += 1
+            db.session.commit()
+
     return render_template('index.html', visitas=visita.total)
+
 
 
 

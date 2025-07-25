@@ -3,165 +3,198 @@
 <head>
   <meta charset="UTF-8" />
   <title>CV de Carniceros</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: url('/static/fondo.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: -1;
     }
 
     .top-bar {
-      background-color: rgba(0, 0, 0, 0.9);
-      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 8px 20px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #ff4444;
+      border-bottom: 2px solid #b30000;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
     .top-bar h1 {
       margin: 0;
-      font-size: 26px;
-      color: #ff4444;
+      font-size: 22px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .filtro-zona select {
+      padding: 8px 14px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: none;
+      background-color: #333;
+      color: white;
+      font-weight: bold;
+    }
+
+    .top-buttons {
+      display: flex;
+      gap: 10px;
     }
 
     .top-buttons a {
-      background-color: #222;
+      background-color: #b30000;
       color: white;
-      padding: 10px 18px;
+      padding: 8px 14px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: bold;
       transition: background-color 0.3s;
-      font-size: 15px;
     }
 
     .top-buttons a:hover {
-      background-color: #555;
+      background-color: #8b0000;
     }
 
     .cv-container {
       max-width: 1300px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: rgba(0,0,0,0.75);
-      border-radius: 12px;
-    }
-
-    select {
-      display: block;
-      margin: 0 auto 30px;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      background-color: #111;
-      color: white;
-      border: 1px solid #444;
+      margin: 20px auto 50px;
+      padding: 0 20px;
     }
 
     .cards {
       display: flex;
       flex-wrap: wrap;
       gap: 25px;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .card {
-      background-color: #1a1a1a;
+      background-color: rgba(0, 0, 0, 0.8);
       color: white;
       border-radius: 12px;
-      width: 320px;
+      width: 300px;
       overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.6);
-      transition: transform 0.2s;
-    }
-
-    .card:first-child {
-      width: 100%;
-      max-width: 680px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
     }
 
     .card:hover {
-      transform: scale(1.02);
+      transform: translateY(-5px);
     }
 
     .card img {
       width: 100%;
-      height: 220px;
+      height: 200px;
       object-fit: cover;
     }
 
     .card-content {
-      padding: 18px;
+      padding: 15px 20px;
       text-align: center;
     }
 
     .card-content h3 {
       margin: 10px 0;
-      font-size: 22px;
-      color: #ffcc00;
+      font-size: 20px;
+      color: #ff4444;
+      font-weight: bold;
     }
 
     .card-content p {
-      margin: 8px 0;
-      font-size: 16px;
-      color: #ccc;
+      margin: 5px 0;
+      font-size: 15px;
     }
 
     .btn-ver, .btn-edit, .btn-del {
       display: inline-block;
-      margin: 10px 6px 0;
+      margin: 10px 5px 0;
       padding: 8px 16px;
       border-radius: 6px;
       text-decoration: none;
       font-size: 14px;
       font-weight: bold;
-      transition: background-color 0.3s;
+      transition: 0.3s;
     }
 
-    .btn-ver { background-color: #007bff; color: white; }
-    .btn-ver:hover { background-color: #0056b3; }
+    .btn-ver {
+      background-color: #007bff;
+      color: white;
+    }
 
-    .btn-edit { background-color: #28a745; color: white; }
-    .btn-edit:hover { background-color: #1e7e34; }
+    .btn-ver:hover {
+      background-color: #0056b3;
+    }
 
-    .btn-del { background-color: #dc3545; color: white; }
-    .btn-del:hover { background-color: #b02a37; }
+    .btn-edit {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background-color: #1e7e34;
+    }
+
+    .btn-del {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-del:hover {
+      background-color: #b02a37;
+    }
 
     @media (max-width: 768px) {
       .top-bar {
         flex-direction: column;
-        gap: 12px;
-        text-align: center;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .cards {
+        flex-direction: column;
+        align-items: center;
       }
 
       .card {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .card:first-child {
-        max-width: 100%;
-      }
-
-      .card-content h3 {
-        font-size: 20px;
-      }
-
-      .card-content p {
-        font-size: 15px;
+        width: 90%;
       }
     }
   </style>
 </head>
-<body class="carniceros-cv">
+<body>
 
   <div class="top-bar">
-    <h1>CV de Carniceros</h1>
+    <div class="top-left">
+      <h1>CV de Carniceros</h1>
+      <div class="filtro-zona">
+        <select id="zona" onchange="filtrarPorZona()">
+          <option value="todas">Ver todos</option>
+          {% for z in zonas %}
+            <option value="{{ z }}">{{ z }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
     <div class="top-buttons">
       <a href="{{ url_for('index') }}">Volver</a>
       <a href="{{ url_for('armar_cv') }}">Hacer mi CV</a>
@@ -169,13 +202,6 @@
   </div>
 
   <div class="cv-container">
-    <select id="zona" onchange="filtrarPorZona()">
-      <option value="todas">Ver todos</option>
-      {% for z in zonas %}
-        <option value="{{ z }}">{{ z }}</option>
-      {% endfor %}
-    </select>
-
     <div class="cards" id="cards">
       {% for cv in cvs %}
       <div class="card" data-zona="{{ cv.zona }}">

@@ -1,276 +1,324 @@
-/* Estilos Generales para el Cuerpo de la Página (GLOBAL) */
-body:not(.body-balance-page) {
-    font-family: 'Inter', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden;
-    background-image: url('../static/fondo.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    position: relative;
-    z-index: 1;
-}
-body:not(.body-balance-page)::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.55);
-    z-index: -1;
-}
-header {
-    background-color: rgba(30, 30, 30, 0.9);
-    color: white;
-    padding: 8px 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 2;
-}
-.header-content {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    justify-content: center;
-    position: relative;
-}
-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-    text-align: center;
-    flex-grow: 1;
-    color: #ffffff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-.subtitle {
-    display: none;
-}
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-}
-.btn-auth {
-    background-color: transparent;
-    color: white;
-    border: 1px solid #00BFFF;
-    padding: 10px 18px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 1em;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 8px rgba(0, 191, 255, 0.4);
-    white-space: nowrap;
-    font-weight: 600;
-}
-.btn-auth:hover {
-    background-color: rgba(0, 191, 255, 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
-    border-color: #00FFFF;
-}
-body:not(.carniceros-cv) .container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 15px;
-    max-width: 900px;
-    margin: 40px auto;
-    box-shadow: 0 0 20px rgba(0, 0, 255, 0.4);
-    z-index: 1;
-    position: relative;
-    box-sizing: border-box;
-}
-.welcome-message {
-    text-align: center;
-    margin-bottom: 40px;
-    color: #ffffff;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
-}
-.welcome-message h2 {
-    color: #00FFFF;
-    font-size: 2.4em;
-    margin-bottom: 15px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-.welcome-message p {
-    font-size: 1.2em;
-    line-height: 1.5;
-}
-.welcome-message p a {
-    color: #66CCFF;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-.welcome-message p a:hover {
-    color: #00FFFF;
-    text-decoration: underline;
-}
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-}
-.btn {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 1em;
-    border-radius: 10px;
-    border: 2px solid #00BFFF;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 12px rgba(0, 191, 255, 0.5);
-    font-weight: 600;
-}
-.btn:hover {
-    background-color: rgba(26, 26, 26, 0.8);
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 191, 255, 1);
-}
-footer {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    text-align: center;
-    padding: 12px 20px;
-    margin-top: auto;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 2;
-    font-size: 0.85em;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.6);
+/* === ESTILOS GENERALES === */
+body {
+  font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #e6e6e6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: url('../static/fondo.jpg') center center / cover fixed no-repeat;
+  position: relative;
 }
 
-/* MEDIA QUERIES */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        padding: 8px;
-        align-items: center;
-    }
-    .header-content {
-        flex-direction: column;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 8px;
-    }
-    header h1 {
-        font-size: 1.5em;
-        margin-bottom: 4px;
-    }
-    .subtitle {
-        display: block;
-        font-size: 0.8em;
-        color: #ddd;
-        margin-top: 0;
-    }
-    .auth-buttons {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-        justify-content: center;
-        width: 100%;
-        gap: 6px;
-    }
-    .btn-auth {
-        padding: 6px 10px;
-        font-size: 0.8em;
-        max-width: 140px;
-    }
-    .container {
-        margin: 20px auto;
-        padding: 15px;
-        max-width: 95%;
-    }
-    .welcome-message {
-        margin-bottom: 20px;
-    }
-    .welcome-message h2 {
-        font-size: 1.8em;
-    }
-    .welcome-message p {
-        font-size: 0.95em;
-    }
-    .button-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-    .btn {
-        padding: 16px;
-        font-size: 0.95em;
-    }
-    footer {
-        padding: 10px;
-        font-size: 0.75em;
-    }
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  z-index: -1;
 }
-.modal {
+
+/* === HEADER === */
+header {
+  background-color: rgba(0, 0, 0, 0.85); /* franja oscura */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 20px;
+  height: 65px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  border-bottom: 3px solid #00c3ff;
+  position: relative;
+  z-index: 10;
+}
+
+
+.header-left {
+  display: flex;
+  align-items: center;
+  height: 65px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.1em;
+  color: #ff3c3c;
+  text-shadow: 0 0 8px #ff3c3c;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* === MENÚ CENTRADO === */
+.nav-section {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 65px;
+  flex-wrap: wrap;
+  padding: 5px 0;
+}
+
+.dropbtn, .btn-auth {
+  background-color: #2d2d2d;
+  color: #ffffff;
+  font-weight: bold;
+  border: 2px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 15px;
+  padding: 10px 20px;
+}
+
+.dropbtn:hover, .btn-auth:hover {
+  background-color: #444;
+  color: #00c3ff;
+  border-color: #00c3ff;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: #1a1a1a;
+  min-width: 200px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-content a {
+  color: #ffffff;
+  padding: 12px 18px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s, padding-left 0.3s;
+  border-bottom: 1px solid #333;
+}
+
+.dropdown-content a:hover {
+  background-color: #333;
+  padding-left: 25px;
+  color: #00c3ff;
+}
+
+/* === BOTONES LOGIN / REGISTRO === */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 65px;
+}
+
+.auth-buttons .btn-auth {
+  padding: 10px 20px;
+  font-size: 14.5px;
+  background-color: #3c0000;
+  color: #fff;
+  border: 2px solid #ff4444;
+}
+
+.auth-buttons .btn-auth:hover {
+  background-color: #600000;
+  border-color: #ff6666;
+  color: #ff9999;
+}
+
+/* === ÁREA CENTRAL === */
+.central-area {
+  background-color: rgba(0, 0, 0, 0.65);
+  margin: 40px auto;
+  padding: 40px;
+  max-width: 700px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 0 30px #000;
+}
+
+.central-area h2 {
+  font-size: 2.4em;
+  color: #00ffff;
+  margin-bottom: 20px;
+}
+
+.central-area p {
+  font-size: 1.2em;
+  color: #e0e0e0;
+}
+
+/* === FOOTER === */
+footer {
+  background-color: rgba(0, 0, 0, 0.88);
+  color: white;
+  text-align: center;
+  padding: 6px 10px;
+  font-size: 0.85em;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 4px 0;
+}
+
+/* === MODAL APOYO === */
+.modal-apoyo {
+  display: none;
   position: fixed;
-  top: 0;
+  z-index: 9999;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
+  background-color: rgba(0,0,0,0.85);
   justify-content: center;
   align-items: center;
-  z-index: 9999;
 }
-.modal-content {
+
+.modal-apoyo-content {
   background-color: #111;
-  color: #fff;
-  padding: 20px 30px;
-  border-radius: 10px;
+  padding: 35px 30px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 0 15px #0ff;
-  animation: fadeIn 0.3s ease;
-}
-.modal-content button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background-color: #0ff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #000;
-  font-weight: bold;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-.btn.btn-wsp {
-  background-color: #25D366;
   color: white;
+  box-shadow: 0 0 20px #00ccff, 0 0 40px rgba(0, 204, 255, 0.3);
+  max-width: 450px;
+  width: 90%;
+  animation: fadeInModal 0.4s ease-in-out;
+  position: relative;
+}
+
+.modal-apoyo h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.6em;
+  color: #00ccff;
+  text-shadow: 0 0 8px #00ccff;
+}
+
+.modal-apoyo-content p {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+.modal-apoyo-close {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 26px;
   font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.modal-apoyo-btn {
+  background-color: #00ccff;
+  color: black;
   border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 0 12px #00ccff;
+  transition: background 0.3s ease;
+}
+
+.modal-apoyo-btn:hover {
+  background-color: #00b0e0;
+}
+
+.modal-apoyo-donar {
+  display: block;
+  margin: 12px auto;
+  background-color: transparent;
+  border: 2px solid #00ccff;
+  color: #00ccff;
+  padding: 10px 20px;
+  text-decoration: none;
+  width: 70%;
+  border-radius: 6px;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.modal-apoyo-donar:hover {
+  background-color: #00ccff;
+  color: black;
+}
+
+@keyframes fadeInModal {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .header-left {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .nav-section {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
+  .auth-buttons {
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .dropbtn, .btn-auth {
+    width: 90%;
+  }
+
+  .central-area {
+    padding: 25px;
+    width: 90%;
+  }
+
+  .modal-apoyo-content {
+    width: 90%;
+  }
 }
