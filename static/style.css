@@ -278,3 +278,63 @@ header {
   font-size: 16px;
   margin: 5px 0;
 }
+
+/* Arregla el funcionamiento del menú desplegable en móviles */
+details {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 4px 0;
+}
+
+summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 10px;
+  background-color: #222;
+  border: 1px solid #555;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 6px;
+}
+
+summary::marker {
+  display: none;
+}
+
+details[open] summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #333;
+  border: 1px solid #555;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+}
+
+details ul li {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+details ul li:last-child {
+  border-bottom: none;
+}
+
+details ul li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+details ul li a:hover {
+  background-color: #444;
+}
