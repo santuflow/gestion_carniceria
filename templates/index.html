@@ -354,29 +354,18 @@
 </script>
 
 <script>
-  document.querySelectorAll('.dropbtn').forEach(button => {
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      // Cerrar otros abiertos
-      document.querySelectorAll('.dropdown-content').forEach(content => {
-        if (content !== this.nextElementSibling) content.style.display = 'none';
+  // MOSTRAR SUBMENÚ EN PC AL PASAR EL MOUSE
+  if (window.innerWidth > 768) {
+    document.querySelectorAll('.dropdown').forEach(drop => {
+      drop.addEventListener('mouseenter', () => {
+        const menu = drop.querySelector('.dropdown-content');
+        if (menu) menu.style.display = 'block';
       });
 
-      // Alternar visibilidad
-      const content = this.nextElementSibling;
-      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+      drop.addEventListener('mouseleave', () => {
+        const menu = drop.querySelector('.dropdown-content');
+        if (menu) menu.style.display = 'none';
+      });
     });
-  });
-
-  // Cerrar al hacer clic fuer
-  window.addEventListener('click', function (e) {
-    if (!e.target.matches('.dropbtn')) {
-      document.querySelectorAll('.dropdown-content').forEach(content => {
-        content.style.display = 'none';
-      });
-    }
-  });
+  }
 </script>
-
-</body>
-</html>
