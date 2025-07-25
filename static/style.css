@@ -23,7 +23,7 @@ body::before {
 
 /* === HEADER === */
 header {
-  background-color: rgba(0, 0, 0, 0.85); /* franja oscura */
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -35,7 +35,6 @@ header {
   position: relative;
   z-index: 10;
 }
-
 
 .header-left {
   display: flex;
@@ -57,13 +56,10 @@ header h1 {
 /* === MENÚ CENTRADO === */
 .nav-section {
   display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  min-height: 65px;
   flex-wrap: wrap;
-  padding: 5px 0;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
 }
 
 .dropbtn, .btn-auth {
@@ -76,6 +72,8 @@ header h1 {
   transition: 0.3s ease;
   font-size: 15px;
   padding: 10px 20px;
+  min-width: 120px;
+  text-align: center;
 }
 
 .dropbtn:hover, .btn-auth:hover {
@@ -297,20 +295,23 @@ footer p {
   }
 
   .nav-section {
-    flex-direction: column;
-    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
-    margin: 10px 0;
+    width: 100%;
   }
 
   .auth-buttons {
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .dropbtn, .btn-auth {
-    width: 90%;
+    width: 45%;
+    min-width: 140px;
   }
 
   .central-area {
