@@ -5,6 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestión de Carnicería</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: #111;
+      color: white;
+      padding: 10px 20px;
+    }
+
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-top-row h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-auth {
+      background-color: #b30000;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-auth:hover {
+      background-color: #e60000;
+    }
+
+    .nav-section {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      background-color: #222;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background-color: #333;
+      color: white;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #222;
+      min-width: 160px;
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      border-radius: 6px;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 10px;
+      display: block;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #444;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .nav-section {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 8px;
+        justify-content: flex-start;
+      }
+
+      .header-top-row {
+        flex-wrap: nowrap;
+      }
+
+      .header-top-row h1 {
+        font-size: 18px;
+      }
+
+      .btn-auth {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
+      .dropbtn {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .dropdown-content a {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -21,71 +151,67 @@
     </div>
   </div>
 
-  <div class="nav-section-scroll">
-    <div class="nav-section">
-      <div class="dropdown">
-        <button class="dropbtn">Balances</button>
-        <div class="dropdown-content">
-          <a href="/hacer_balance">Hacer Balance</a>
-          <a href="/balances">Balances Públicos</a>
-          {% if current_user.is_authenticated %}
-          <a href="/mis_balances">Mis Balances</a>
-          {% endif %}
-        </div>
+  <div class="nav-section">
+    <div class="dropdown">
+      <button class="dropbtn">Balances</button>
+      <div class="dropdown-content">
+        <a href="/hacer_balance">Hacer Balance</a>
+        <a href="/balances">Balances Públicos</a>
+        {% if current_user.is_authenticated %}
+        <a href="/mis_balances">Mis Balances</a>
+        {% endif %}
       </div>
+    </div>
 
-      <div class="dropdown">
-        <button class="dropbtn">Caja</button>
-        <div class="dropdown-content">
-          {% if current_user.is_authenticated %}
-          <a href="/abrir_caja">Abrir Caja</a>
-          <a href="/historial_cajas">Historial Cajas</a>
-          {% else %}
-          <a href="#" onclick="mostrarLoginDesdeCaja()">Iniciar sesión para acceder</a>
-          {% endif %}
-        </div>
+    <div class="dropdown">
+      <button class="dropbtn">Caja</button>
+      <div class="dropdown-content">
+        {% if current_user.is_authenticated %}
+        <a href="/abrir_caja">Abrir Caja</a>
+        <a href="/historial_cajas">Historial Cajas</a>
+        {% else %}
+        <a href="#" onclick="mostrarLoginDesdeCaja()">Iniciar sesión para acceder</a>
+        {% endif %}
       </div>
+    </div>
 
-      <div class="dropdown">
-        <button class="dropbtn">Empleo</button>
-        <div class="dropdown-content">
-          <a href="/carniceros_cv">Perfiles de Carniceros</a>
-          <a href="/armar_cv">Subir CV y Encontrar Trabajo</a>
-          <a href="/ofrecer_empleo">Ofrecer Empleo</a>
-        </div>
+    <div class="dropdown">
+      <button class="dropbtn">Empleo</button>
+      <div class="dropdown-content">
+        <a href="/carniceros_cv">Perfiles de Carniceros</a>
+        <a href="/armar_cv">Subir CV y Encontrar Trabajo</a>
+        <a href="/ofrecer_empleo">Ofrecer Empleo</a>
       </div>
+    </div>
 
-      <div class="dropdown">
-        <button class="dropbtn">Proveedores</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="mostrarModal()">Encontrar Proveedores</a>
-          <a href="/soy_proveedor">Soy Proveedor / Quiero Vender</a>
-        </div>
+    <div class="dropdown">
+      <button class="dropbtn">Proveedores</button>
+      <div class="dropdown-content">
+        <a href="#" onclick="mostrarModal()">Encontrar Proveedores</a>
+        <a href="/soy_proveedor">Soy Proveedor / Quiero Vender</a>
       </div>
+    </div>
 
-      <div class="dropdown">
-        <button class="dropbtn">Otros</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="abrirModalApoyo()">Apoyar Proyecto</a>
-          <a href="https://chat.whatsapp.com/HRl7CKxxQEAInJ379UTiDa" target="_blank">Grupo de WhatsApp</a>
-        </div>
+    <div class="dropdown">
+      <button class="dropbtn">Otros</button>
+      <div class="dropdown-content">
+        <a href="#" onclick="abrirModalApoyo()">Apoyar Proyecto</a>
+        <a href="https://chat.whatsapp.com/HRl7CKxxQEAInJ379UTiDa" target="_blank">Grupo de WhatsApp</a>
       </div>
     </div>
   </div>
 </header>
 
-<div class="central-area">
+<div class="bienvenida-box">
   <h2>Bienvenido</h2>
   {% if current_user.is_authenticated %}
     <p>Hola {{ current_user.first_name }}, elegí una opción desde el menú superior para comenzar.</p>
   {% else %}
     <p>Hola, elegí una opción desde el menú superior para comenzar.</p>
   {% endif %}
-
-  <p style="margin-top: 10px; color: #ccc; font-size: 15px; max-width: 90%; text-align: center;">
-    Sitio en desarrollo. Estamos trabajando constantemente para mejorar la experiencia, agregar herramientas útiles y seguir creciendo junto a vos.
-  </p>
+  <p>Sitio en desarrollo. Estamos trabajando constantemente para mejorar la experiencia, agregar herramientas útiles y seguir creciendo junto a vos.</p>
 </div>
+
 
 <footer>
   <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados. - Rodrigo Andrés Santua | Visitas totales: {{ visitas }}</p>
@@ -127,16 +253,16 @@
       Bienvenido a la plataforma de Gestión de Carnicería. Al registrarte y utilizar nuestros servicios, aceptás los siguientes términos:
     </p>
     <ul style="font-size: 15px; padding-left: 20px;">
-      <li>🔒 Tus datos serán tratados con confidencialidad. No compartiremos tu información personal sin tu consentimiento.</li>
-      <li>🛠️ Esta plataforma es gratuita y se encuentra en constante desarrollo. Algunas funcionalidades pueden estar en fase beta.</li>
-      <li>📬 Podremos enviarte notificaciones o actualizaciones relevantes al correo proporcionado.</li>
-      <li>🚫 Está prohibido el uso indebido de la plataforma, incluyendo la publicación de contenido ofensivo o ilegal.</li>
-      <li>📊 La información registrada (balances, ventas, currículums, etc.) es responsabilidad del usuario.</li>
-      <li>✅ Nos reservamos el derecho de suspender cuentas en caso de detectar actividad sospechosa o violación a estos términos.</li>
-      <li>📌 Cualquier modificación futura en los términos será notificada por correo o publicada en la página principal.</li>
-      <li>👥 El uso compartido de cuentas está prohibido. Cada usuario es responsable de sus acciones dentro del sistema.</li>
+      <li>🔒 Tus datos serán tratados con confidencialidad.</li>
+      <li>🛠️ Esta plataforma es gratuita y está en desarrollo.</li>
+      <li>📬 Podremos enviarte notificaciones relevantes.</li>
+      <li>🚫 Está prohibido el uso indebido del sistema.</li>
+      <li>📊 Cada usuario es responsable de su contenido.</li>
+      <li>✅ Podemos suspender cuentas por mal uso.</li>
+      <li>📌 Notificaremos cambios importantes por correo.</li>
+      <li>👥 No compartas tu cuenta con otros.</li>
     </ul>
-    <label><input type="checkbox" id="aceptoTerminos"> Acepto los términos y condiciones</label><br><br>
+    <label><input type="checkbox" id="aceptoTerminos"> Acepto los términos</label><br><br>
     <button class="modal-apoyo-btn" onclick="enviarRegistro()">Aceptar y Registrarse</button>
   </div>
 </div>
@@ -156,7 +282,6 @@
     </div>
   </div>
 </div>
-
 <script>
   function mostrarLoginDesdeCaja() {
     document.getElementById('loginModal').style.display = 'flex';
