@@ -691,6 +691,13 @@ google = oauth.register(
     client_kwargs={'scope': 'openid profile email'}
 )
 
+from flask import session
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+
 
 @app.route('/login/gmail')
 def login_gmail():
