@@ -703,7 +703,10 @@ def login_gmail():
 def gmail_callback():
     try:
         token = google.authorize_access_token()
-        resp = google.get('userinfo')  # ✅ YA FUNCIONA porque tenés server_metadata_url
+
+        # ✅ Obtener correctamente el endpoint del perfil del usuario
+        userinfo_endpoint = google.load_server_metadata().get('userinfo_endpoint')
+        resp = google.get(userinfo_endpoint)
         user_info = resp.json()
 
         email = user_info.get('email')
