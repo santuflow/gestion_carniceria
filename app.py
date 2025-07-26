@@ -13,6 +13,8 @@ from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from datetime import datetime
+from authlib.integrations.flask_client import OAuth
+
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
@@ -679,18 +681,14 @@ def total_usuarios():
 # --- CONFIGURACIÓN DEL LOGIN CON GOOGLE ---
 oauth = OAuth(app)
 
-google = oauth.remote_app(
-    'google',
-    consumer_key='GOOGLE_CLIENT_ID',
-    consumer_secret='GOOGLE_CLIENT_SECRET',
-    request_token_params={
-        'scope': 'email profile'
-    },
-    base_url='https://www.googleapis.com/oauth2/v1/',
-    request_token_url=None,
-    access_token_method='POST',
+google = oauth.register(
+    name='google',
+    client_id=os.environ.get('GOOGLE_CLIENT_ID'),
+    client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
     access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth'
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid profile email'}
 )
 
 @google.tokengetter
