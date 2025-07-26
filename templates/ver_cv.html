@@ -1,120 +1,176 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>CV de {{ cv.nombre or 'Sin nombre' }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            background: url('/static/fondo.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <title>CV de {{ cv.nombre or 'Sin nombre' }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: url('/static/fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: white;
+      position: relative;
+    }
 
-        .cv-container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: rgba(0, 0, 0, 0.85);
-            border-radius: 15px;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: -1;
+    }
 
-        .cv-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-bottom: 1px solid #888;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
+    .cv-container {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
 
-        .cv-header img {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid #ffcc00;
-        }
+    .cv-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      border-bottom: 1px solid #888;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
 
-        .cv-header h2 {
-            margin: 0;
-            font-size: 24px;
-            color: #ffcc00;
-        }
+    .cv-header img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #ffcc00;
+    }
 
-        .cv-section {
-            margin-bottom: 20px;
-        }
+    .cv-info {
+      flex: 1;
+      min-width: 250px;
+    }
 
-        .cv-section h3 {
-            margin-bottom: 8px;
-            color: #ffcc00;
-            border-left: 4px solid #ffcc00;
-            padding-left: 10px;
-        }
+    .cv-info h2 {
+      margin: 0 0 10px;
+      color: #ffcc00;
+      font-size: 26px;
+    }
 
-        .cv-section p {
-            margin: 5px 0;
-        }
+    .cv-info p {
+      margin: 4px 0;
+      font-size: 15px;
+    }
 
-        .volver {
-            display: block;
-            margin-top: 30px;
-            text-align: center;
-        }
+    .cv-section {
+      margin-bottom: 25px;
+    }
 
-        .volver a {
-            background-color: #444;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-    </style>
+    .cv-section h3 {
+      color: #ffcc00;
+      font-size: 18px;
+      margin-bottom: 10px;
+      border-left: 4px solid #ffcc00;
+      padding-left: 12px;
+    }
+
+    .cv-section p {
+      margin: 5px 0;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .volver {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .volver a {
+      background-color: #444;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .volver a:hover {
+      background-color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .cv-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .cv-info h2 {
+        font-size: 22px;
+      }
+
+      .cv-container {
+        padding: 20px;
+        margin: 20px;
+      }
+
+      .cv-section h3 {
+        font-size: 16px;
+      }
+
+      .cv-section p {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="cv-container">
-        <div class="cv-header">
-            {% if cv.foto %}
-                <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre or 'Usuario' }}">
-            {% else %}
-                <img src="{{ url_for('static', filename='default_user.png') }}" alt="Sin foto">
-            {% endif %}
-            <div>
-                <h2>{{ cv.nombre or 'Sin nombre' }}</h2>
-                <p><strong>Zona:</strong> {{ cv.zona or 'No especificada' }}</p>
-                <p><strong>Teléfono:</strong> {{ cv.telefono or 'No disponible' }}</p>
-                <p><strong>Email:</strong> {{ cv.email or 'No disponible' }}</p>
-                <p><strong>Fecha de nacimiento:</strong> {{ cv.fecha_nacimiento.strftime('%d/%m/%Y') if cv.fecha_nacimiento else 'No especificada' }}</p>
-            </div>
-        </div>
-
-        <div class="cv-section">
-            <h3>Perfil Profesional</h3>
-            <p>{{ cv.descripcion or 'Sin descripción' }}</p>
-        </div>
-
-        <div class="cv-section">
-            <h3>Habilidades</h3>
-            <p>{{ cv.habilidades or 'No especificadas' }}</p>
-        </div>
-
-        <div class="cv-section">
-            <h3>Educación</h3>
-            <p>{{ cv.educacion or 'No especificada' }}</p>
-        </div>
-
-        <div class="cv-section">
-            <h3>Experiencia</h3>
-            <p>{{ cv.experiencia or 'No especificada' }}</p>
-        </div>
-
-        <div class="volver">
-            <a href="{{ url_for('carniceros_cv') }}">← Volver</a>
-        </div>
+  <div class="cv-container">
+    <div class="cv-header">
+      {% if cv.foto %}
+        <img src="{{ url_for('static', filename='uploads/' ~ cv.foto) }}" alt="Foto de {{ cv.nombre or 'Usuario' }}">
+      {% else %}
+        <img src="{{ url_for('static', filename='default_user.png') }}" alt="Sin foto">
+      {% endif %}
+      <div class="cv-info">
+        <h2>{{ cv.nombre or 'Sin nombre' }}</h2>
+        <p><strong>Zona:</strong> {{ cv.zona or 'No especificada' }}</p>
+        <p><strong>Teléfono:</strong> {{ cv.telefono or 'No disponible' }}</p>
+        <p><strong>Email:</strong> {{ cv.email or 'No disponible' }}</p>
+        <p><strong>Fecha de nacimiento:</strong> {{ cv.fecha_nacimiento.strftime('%d/%m/%Y') if cv.fecha_nacimiento else 'No especificada' }}</p>
+      </div>
     </div>
+
+    <div class="cv-section">
+      <h3>Perfil Profesional</h3>
+      <p>{{ cv.descripcion or 'Sin descripción' }}</p>
+    </div>
+
+    <div class="cv-section">
+      <h3>Habilidades</h3>
+      <p>{{ cv.habilidades or 'No especificadas' }}</p>
+    </div>
+
+    <div class="cv-section">
+      <h3>Educación</h3>
+      <p>{{ cv.educacion or 'No especificada' }}</p>
+    </div>
+
+    <div class="cv-section">
+      <h3>Experiencia</h3>
+      <p>{{ cv.experiencia or 'No especificada' }}</p>
+    </div>
+
+    <div class="volver">
+      <a href="{{ url_for('carniceros_cv') }}">← Volver</a>
+    </div>
+  </div>
 </body>
 </html>
