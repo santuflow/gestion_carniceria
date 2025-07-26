@@ -697,7 +697,7 @@ from flask import session
 @app.route('/login/gmail')
 def login_gmail():
     return google.authorize_redirect(
-        redirect_uri=url_for('gmail_callback', _external=True, _scheme='https')
+        redirect_uri='https://carni0.com/login/callback'
     )
 
 @app.route('/login/callback')
