@@ -700,38 +700,48 @@ def login_gmail():
         redirect_uri=url_for('gmail_callback', _external=True, _scheme='https')
     )
 
-
 @app.route('/login/callback')
 def gmail_callback():
-    token = google.authorize_access_token()
-    resp = google.get('userinfo')
-    user_info = resp.json()
+    try:
+        token = google.authorize_access_token()
+        resp = google.get('userinfo')
+        user_info = resp.json()
 
-    email = user_info.get('email')
-    name = user_info.get('name')
+        email = user_info.get('email')
+        name = user_info.get('name')
+        picture = user_info.get('picture')
 
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        user = User(
-            username=email.split('@')[0],
-            email=email,
-            password='',
-            nombre=name,
-            tipo_perfil='busca trabajo',
-            zona='sin especificar',
-            descripcion='',
-            experiencia='',
-            roles='',
-            cv_archivo='',
-            foto='',
-            is_admin=False
-        )
-        db.session.add(user)
-        db.session.commit()
+        if not email:
+            flash("No se pudo obtener el correo electrónico desde Google.", "danger")
+            return redirect(url_for('index'))
 
-    login_user(user)
-    flash('Sesión iniciada con Gmail correctamente', 'success')
-    return redirect(url_for('index'))
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(
+                username=email.split('@')[0],
+                email=email,
+                password='',
+                nombre=name,
+                tipo_perfil='busca trabajo',
+                zona='sin especificar',
+                descripcion='',
+                experiencia='',
+                roles='',
+                cv_archivo='',
+                foto=picture or '',
+                is_admin=False
+            )
+            db.session.add(user)
+            db.session.commit()
+
+        login_user(user)
+        flash('Sesión iniciada con Gmail correctamente', 'success')
+        return redirect(url_for('index'))
+
+    except Exception as e:
+        flash(f"Error durante el login con Gmail: {str(e)}", "danger")
+        return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
