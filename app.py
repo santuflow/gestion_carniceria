@@ -48,7 +48,19 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
+
+    nombre = db.Column(db.String(100))  # Para nombre real desde Gmail
+    foto = db.Column(db.String(300))  # URL de imagen de perfil (Gmail o manual)
+    tipo_perfil = db.Column(db.String(50))  # busca trabajo / ofrece empleo / proveedor
+    zona = db.Column(db.String(100), default='sin especificar')
+    descripcion = db.Column(db.Text)
+    experiencia = db.Column(db.Text)
+    roles = db.Column(db.String(200))  # carnicero, franquero, etc.
+    cv_archivo = db.Column(db.String(200))  # ruta al archivo subido
+    is_admin = db.Column(db.Boolean, default=False)
+
     balances = db.relationship('Balance', backref='user', lazy=True)
+
 
 
 class Balance(db.Model):
