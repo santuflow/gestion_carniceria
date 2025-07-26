@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: Arial, sans-serif;
   background-image: url('/static/fondo.jpg');
   background-size: cover;
   background-attachment: fixed;
@@ -16,7 +16,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
 a {
@@ -32,18 +31,7 @@ footer {
   margin-top: auto;
 }
 
-/* ====== FONDO OSCURO SOBRE LA IMAGEN ====== */
-.fondo-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
-
-/* ====== ENCABEZADO ====== */
+/* ====== ENCABEZADO Y NAVEGACIÓN ====== */
 header {
   background-color: #111;
   color: white;
@@ -70,18 +58,18 @@ header {
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
 }
 
 .btn-auth:hover {
   background-color: #e74c3c;
 }
 
-/* ====== NAVEGACIÓN PC ====== */
 .nav-section {
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
   background-color: #222;
   padding: 10px 5px;
   width: 100%;
@@ -99,23 +87,18 @@ header {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.dropbtn:hover {
-  background-color: #555;
+  white-space: nowrap;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
   background-color: #222;
+  min-width: 160px;
   top: 100%;
   left: 0;
-  min-width: 160px;
+  z-index: 10;
   border-radius: 6px;
-  z-index: 1000;
-  box-shadow: 0px 5px 10px rgba(0,0,0,0.5);
 }
 
 .dropdown-content a {
@@ -123,11 +106,10 @@ header {
   padding: 10px;
   display: block;
   font-size: 14px;
-  transition: background-color 0.3s;
 }
 
 .dropdown-content a:hover {
-  background-color: #444;
+  background-color: #555;
 }
 
 .dropdown:hover .dropdown-content {
@@ -140,37 +122,13 @@ header {
   padding: 50px 15px;
   max-width: 700px;
   margin: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.35);
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
 }
 
 .central-area h2 {
   font-size: 28px;
   margin-bottom: 15px;
-}
-
-/* ====== BIENVENIDA ====== */
-.bienvenida-box {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 30px;
-  border-radius: 15px;
-  max-width: 600px;
-  margin: 50px auto;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-}
-
-.bienvenida-box h2 {
-  font-size: 26px;
-  margin-bottom: 15px;
-  color: #ffffff;
-}
-
-.bienvenida-box p {
-  font-size: 16px;
-  color: #dddddd;
-  margin: 5px 0;
 }
 
 /* ====== MODALES ====== */
@@ -256,6 +214,30 @@ header {
   cursor: pointer;
 }
 
+/* ====== BIENVENIDA ====== */
+.bienvenida-box {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.bienvenida-box h2 {
+  color: #ffffff;
+  font-size: 26px;
+  margin-bottom: 15px;
+}
+
+.bienvenida-box p {
+  color: #dddddd;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
 /* ====== MENÚ MÓVIL ====== */
 .btn-menu-movil {
   display: none;
@@ -272,12 +254,77 @@ header {
   display: none;
   flex-direction: column;
   background-color: #111;
+  padding: 10px 0;
+}
+
+#menu-desplegable a {
+  color: white;
   padding: 10px;
-  gap: 8px;
+  text-decoration: none;
+  border-top: 1px solid #333;
+  font-size: 14px;
+  text-align: center;
+}
+
+#menu-desplegable a:hover {
+  background-color: #222;
 }
 
 #menu-desplegable.visible {
   display: flex;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .header-top-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-top-row h1 {
+    font-size: 18px;
+  }
+
+  .btn-auth {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  .dropbtn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .dropdown-content a {
+    font-size: 12px;
+  }
+
+  .central-area {
+    padding: 30px 10px;
+  }
+
+  .modal-apoyo-content {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .nav-section {
+    display: none;
+  }
+
+  .btn-menu-movil {
+    display: block;
+  }
+}
+
+/* ===== MENÚ DESPLEGABLE MÓVIL MEJORADO ===== */
+#menu-desplegable {
+  display: none;
+  flex-direction: column;
+  background-color: #111;
+  padding: 10px;
+  gap: 8px;
 }
 
 #menu-desplegable .dropdown {
@@ -312,10 +359,6 @@ header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
-#menu-desplegable .dropdown-content.visible {
-  display: flex;
-}
-
 #menu-desplegable .dropdown-content a {
   padding: 10px 14px;
   color: white;
@@ -330,51 +373,80 @@ header {
   background-color: #333;
 }
 
-/* ====== RESPONSIVE ====== */
-@media (max-width: 768px) {
-  .header-top-row {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .header-top-row h1 {
-    font-size: 18px;
-  }
-
-  .btn-auth {
-    padding: 5px 8px;
-    font-size: 12px;
-  }
-
-  .dropbtn {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-
-  .dropdown-content a {
-    font-size: 12px;
-  }
-
-  .central-area {
-    padding: 30px 10px;
-  }
-
-  .modal-apoyo-content {
-    max-width: 90%;
-    padding: 20px;
-  }
-
-  .nav-section {
-    display: none;
-  }
-
-  .btn-menu-movil {
-    display: block;
-  }
+#menu-desplegable .dropdown-content a:last-child {
+  border-bottom: none;
 }
 
-/* Menú PC horizontal */
+#menu-desplegable .dropdown-content.visible {
+  display: flex;
+}
+
+/* Estilo general de submenús */
+#menu-desplegable .dropdown-content {
+  display: none;
+  flex-direction: column;
+  background-color: #0d1b2a; /* color más oscuro */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Enlaces del submenú (por defecto) */
+#menu-desplegable .dropdown-content a {
+  text-align: left;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+}
+
+/* Al pasar el mouse */
+#menu-desplegable .dropdown-content a:hover {
+  background-color: #1e2d3d;
+}
+
+/* Cuando un submenú está visible, darle color de fondo distinto */
+#menu-desplegable .dropdown-content.visible {
+  display: flex;
+  background-color: #173753; /* celeste oscuro diferenciado */
+}
+
+/* Botón activo también se resalta */
+#menu-desplegable .dropbtn.activo {
+  background-color: #004080;
+  color: #fff;
+  font-weight: bold;
+}
+
+body {
+  position: relative;
+  background-image: url('/static/fondo.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Capa oscura encima del fondo */
+.fondo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* opacidad del 50% */
+  z-index: -1;
+}
+
+/* Mostrar el menú en PC como barra horizontal */
 @media (min-width: 769px) {
   #menu-desplegable {
     display: flex;
