@@ -703,24 +703,23 @@ def login_gmail():
 def gmail_callback():
     try:
         token = google.authorize_access_token()
-
-        # ✅ Obtener correctamente el endpoint del perfil del usuario
-        userinfo_endpoint = google.load_server_metadata().get('userinfo_endpoint')
-        resp = google.get(userinfo_endpoint)
+        # 🚨 Esta línea es clave: usa el endpoint completo desde metadata
+        userinfo_endpoint = google.load_server_metadata()["userinfo_endpoint"]
+        resp = google.get(userinfo_endpoint, token=token)
         user_info = resp.json()
 
-        email = user_info.get('email')
-        name = user_info.get('name')
-        picture = user_info.get('picture')
+        email = user_info.get("email")
+        name = user_info.get("name")
+        picture = user_info.get("picture")
 
         if not email:
             flash("No se pudo obtener el correo electrónico desde Google.", "danger")
-            return redirect(url_for('index'))
+            return redirect(url_for("index"))
 
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User(
-                username=email.split('@')[0],
+                username=email.split("@")[0],
                 email=email,
                 password='',
                 nombre=name,
@@ -737,13 +736,12 @@ def gmail_callback():
             db.session.commit()
 
         login_user(user)
-        flash('Sesión iniciada con Gmail correctamente', 'success')
-        return redirect(url_for('index'))
+        flash("Sesión iniciada con Gmail correctamente", "success")
+        return redirect(url_for("index"))
 
     except Exception as e:
         flash(f"Error durante el login con Gmail: {str(e)}", "danger")
-        return redirect(url_for('index'))
-
+        return redirect(url_for("index"))
 
 
 if __name__ == '__main__':
