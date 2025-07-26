@@ -380,3 +380,45 @@ header {
 #menu-desplegable .dropdown-content.visible {
   display: flex;
 }
+
+/* Estilo general de submenús */
+#menu-desplegable .dropdown-content {
+  display: none;
+  flex-direction: column;
+  background-color: #0d1b2a; /* color más oscuro */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Enlaces del submenú (por defecto) */
+#menu-desplegable .dropdown-content a {
+  text-align: left;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+}
+
+/* Al pasar el mouse */
+#menu-desplegable .dropdown-content a:hover {
+  background-color: #1e2d3d;
+}
+
+/* Cuando un submenú está visible, darle color de fondo distinto */
+#menu-desplegable .dropdown-content.visible {
+  display: flex;
+  background-color: #173753; /* celeste oscuro diferenciado */
+}
+
+/* Botón activo también se resalta */
+#menu-desplegable .dropbtn.activo {
+  background-color: #004080;
+  color: #fff;
+  font-weight: bold;
+}
