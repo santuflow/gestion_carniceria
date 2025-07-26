@@ -696,22 +696,21 @@ from flask import session
 
 @app.route('/login/gmail')
 def login_gmail():
-    return google.authorize(callback=url_for('gmail_callback', _external=True, _scheme='https'))
+    return google.authorize_redirect(
+        redirect_uri=url_for('gmail_callback', _external=True, _scheme='https')
+    )
+
 
 @app.route('/login/callback')
 def gmail_callback():
-    resp = google.authorized_response()
-    if resp is None or resp.get('access_token') is None:
-        return "Acceso denegado"
-
-    session['google_token'] = (resp['access_token'], '')
-    user_info = google.get('userinfo').data
+    token = google.authorize_access_token()
+    resp = google.get('userinfo')
+    user_info = resp.json()
 
     email = user_info.get('email')
     name = user_info.get('name')
 
     user = User.query.filter_by(email=email).first()
-
     if not user:
         user = User(
             username=email.split('@')[0],
