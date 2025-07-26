@@ -758,3 +758,27 @@ def gmail_callback():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+
+# SOLO UNA VEZ para agregar columnas si no existen
+with app.app_context():
+    from sqlalchemy import text
+    columnas = {
+        'nombre': 'VARCHAR(100)',
+        'foto': 'VARCHAR(300)',
+        'tipo_perfil': 'VARCHAR(50)',
+        'zona': 'VARCHAR(100)',
+        'descripcion': 'TEXT',
+        'experiencia': 'TEXT',
+        'roles': 'TEXT',
+        'cv_archivo': 'VARCHAR(300)',
+        'is_admin': 'BOOLEAN DEFAULT false'
+    }
+
+    for columna, tipo in columnas.items():
+        try:
+            db.session.execute(text(f'ALTER TABLE "user" ADD COLUMN {columna} {tipo}'))
+            print(f'Columna {columna} agregada.')
+        except Exception as e:
+            print(f'Columna {columna} ya existe o error: {e}')
+
+    db.session.commit()
