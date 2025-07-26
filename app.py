@@ -703,8 +703,7 @@ def login_gmail():
 def gmail_callback():
     try:
         token = google.authorize_access_token()
-        resp = google.get('userinfo')
-        user_info = resp.json()
+        user_info = google.parse_id_token(token)
 
         email = user_info.get('email')
         name = user_info.get('name')
