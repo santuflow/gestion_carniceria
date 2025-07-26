@@ -445,3 +445,32 @@ body {
   background-color: rgba(0, 0, 0, 0.5); /* opacidad del 50% */
   z-index: -1;
 }
+
+/* Mostrar el menú en PC como barra horizontal */
+@media (min-width: 769px) {
+  #menu-desplegable {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+  }
+
+  #menu-desplegable .dropdown {
+    position: relative;
+    width: auto;
+  }
+
+  #menu-desplegable .dropbtn {
+    width: auto;
+    border-radius: 8px;
+  }
+
+  #menu-desplegable .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 220px;
+    z-index: 1000;
+  }
+}
