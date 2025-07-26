@@ -715,7 +715,7 @@ def login_gmail():
 def gmail_callback():
     try:
         token = google.authorize_access_token()
-        # 🚨 Esta línea es clave: usa el endpoint completo desde metadata
+        # 🚨 Usa el endpoint correcto de Google desde los metadatos
         userinfo_endpoint = google.load_server_metadata()["userinfo_endpoint"]
         resp = google.get(userinfo_endpoint, token=token)
         user_info = resp.json()
@@ -733,7 +733,7 @@ def gmail_callback():
             user = User(
                 username=email.split("@")[0],
                 email=email,
-                password='',
+                password_hash='',  # ✅ CORREGIDO
                 nombre=name,
                 tipo_perfil='busca trabajo',
                 zona='sin especificar',
