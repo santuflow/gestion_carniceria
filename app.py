@@ -703,7 +703,8 @@ def login_gmail():
 def gmail_callback():
     try:
         token = google.authorize_access_token()
-        user_info = google.parse_id_token(token)
+        resp = google.get('userinfo')  # ✅ YA FUNCIONA porque tenés server_metadata_url
+        user_info = resp.json()
 
         email = user_info.get('email')
         name = user_info.get('name')
@@ -739,6 +740,7 @@ def gmail_callback():
     except Exception as e:
         flash(f"Error durante el login con Gmail: {str(e)}", "danger")
         return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
