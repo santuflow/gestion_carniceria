@@ -116,6 +116,8 @@ def unauthorized():
     return redirect(url_for('index'))
 
 
+
+
 # ————— AUTENTICACIÓN —————
 
 @app.route('/register', methods=['POST'])
@@ -161,6 +163,8 @@ def logout():
     logout_user()
     flash('Sesión cerrada.', 'success')
     return redirect(url_for('index'))
+
+
 
 
 # ————— VISTAS PRINCIPALES —————
@@ -671,6 +675,67 @@ def total_usuarios():
 
     cantidad = User.query.count()
     return f'Total de usuarios registrados: {cantidad}'
+
+# --- CONFIGURACIÓN DEL LOGIN CON GOOGLE ---
+oauth = OAuth(app)
+
+google = oauth.remote_app(
+    'google',
+    consumer_key='319793123852-u4j9c6nd5rj7u6i7vfklg1290i7mjsqg.apps.googleusercontent.com',
+    consumer_secret='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',
+    request_token_params={
+        'scope': 'email profile'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth'
+)
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+@app.route('/login/gmail')
+def login_gmail():
+    return google.authorize(callback=url_for('gmail_callback', _external=True, _scheme='https'))
+
+@app.route('/login/callback')
+def gmail_callback():
+    resp = google.authorized_response()
+    if resp is None or resp.get('access_token') is None:
+        return "Acceso denegado"
+
+    session['google_token'] = (resp['access_token'], '')
+    user_info = google.get('userinfo').data
+
+    email = user_info.get('email')
+    name = user_info.get('name')
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        user = User(
+            username=email.split('@')[0],
+            email=email,
+            password='',
+            nombre=name,
+            tipo_perfil='busca trabajo',
+            zona='sin especificar',
+            descripcion='',
+            experiencia='',
+            roles='',
+            cv_archivo='',
+            foto='',
+            is_admin=False
+        )
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user)
+    flash('Sesión iniciada con Gmail correctamente', 'success')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

@@ -163,6 +163,16 @@
 
 </head>
 <body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 
 <header>
   <div class="header-top-row">
@@ -171,6 +181,7 @@
       {% if not current_user.is_authenticated %}
       <button class="btn-auth" onclick="document.getElementById('loginModal').style.display='flex'">Iniciar Sesión</button>
       <button class="btn-auth" onclick="document.getElementById('registerModal').style.display='flex'">Registrarse</button>
+      <a href="{{ url_for('login_gmail') }}" class="btn-auth google-btn">Iniciar con Gmail</a>
       {% else %}
       <a href="{{ url_for('logout') }}" class="btn-auth">Cerrar Sesión</a>
       {% endif %}
@@ -478,6 +489,30 @@
 </script>
 
 <div class="fondo-overlay"></div>
+
+<div id="flash-toast" class="flash-toast" style="display:none;"></div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const flashMessages = document.querySelectorAll('.flash');
+    if (flashMessages.length > 0) {
+      const toast = document.getElementById('flash-toast');
+      const message = flashMessages[0].textContent;
+      toast.textContent = message;
+      toast.style.display = 'block';
+
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.style.display = 'none';
+          toast.classList.remove('hide');
+        }, 500); // esperar que se oculte con animación
+      }, 1500); // visible 1.5 segundos
+    }
+  });
+</script>
+
+
 </body>
 
 </html>
