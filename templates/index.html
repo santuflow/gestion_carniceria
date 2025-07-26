@@ -160,11 +160,7 @@
       }
     }
   </style>
-  <script>
-    function toggleMenu() {
-      document.getElementById('menu-desplegable').classList.toggle('visible');
-    }
-  </script>
+
 </head>
 <body>
 
@@ -415,13 +411,20 @@
     document.getElementById('menu-desplegable').classList.toggle('visible');
   }
 
-  // Abrir/cerrar submenús en móviles
+  // Solo abrir un submenú a la vez
   document.querySelectorAll('#menu-desplegable .dropbtn').forEach(btn => {
     btn.addEventListener('click', function () {
+      const allSubmenus = document.querySelectorAll('#menu-desplegable .dropdown-content');
+      allSubmenus.forEach(sub => {
+        if (sub !== this.nextElementSibling) {
+          sub.classList.remove('visible');
+        }
+      });
       this.nextElementSibling.classList.toggle('visible');
     });
   });
 </script>
+
 
 </body>
 </html>

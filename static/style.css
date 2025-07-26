@@ -319,9 +319,8 @@ header {
 }
 
 #menu-desplegable .dropdown {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 5px;
+  position: relative;
+  width: 100%;
 }
 
 #menu-desplegable .dropbtn {
@@ -343,11 +342,26 @@ header {
   display: none;
   flex-direction: column;
   background-color: #1a1a1a;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.5);
 }
 
 #menu-desplegable .dropdown-content a {
   text-align: left;
-  padding-left: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+}
+
+#menu-desplegable .dropdown-content a:hover {
+  background-color: #333;
 }
 
 #menu-desplegable .dropdown-content.visible {
