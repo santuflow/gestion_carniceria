@@ -691,9 +691,6 @@ google = oauth.register(
     client_kwargs={'scope': 'openid profile email'}
 )
 
-@google.tokengetter
-def get_google_oauth_token():
-    return session.get('google_token')
 
 @app.route('/login/gmail')
 def login_gmail():
