@@ -317,3 +317,39 @@ header {
     display: block;
   }
 }
+
+#menu-desplegable .dropdown {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+}
+
+#menu-desplegable .dropbtn {
+  background-color: #111;
+  color: white;
+  border: none;
+  text-align: left;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+}
+
+#menu-desplegable .dropbtn:hover {
+  background-color: #222;
+}
+
+#menu-desplegable .dropdown-content {
+  display: none;
+  flex-direction: column;
+  background-color: #1a1a1a;
+}
+
+#menu-desplegable .dropdown-content a {
+  text-align: left;
+  padding-left: 20px;
+}
+
+#menu-desplegable .dropdown-content.visible {
+  display: flex;
+}
