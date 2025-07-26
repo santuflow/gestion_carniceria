@@ -635,7 +635,7 @@ with app.app_context():
     except Exception as e:
         print("❌ Error al verificar/agregar la columna 'cerrada':", str(e))
 
-    # Verificar y agregar columnas faltantes a la tabla cv_profesional
+    # Verificar y agregar columnas faltantes a la tabla cv_profesiona
     columnas_cv = {
         'nombre': 'VARCHAR(100)',
         'fecha_nacimiento': 'DATE',
