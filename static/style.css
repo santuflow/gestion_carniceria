@@ -318,20 +318,37 @@ header {
   }
 }
 
+#menu-desplegable {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  background-color: transparent;
+  padding: 10px;
+}
+
+#menu-desplegable.visible {
+  display: flex;
+}
+
 #menu-desplegable .dropdown {
-  position: relative;
-  width: 100%;
+  background-color: #111;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 #menu-desplegable .dropbtn {
   background-color: #111;
-  color: white;
+  color: #fff;
   border: none;
-  text-align: left;
-  padding: 10px;
-  font-size: 14px;
+  text-align: center;
+  padding: 12px;
+  font-size: 16px;
   cursor: pointer;
   width: 100%;
+  font-weight: bold;
+  transition: background 0.2s ease;
 }
 
 #menu-desplegable .dropbtn:hover {
@@ -341,29 +358,31 @@ header {
 #menu-desplegable .dropdown-content {
   display: none;
   flex-direction: column;
-  background-color: #1a1a1a;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
+  background-color: #1b1b1b;
+  padding: 10px;
   border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.5);
-}
-
-#menu-desplegable .dropdown-content a {
-  text-align: left;
-  padding: 10px 20px;
-  font-size: 14px;
-  color: white;
-  text-decoration: none;
-}
-
-#menu-desplegable .dropdown-content a:hover {
-  background-color: #333;
+  animation: fadeIn 0.3s ease;
 }
 
 #menu-desplegable .dropdown-content.visible {
   display: flex;
+}
+
+#menu-desplegable .dropdown-content a {
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+#menu-desplegable .dropdown-content a:hover {
+  background-color: #2a2a2a;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
