@@ -99,31 +99,72 @@
     .dropdown-content a:hover {
       background-color: #444;
     }
-   @media (max-width: 768px) {
-  .nav-section {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    justify-content: center;
-    padding: 10px;
-  }
 
-  .header-top-row {
-    flex-wrap: nowrap;
-  }
+    /* ====== MENÚ PARA MÓVILES ====== */
+    .btn-menu-movil {
+      display: none;
+      background-color: #004080;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      width: 100%;
+    }
 
-  .header-top-row h1 {
-    font-size: 18px;
-  }
+    #menu-desplegable {
+      display: none;
+      flex-direction: column;
+      background-color: #111;
+      padding: 10px 0;
+    }
 
-  .btn-auth {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
+    #menu-desplegable a {
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      border-top: 1px solid #333;
+    }
+
+    #menu-desplegable a:hover {
+      background-color: #222;
+    }
+
+    #menu-desplegable.visible {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .nav-section {
+        display: none;
+      }
+
+      .btn-menu-movil {
+        display: block;
+      }
+
+      .header-top-row {
+        flex-wrap: nowrap;
+      }
+
+      .header-top-row h1 {
+        font-size: 18px;
+      }
+
+      .btn-auth {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
+
       .dropdown-content a {
         font-size: 13px;
       }
     }
   </style>
+  <script>
+    function toggleMenu() {
+      document.getElementById('menu-desplegable').classList.toggle('visible');
+    }
+  </script>
 </head>
 <body>
 
@@ -140,6 +181,30 @@
     </div>
   </div>
 
+  <!-- Botón MENÚ para móviles -->
+  <button class="btn-menu-movil" onclick="toggleMenu()">MENÚ</button>
+
+  <!-- Menú desplegable en móviles -->
+  <div id="menu-desplegable">
+    <a href="/hacer_balance">Hacer Balance</a>
+    <a href="/balances">Balances Públicos</a>
+    {% if current_user.is_authenticated %}
+    <a href="/mis_balances">Mis Balances</a>
+    {% endif %}
+    {% if current_user.is_authenticated %}
+    <a href="/abrir_caja">Abrir Caja</a>
+    <a href="/historial_cajas">Historial Cajas</a>
+    {% else %}
+    <a href="#" onclick="mostrarLoginDesdeCaja()">Iniciar sesión para acceder</a>
+    {% endif %}
+    <a href="/carniceros_cv">Perfiles de Carniceros</a>
+    <a href="/armar_cv">Subir CV y Encontrar Trabajo</a>
+    <a href="/ofrecer_empleo">Ofrecer Empleo</a>
+    <a href="#" onclick="mostrarModal()">Encontrar Proveedores</a>
+    <a href="/soy_proveedor">Soy Proveedor / Quiero Vender</a>
+    <a href="#" onclick="abrirModalApoyo()">Apoyar Proyecto</a>
+    <a href="https://chat.whatsapp.com/HRl7CKxxQEAInJ379UTiDa" target="_blank">Grupo de WhatsApp</a>
+  </div>
   <div class="nav-section">
     <div class="dropdown">
       <button class="dropbtn">Balances</button>
@@ -201,7 +266,6 @@
   <p>Sitio en desarrollo. Estamos trabajando constantemente para mejorar la experiencia, agregar herramientas útiles y seguir creciendo junto a vos.</p>
 </div>
 
-
 <footer>
   <p>&copy; 2025 Gestión de Carnicería. Todos los derechos reservados. - Rodrigo Andrés Santua | Visitas totales: {{ visitas }}</p>
 </footer>
@@ -238,9 +302,7 @@
   <div class="modal-apoyo-content" style="max-height: 80vh; overflow-y: auto;">
     <span class="modal-apoyo-close" onclick="document.getElementById('terminosModal').style.display='none'">&times;</span>
     <h2>Términos y Condiciones</h2>
-    <p>
-      Bienvenido a la plataforma de Gestión de Carnicería. Al registrarte y utilizar nuestros servicios, aceptás los siguientes términos:
-    </p>
+    <p>Bienvenido a la plataforma de Gestión de Carnicería. Al registrarte y utilizar nuestros servicios, aceptás los siguientes términos:</p>
     <ul style="font-size: 15px; padding-left: 20px;">
       <li>🔒 Tus datos serán tratados con confidencialidad.</li>
       <li>🛠️ Esta plataforma es gratuita y está en desarrollo.</li>
@@ -271,6 +333,7 @@
     </div>
   </div>
 </div>
+
 <script>
   function mostrarLoginDesdeCaja() {
     document.getElementById('loginModal').style.display = 'flex';
@@ -351,10 +414,7 @@
       if (event.target === modal) modal.style.display = 'none';
     });
   }
-</script>
 
-<script>
-  // MOSTRAR SUBMENÚ EN PC AL PASAR EL MOU
   if (window.innerWidth > 768) {
     document.querySelectorAll('.dropdown').forEach(drop => {
       drop.addEventListener('mouseenter', () => {
@@ -369,3 +429,6 @@
     });
   }
 </script>
+
+</body>
+</html>
