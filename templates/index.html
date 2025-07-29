@@ -171,7 +171,6 @@
       {% if not current_user.is_authenticated %}
       <button class="btn-auth" onclick="document.getElementById('loginModal').style.display='flex'">Iniciar Sesión</button>
       <button class="btn-auth" onclick="document.getElementById('registerModal').style.display='flex'">Registrarse</button>
-      <a href="{{ url_for('login_gmail') }}" class="btn-auth google-btn">Iniciar con Gmail</a>
       {% else %}
       <a href="{{ url_for('logout') }}" class="btn-auth">Cerrar Sesión</a>
       {% endif %}
@@ -308,6 +307,11 @@
       <input type="text" name="username" placeholder="Usuario" required><br><br>
       <input type="password" name="password" placeholder="Contraseña" required><br><br>
       <button type="submit" class="modal-apoyo-btn">Ingresar</button>
+
+<div class="google-login-wrapper">
+  <a href="{{ url_for('login_gmail') }}" class="btn-gmail">Iniciar sesión con Gmail</a>
+</div>
+
     </form>
   </div>
 </div>
@@ -322,6 +326,11 @@
       <input type="email" name="email" placeholder="Correo electrónico" required><br><br>
       <input type="password" name="password" placeholder="Contraseña" required><br><br>
       <button type="button" class="modal-apoyo-btn" onclick="mostrarTerminos()">Crear Cuenta</button>
+
+<div class="google-login-wrapper">
+  <a href="{{ url_for('login_gmail') }}" class="btn-gmail">Registrarse con Gmail</a>
+</div>
+
     </form>
   </div>
 </div>

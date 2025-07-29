@@ -513,3 +513,26 @@ body {
   opacity: 0;
   transform: translateX(-50%) translateY(-10px);
 }
+
+.btn-gmail {
+  background-color: #db4437;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-gmail:hover {
+  background-color: #c33d2f;
+  cursor: pointer;
+}
+
+.google-login-wrapper {
+  text-align: center;
+  margin-top: 15px;
+}
