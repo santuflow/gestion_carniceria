@@ -755,6 +755,37 @@ def gmail_callback():
         flash(f"Error durante el login con Gmail: {str(e)}", "danger")
         return redirect(url_for("index"))
 
+from flask import request, render_template_string
+
+IP_PERMITIDA = '190.99.71.6'  # ← tu IP real
+
+@app.before_request
+def limitar_acceso_por_ip():
+    ip_cliente = request.remote_addr
+    if ip_cliente != IP_PERMITIDA:
+        return render_template_string("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Este sitio está en desarrollo.</title>
+              <style>
+                body {
+                  background-color: #111;
+                  color: white;
+                  font-family: Arial, sans-serif;
+                  text-align: center;
+                  padding-top: 100px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>🚧 Sitio en mantenimiento</h1>
+              <p>Este sitio está cerrado al público por ahora.</p>
+            </body>
+            </html>
+        """), 403
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
