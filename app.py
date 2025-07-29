@@ -117,6 +117,17 @@ class CVProfesional(db.Model):
     cv_archivo = db.Column(db.String(255))
 
 
+    class Proveedor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100))
+    zona = db.Column(db.String(100))
+    zonas_reparto = db.Column(db.Text)  # JSON como string
+    telefono = db.Column(db.String(50))
+    productos = db.Column(db.Text)  # JSON como string
+    foto_portada = db.Column(db.String(300))
+
+
+
 # ————— LOGIN —————
 
 @login_manager.user_loader
@@ -582,6 +593,53 @@ def ver_proveedor(id):
     }
 
     return render_template('ver_proveedor.html', proveedor=data)
+
+@app.route('/publicar_proveedor', methods=['POST'])
+@login_required
+def publicar_proveedor():
+    nombre = request.form.get('nombre')
+    zona = request.form.get('zona')
+    zonas_reparto = request.form.getlist('zonas_reparto')
+    telefono = request.form.get('telefono')
+    productos = []
+    
+    for i in range(len(request.form.getlist('producto_nombre'))):
+        producto = {
+            'nombre': request.form.getlist('producto_nombre')[i],
+            'precio': request.form.getlist('producto_precio')[i],
+            'unidad': request.form.getlist('producto_unidad')[i]
+        }
+        foto = request.files.getlist('producto_foto')[i]
+        if foto:
+            filename = secure_filename(foto.filename)
+            ruta = os.path.join(app.root_path, 'static/uploads', filename)
+            foto.save(ruta)
+            producto['foto'] = f'/static/uploads/{filename}'
+        productos.append(producto)
+
+    portada = request.files.get('foto_portada')
+    if portada:
+        portada_filename = secure_filename(portada.filename)
+        portada_path = os.path.join(app.root_path, 'static/uploads', portada_filename)
+        portada.save(portada_path)
+        foto_portada_url = f'/static/uploads/{portada_filename}'
+    else:
+        foto_portada_url = ''
+
+    proveedor = {
+        'foto_portada': foto_portada_url,
+        'nombre': nombre,
+        'zona': zona,
+        'zonas_reparto': zonas_reparto,
+        'telefono': telefono,
+        'productos': productos
+    }
+
+    # Podés guardar el proveedor en la base de datos o una lista temporal
+    session['proveedor'] = proveedor
+
+    return redirect(url_for('ver_proveedor'))
+
 
 @app.route('/historial_cajas')
 @login_required
