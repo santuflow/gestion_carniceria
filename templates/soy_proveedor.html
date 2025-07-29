@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiero ser proveedor</title>
+  <title>Registro de Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor.css') }}">
 </head>
 <body class="fondo-proveedor">
   <div class="proveedor-layout">
     <h1>Registro de Proveedor</h1>
+
     <form action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
-      
+
       <div class="form-col">
         <label>Foto de portada:</label>
-        <input type="file" name="portada" accept="image/*">
+        <input type="file" name="portada" accept="image/*" required>
 
         <label>Nombre del negocio:</label>
-        <input type="text" name="nombre" placeholder="Ej: Frigorífico El Buen Corte" required>
+        <input type="text" name="nombre" required>
 
-        <label>Dirección / Zona:</label>
+        <label>Dirección / zona:</label>
         <input type="text" name="direccion" required>
 
         <label>Zonas de reparto:</label>
@@ -33,39 +34,67 @@
           <option>Berazategui</option>
           <option>Florencio Varela</option>
           <option>La Plata</option>
-          <option>Morón</option>
-          <option>Merlo</option>
+          <option>Ensenada</option>
+          <option>Monte Grande</option>
+          <option>Lomas de Zamora</option>
+          <option>Banfield</option>
+          <option>San Justo</option>
+          <option>Castelar</option>
+          <option>Ituzaingó</option>
+          <option>Haedo</option>
           <option>Moreno</option>
+          <option>Merlo</option>
+          <option>Pilar</option>
+          <option>Escobar</option>
           <option>San Miguel</option>
           <option>José C. Paz</option>
+          <option>Villa Ballester</option>
+          <option>San Martín</option>
           <option>San Isidro</option>
+          <option>Vicente López</option>
           <option>Tigre</option>
           <option>San Fernando</option>
-          <option>Vicente López</option>
-          <option>Escobar</option>
-          <option>Pilar</option>
           <option>Luján</option>
-          <option>Mar del Plata</option>
-          <option>Bahía Blanca</option>
+          <option>Campana</option>
+          <option>Zárate</option>
         </select>
       </div>
 
       <div class="form-col">
-        <label>Productos que ofrece:</label>
-        <textarea name="productos" rows="4" placeholder="Ej: Cajones de pollo, media res, embutidos..." required></textarea>
+        <label>Contacto (WhatsApp o teléfono):</label>
+        <input type="text" name="contacto" placeholder="+54 9..." required>
 
-        <label>Precios y condiciones:</label>
-        <textarea name="precios" rows="3" placeholder="Ej: Mínimo de compra, formas de pago, promociones..."></textarea>
+        <label>Descripción general:</label>
+        <textarea name="descripcion" rows="3" placeholder="Ej: Frigorífico con reparto diario, productos al por mayor, etc."></textarea>
 
-        <label>Fotos de productos:</label>
-        <input type="file" name="imagenes" multiple accept="image/*">
-
-        <label>Contacto (Teléfono o WhatsApp):</label>
-        <input type="text" name="contacto" required>
+        <div id="productos-container">
+          <label>Productos:</label>
+          <div class="producto-item">
+            <input type="text" name="producto_nombre[]" placeholder="Nombre del producto" required>
+            <input type="text" name="producto_precio[]" placeholder="Precio por kg o unidad" required>
+            <input type="file" name="producto_imagen[]" accept="image/*" required>
+          </div>
+        </div>
+        <button type="button" onclick="agregarProducto()" class="btn-agregar">+ Agregar otro producto</button>
 
         <button type="submit" class="btn-publicar">Publicar proveedor</button>
       </div>
+
     </form>
   </div>
+
+  <script>
+    function agregarProducto() {
+      const container = document.getElementById('productos-container');
+      const div = document.createElement('div');
+      div.classList.add('producto-item');
+      div.innerHTML = `
+        <input type="text" name="producto_nombre[]" placeholder="Nombre del producto" required>
+        <input type="text" name="producto_precio[]" placeholder="Precio por kg o unidad" required>
+        <input type="file" name="producto_imagen[]" accept="image/*" required>
+      `;
+      container.appendChild(div);
+    }
+  </script>
 </body>
 </html>

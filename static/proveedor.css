@@ -64,7 +64,15 @@ select[multiple] {
   max-height: 140px;
 }
 
-.btn-publicar {
+.producto-item {
+  background-color: #222;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.btn-publicar,
+.btn-agregar {
   width: 100%;
   background-color: #4aa3ff;
   color: white;
@@ -78,7 +86,8 @@ select[multiple] {
   transition: background-color 0.3s;
 }
 
-.btn-publicar:hover {
+.btn-publicar:hover,
+.btn-agregar:hover {
   background-color: #3688d8;
 }
 
