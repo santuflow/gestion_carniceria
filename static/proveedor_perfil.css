@@ -1,0 +1,87 @@
+body {
+  background-color: #121212;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.perfil-proveedor {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.foto-portada {
+  width: 100%;
+  height: 240px;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 4px solid #ff4040;
+  border-radius: 5px;
+}
+
+.info-general {
+  margin-top: 20px;
+}
+
+.info-general h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.info-general p, .zonas-reparto, .contacto {
+  margin-bottom: 10px;
+}
+
+.zonas-reparto ul {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.contacto {
+  margin-top: 10px;
+}
+
+.btn-wsp {
+  background-color: #25D366;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.productos {
+  margin-top: 40px;
+}
+
+.lista-productos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.producto-card {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.producto-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.producto-info {
+  padding: 10px;
+}
+
+.producto-info h4 {
+  margin: 5px 0;
+  font-size: 16px;
+}

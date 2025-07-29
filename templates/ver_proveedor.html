@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil del Proveedor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='proveedor_perfil.css') }}">
+</head>
+<body>
+
+  <header>
+    <h1>Gestión de Carnicería</h1>
+    <div class="auth-buttons">
+      <a href="{{ url_for('index') }}" class="btn-auth">Volver</a>
+    </div>
+  </header>
+
+  <main class="perfil-proveedor">
+    <!-- Foto de portada -->
+    <div class="foto-portada" style="background-image: url('{{ proveedor.foto_portada }}');"></div>
+
+    <section class="info-general">
+      <h2>{{ proveedor.nombre }}</h2>
+      <p><strong>Dirección / Zona:</strong> {{ proveedor.zona }}</p>
+
+      <div class="zonas-reparto">
+        <strong>Zonas de reparto:</strong>
+        <ul>
+          {% for zona in proveedor.zonas_reparto %}
+            <li>{{ zona }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="contacto">
+        <p><strong>Teléfono:</strong> {{ proveedor.telefono }}</p>
+        {% if proveedor.telefono and 'whatsapp' in proveedor.telefono|lower %}
+          <a href="https://wa.me/{{ proveedor.telefono | replace('+', '') | replace(' ', '') }}" target="_blank" class="btn-wsp">WhatsApp</a>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="productos">
+      <h3>Productos que ofrece</h3>
+      <div class="lista-productos">
+        {% for producto in proveedor.productos %}
+          <div class="producto-card">
+            <img src="{{ producto.foto }}" alt="Producto">
+            <div class="producto-info">
+              <h4>{{ producto.nombre }}</h4>
+              <p><strong>Precio:</strong> ${{ producto.precio }}</p>
+              <p><strong>Unidad:</strong> {{ producto.unidad }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
