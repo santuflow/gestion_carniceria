@@ -558,6 +558,9 @@ def api_cerrar_caja():
 
     return jsonify(success=True, resumen=resumen), 200
 
+@app.route("/soy_proveedor")
+def soy_proveedor():
+    return render_template("soy_proveedor.html")
 
 
 
@@ -703,6 +706,7 @@ google = oauth.register(
 
 
 from flask import session
+
 
 
 @app.route('/login/gmail')

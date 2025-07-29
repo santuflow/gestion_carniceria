@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrarse como proveedor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Registrarse como proveedor</h2>
+    <form action="/registrar_proveedor" method="POST" enctype="multipart/form-data">
+      <input type="text" name="nombre" placeholder="Nombre del negocio" required><br>
+      <input type="text" name="zona" placeholder="Zona o ubicación" required><br>
+      <input type="text" name="categoria" placeholder="Ej: Frigorífico, Granja, Insumos" required><br>
+      <textarea name="descripcion" placeholder="¿Qué ofrece?" rows="4" required></textarea><br>
+      <input type="text" name="contacto" placeholder="Teléfono o WhatsApp" required><br>
+      <label>Logo o foto representativa:</label><br>
+      <input type="file" name="imagen" accept="image/*"><br><br>
+      <button type="submit">Publicar proveedor</button>
+    </form>
+  </div>
+</body>
+</html>
