@@ -1,123 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registrarse como proveedor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor.css') }}">
-  <style>
-    body {
-      background-image: url("/static/fondo_carnes.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      min-height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    .form-container {
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 40px;
-      max-width: 700px;
-      margin: 60px auto;
-      border-radius: 15px;
-      color: white;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
-    }
-
-    .form-container h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 26px;
-    }
-
-    .form-container label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .form-container input,
-    .form-container select,
-    .form-container textarea {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-    }
-
-    .form-container textarea {
-      resize: vertical;
-    }
-
-    .form-container input[type="file"] {
-      background-color: transparent;
-      color: white;
-    }
-
-    .form-container button {
-      width: 100%;
-      padding: 14px;
-      background-color: #4aa3ff;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 20px;
-    }
-
-    .form-container button:hover {
-      background-color: #368dd8;
-    }
-  </style>
 </head>
-<body>
-  <div class="form-container">
-    <h2>Registrarse como proveedor</h2>
-    <form action="/registrar_proveedor" method="POST" enctype="multipart/form-data">
-      
-      <label for="nombre">Nombre del negocio:</label>
+<body class="fondo-proveedor">
+  <section class="contenedor-formulario">
+    <h1>Registro de Proveedor</h1>
+
+    <form action="/publicar_proveedor" method="POST" enctype="multipart/form-data">
+      <label for="portada">Foto de portada:</label>
+      <input type="file" name="portada" accept="image/*" required>
+
+      <label for="nombre">Nombre del frigorífico o empresa:</label>
       <input type="text" name="nombre" required>
 
-      <label for="zona">Zona o ubicación:</label>
-      <input type="text" name="zona" required>
+      <label for="direccion">Zona / Dirección:</label>
+      <input type="text" name="direccion" required>
 
-      <label for="categoria">Categoría:</label>
-      <select name="categoria" required>
-        <option value="">Seleccionar</option>
-        <option>Frigorífico</option>
-        <option>Granja</option>
-        <option>Distribuidor</option>
-        <option>Congelados</option>
-        <option>Otros</option>
-      </select>
+      <div id="zonas-reparto">
+        <label>Zonas de reparto:</label>
+        <div class="zona-reparto">
+          <input type="text" name="zonas[]" placeholder="Ej: Capital, Zona Sur..." required>
+        </div>
+      </div>
+      <button type="button" onclick="agregarZona()">+ Agregar otra zona</button>
 
       <label for="productos">¿Qué productos ofrece?</label>
-      <textarea name="productos" rows="4" placeholder="Ej: Cajones de pollo, media res, embutidos, cortes al vacío, achuras, etc." required></textarea>
+      <textarea name="productos" rows="3" placeholder="Ej: Cajones de pollo, media res, achuras, embutidos..." required></textarea>
 
-      <label for="descripcion">Descripción general del proveedor:</label>
-      <textarea name="descripcion" rows="4" placeholder="Breve resumen del negocio, tipo de servicio, trayectoria, disponibilidad de reparto, etc." required></textarea>
+      <label for="precios">Precios o detalles comerciales:</label>
+      <textarea name="precios" rows="3" placeholder="Describa precios, promociones o condiciones de venta..."></textarea>
 
-      <label for="contacto">Teléfono o WhatsApp de contacto:</label>
-      <input type="text" name="contacto" required>
+      <label for="imagenes">Fotos de productos:</label>
+      <input type="file" name="imagenes" multiple accept="image/*">
 
-      <label for="horarios">Horarios de atención:</label>
-      <input type="text" name="horarios" placeholder="Ej: Lunes a Sábado de 7 a 15 hs">
+      <label for="contacto">Contacto (Teléfono o WhatsApp):</label>
+      <input type="text" name="contacto" placeholder="+54 9..." required>
 
-      <label for="web">Sitio web o redes sociales (opcional):</label>
-      <input type="text" name="web" placeholder="Ej: https://instagram.com/tu_negocio">
-
-      <label for="imagen">Logo o foto representativa:</label>
-      <input type="file" name="imagen" accept="image/*">
-
-      <button type="submit">Publicar proveedor</button>
+      <button type="submit" class="btn-publicar">Publicar proveedor</button>
     </form>
-  </div>
+  </section>
+
+  <script>
+    function agregarZona() {
+      const zona = document.createElement('div');
+      zona.className = 'zona-reparto';
+      zona.innerHTML = '<input type="text" name="zonas[]" placeholder="Otra zona..." required>';
+      document.getElementById('zonas-reparto').appendChild(zona);
+    }
+  </script>
 </body>
 </html>
