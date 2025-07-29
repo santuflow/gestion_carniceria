@@ -563,7 +563,25 @@ def soy_proveedor():
     return render_template("soy_proveedor.html")
 
 
+@app.route('/ver_proveedor/<int:id>')
+def ver_proveedor(id):
+    proveedor = Proveedor.query.get_or_404(id)
 
+    # Parsear zonas_reparto y productos desde texto JSON si están así guardados
+    import json
+    zonas = json.loads(proveedor.zonas_reparto)
+    productos = json.loads(proveedor.productos)
+
+    data = {
+        'foto_portada': proveedor.foto_portada,
+        'nombre': proveedor.nombre,
+        'zona': proveedor.zona,
+        'zonas_reparto': zonas,
+        'telefono': proveedor.telefono,
+        'productos': productos
+    }
+
+    return render_template('ver_proveedor.html', proveedor=data)
 
 @app.route('/historial_cajas')
 @login_required
