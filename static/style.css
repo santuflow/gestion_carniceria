@@ -536,3 +536,64 @@ body {
   text-align: center;
   margin-top: 15px;
 }
+
+
+
+/* Zonas separadas pagina principal */
+.seccion-contenido {
+  padding: 30px 15px;
+  color: white;
+}
+
+.seccion-contenido h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.ver-mas {
+  font-size: 14px;
+  color: #4aa3ff;
+  text-decoration: none;
+}
+
+.tarjetas-contenedor {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.tarjeta {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 180px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.tarjeta:hover {
+  transform: scale(1.03);
+}
+
+.tarjeta img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.tarjeta h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.tarjeta p {
+  font-size: 14px;
+  color: #aaa;
+}
