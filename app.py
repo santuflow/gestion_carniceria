@@ -761,7 +761,10 @@ IP_PERMITIDA = '190.99.71.6'  # ← tu IP real
 
 @app.before_request
 def limitar_acceso_por_ip():
-    ip_cliente = request.remote_addr
+    ip_cliente = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ',' in ip_cliente:
+        ip_cliente = ip_cliente.split(',')[0].strip()
+
     if ip_cliente != IP_PERMITIDA:
         return render_template_string("""
             <!DOCTYPE html>
@@ -779,11 +782,12 @@ def limitar_acceso_por_ip():
               </style>
             </head>
             <body>
-              <h1>🚧 Sitio en mantenimiento</h1>
-              <p>Este sitio está cerrado al público por ahora.</p>
+              <h1>🚧 Sitio en desarrollo</h1>
+              <p>Acceso restringido temporalmente</p>
             </body>
             </html>
         """), 403
+
 
 
 
