@@ -1,96 +1,90 @@
 body.fondo-proveedor {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: url('/static/fondo.jpg') no-repeat center center fixed;
   background-size: cover;
-  backdrop-filter: brightness(0.5);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  font-family: 'Segoe UI', sans-serif;
   min-height: 100vh;
+  color: white;
 }
 
-.contenedor-formulario {
+.proveedor-layout {
   background-color: rgba(0, 0, 0, 0.85);
+  max-width: 1200px;
+  margin: 50px auto;
   padding: 30px 25px;
-  margin: 60px 15px;
   border-radius: 12px;
-  max-width: 600px;
-  width: 100%;
   box-shadow: 0 4px 20px rgba(0,0,0,0.6);
 }
 
-h1 {
+.proveedor-layout h1 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 26px;
+  margin-bottom: 30px;
+  font-size: 28px;
   border-bottom: 2px solid #4aa3ff;
   padding-bottom: 10px;
 }
 
-label {
-  display: block;
-  margin-top: 18px;
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #ccc;
+.proveedor-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-between;
 }
 
-input[type="text"],
-input[type="file"],
-textarea,
-select {
+.form-col {
+  flex: 1;
+  min-width: 280px;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 15px;
+  display: block;
+}
+
+input, textarea, select {
   width: 100%;
   padding: 10px;
-  border-radius: 6px;
+  margin-top: 6px;
   border: none;
-  outline: none;
-  background-color: #f9f9f9;
-  color: #333;
+  border-radius: 6px;
   font-size: 15px;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  color: #000;
 }
 
 textarea {
   resize: vertical;
 }
 
-button[type="submit"],
-button[type="button"] {
-  background-color: #4aa3ff;
-  color: white;
-  padding: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  margin-top: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background 0.3s ease;
+select[multiple] {
+  height: auto;
+  max-height: 140px;
 }
 
-button:hover {
+.btn-publicar {
+  width: 100%;
+  background-color: #4aa3ff;
+  color: white;
+  font-weight: bold;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-publicar:hover {
   background-color: #3688d8;
 }
 
-.zona-reparto {
-  margin-bottom: 10px;
-}
-
-@media (max-width: 600px) {
-  .contenedor-formulario {
-    margin: 30px 10px;
-    padding: 20px;
-  }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  input, textarea, select {
-    font-size: 14px;
+/* Responsive */
+@media (max-width: 768px) {
+  .proveedor-form {
+    flex-direction: column;
   }
 }
