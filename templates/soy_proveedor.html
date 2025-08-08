@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registro de Proveedor</title>
-  <!-- Tu CSS externo (lo dejamos, pero no agregamos estilos inline) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor.css') }}">
 </head>
 <body class="fondo-proveedor">
@@ -17,24 +16,32 @@
 
   <main class="proveedor-layout">
     <form id="form-proveedor" action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
-      <!-- Portada + avatar -->
+
+      <!-- ========== Portada + Avatar (a prueba de balas) ========== -->
       <section class="perfil-visual">
-  <div class="portada-wrapper" id="portada-trigger">
-    <img id="preview-portada" class="portada" src="{{ portada_url or url_for('static', filename='img/portada-placeholder.jpg') }}" alt="Portada">
-    <input type="file" id="portada-file" name="portada" accept="image/*" hidden>
-    <button type="button" class="btn cambiar-portada" id="btn-cambiar-portada">Cambiar portada</button>
-  </div>
+        <!-- PORTADA -->
+        <div class="portada-wrapper">
+          <img id="preview-portada" class="portada"
+               src="{{ portada_url or url_for('static', filename='img/portada-placeholder.jpg') }}"
+               alt="Portada">
+          <input type="file" id="portada-file" name="portada" accept="image/*" hidden>
+          <!-- label dispara SIEMPRE el selector -->
+          <label for="portada-file" class="cambiar-portada">Cambiar portada</label>
+        </div>
 
-  <!-- AVATAR MÁS GRANDE A LA IZQUIERDA Y CLICKEABLE -->
-  <div class="avatar-wrapper" id="avatar-trigger" title="Cambiar foto de perfil">
-    <img id="preview-avatar" class="avatar" src="{{ avatar_url or url_for('static', filename='img/avatar-placeholder.png') }}" alt="Avatar">
-    <input type="file" id="avatar-file" name="avatar" accept="image/*" hidden>
-    <div class="avatar-overlay">Cambiar</div>
-  </div>
-</section>
+        <!-- AVATAR -->
+        <div class="avatar-wrapper" title="Cambiar foto de perfil">
+          <img id="preview-avatar" class="avatar"
+               src="{{ avatar_url or url_for('static', filename='img/avatar-placeholder.png') }}"
+               alt="Avatar">
+          <input type="file" id="avatar-file" name="avatar" accept="image/*" hidden>
+          <!-- ambos labels disparan el selector -->
+          <label for="avatar-file" class="avatar-overlay">Cambiar</label>
+          <label for="avatar-file" class="avatar-action">Cambiar</label>
+        </div>
+      </section>
 
-
-      <!-- Datos generales -->
+      <!-- ========== Datos generales ========== -->
       <section class="grid-datos">
         <div class="form-col">
           <label>Nombre del negocio</label>
@@ -49,7 +56,7 @@
               <input type="text" id="filtro-zonas" placeholder="Buscar zona...">
               <div class="zonas-acciones">
                 <button type="button" class="btn chico" id="btn-todas">Seleccionar todo</button>
-                <button type="button" class="btn chico danger" id="btn-limpiar">Limpiar</button>
+                <button type="button" class="btn chico secundario" id="btn-limpiar">Limpiar</button>
               </div>
             </div>
 
@@ -82,7 +89,7 @@
         </div>
       </section>
 
-      <!-- ==================== PRODUCTOS ==================== -->
+      <!-- ========== PRODUCTOS ========== -->
       <section class="productos-bloque">
         <div class="productos-header">
           <h2>Productos</h2>
@@ -102,8 +109,8 @@
                     Subir foto
                     <input type="file" name="producto_imagen[]" accept="image/*" class="input-foto" hidden>
                   </label>
-                  <button type="button" class="btn texto small btn-cambiar" hidden>Cambiar</button>
-                  <button type="button" class="btn texto small btn-quitar" hidden>Quitar</button>
+                  <button type="button" class="btn secundario small btn-cambiar" hidden>Cambiar</button>
+                  <button type="button" class="btn secundario small btn-quitar" hidden>Quitar</button>
                 </div>
                 <div class="foto-hint">JPG/PNG/WebP • mín. 300×300 • máx. 3MB</div>
                 <div class="msg-error" aria-live="polite"></div>
@@ -176,18 +183,24 @@
     </form>
   </main>
 
+  <!-- =================== SCRIPTS =================== -->
   <script>
-    // =================== PREVIEW PORTADA/AVATAR ===================
-    document.getElementById('input-portada')?.addEventListener('change', e => {
-      const f = e.target.files?.[0];
-      if (f) document.getElementById('preview-portada').src = URL.createObjectURL(f);
-    });
-    document.getElementById('input-avatar')?.addEventListener('change', e => {
-      const f = e.target.files?.[0];
-      if (f) document.getElementById('preview-avatar').src = URL.createObjectURL(f);
-    });
+    // --- Preview portada y avatar (ids correctos) ---
+    function preview(elInput, elImg){
+      const f = elInput.files && elInput.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = e => elImg.src = e.target.result;
+      reader.readAsDataURL(f);
+    }
+    const portadaInput = document.getElementById('portada-file');
+    const portadaImg   = document.getElementById('preview-portada');
+    const avatarInput  = document.getElementById('avatar-file');
+    const avatarImg    = document.getElementById('preview-avatar');
+    portadaInput.addEventListener('change', () => preview(portadaInput, portadaImg));
+    avatarInput.addEventListener('change', () => preview(avatarInput, avatarImg));
 
-    // =================== ZONAS: BÚSQUEDA + CHIPS ===================
+    // --- Zonas: filtro + chips + seleccionar/limpiar ---
     const lista = document.getElementById('zonas-lista');
     const filtro = document.getElementById('filtro-zonas');
     const chips = document.getElementById('zonas-chips');
@@ -195,18 +208,16 @@
     const btnLimpiar = document.getElementById('btn-limpiar');
     const form = document.getElementById('form-proveedor');
 
-    filtro?.addEventListener('input', () => {
+    filtro.addEventListener('input', () => {
       const q = filtro.value.toLowerCase().trim();
       [...lista.querySelectorAll('label')].forEach(lbl => {
         const txt = lbl.innerText.toLowerCase();
         lbl.style.display = txt.includes(q) ? 'flex' : 'none';
       });
     });
-
     function renderChips(){
       chips.innerHTML = '';
-      const checks = lista.querySelectorAll('input[type="checkbox"]:checked');
-      checks.forEach(chk => {
+      lista.querySelectorAll('input[type="checkbox"]:checked').forEach(chk => {
         const span = document.createElement('span');
         span.className = 'chip';
         span.textContent = chk.value;
@@ -218,44 +229,46 @@
         chips.appendChild(span);
       });
     }
-    lista?.addEventListener('change', renderChips);
-
-    btnTodas?.addEventListener('click', () => {
+    lista.addEventListener('change', renderChips);
+    btnTodas.addEventListener('click', () => {
       lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
       renderChips();
     });
-    btnLimpiar?.addEventListener('click', () => {
+    btnLimpiar.addEventListener('click', () => {
       lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
       renderChips();
     });
-
-    form?.addEventListener('submit', (e) => {
-      const alguno = lista.querySelector('input[type="checkbox"]:checked');
-      if (!alguno) {
+    form.addEventListener('submit', (e) => {
+      if (!lista.querySelector('input[type="checkbox"]:checked')) {
         e.preventDefault();
         alert('Seleccioná al menos una zona de reparto.');
       }
     });
-
     renderChips();
 
-    // =================== PRODUCTOS (dinámicos con template) ===================
-    (() => {
+    // --- Productos dinámicos ---
+    (function(){
       const contenedor = document.getElementById('productos-container');
       const btnAgregar = document.getElementById('btn-agregar');
       const tpl = document.getElementById('tpl-producto');
 
-      const MAX_MB = 3;
-      const MAX_BYTES = MAX_MB * 1024 * 1024;
-      const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+      const MAX_MB = 3, MAX_BYTES = MAX_MB * 1024 * 1024;
+      const ALLOWED = ['image/jpeg','image/png','image/webp'];
       const MIN_W = 300, MIN_H = 300;
+      const fmtARS = new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'});
 
-      const fmtARS = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
+      function checkDims(objectURL){
+        return new Promise((res)=>{
+          const i = new Image();
+          i.onload = () => res(i.width>=MIN_W && i.height>=MIN_H);
+          i.onerror = () => res(false);
+          i.src = objectURL;
+        });
+      }
 
-      function nuevaTarjeta() {
+      function nuevaTarjeta(){
         const node = tpl.content.firstElementChild.cloneNode(true);
 
-        // refs
         const inputFoto = node.querySelector('.input-foto');
         const img = node.querySelector('.preview-imagen');
         const errorBox = node.querySelector('.msg-error');
@@ -265,93 +278,49 @@
         const precioInput = node.querySelector('input[name="producto_precio[]"]');
         const precioPreview = node.querySelector('.precio-preview');
 
-        // estado inicial
         img.style.display = 'none';
 
-        // subir foto
-        node.querySelector('.archivo').addEventListener('click', () => inputFoto.click());
-
-        // cambiar/quitar
-        btnCambiar.addEventListener('click', () => inputFoto.click());
-        btnQuitar.addEventListener('click', () => {
+        // Al estar el input dentro del label .archivo, ya dispara solo.
+        btnCambiar.addEventListener('click', ()=> inputFoto.click());
+        btnQuitar.addEventListener('click', ()=>{
           inputFoto.value = '';
-          img.src = '';
-          img.style.display = 'none';
-          btnCambiar.hidden = true;
-          btnQuitar.hidden = true;
+          img.src = ''; img.style.display = 'none';
+          btnCambiar.hidden = true; btnQuitar.hidden = true;
           errorBox.textContent = '';
         });
 
-        // validar y previsualizar
-        inputFoto.addEventListener('change', async (e) => {
-          errorBox.textContent = '';
+        inputFoto.addEventListener('change', async (e)=>{
+          errorBox.textContent='';
           const file = e.target.files && e.target.files[0];
-          if (!file) return;
-
-          if (!ALLOWED.includes(file.type)) {
-            errorBox.textContent = 'Formato no permitido. Usá JPG, PNG o WebP.';
-            e.target.value = '';
-            return;
-          }
-          if (file.size > MAX_BYTES) {
-            errorBox.textContent = `La imagen supera ${MAX_MB}MB.`;
-            e.target.value = '';
-            return;
-          }
-
+          if(!file) return;
+          if(!ALLOWED.includes(file.type)){ errorBox.textContent='Formato no permitido (JPG/PNG/WebP).'; e.target.value=''; return; }
+          if(file.size>MAX_BYTES){ errorBox.textContent=`La imagen supera ${MAX_MB}MB.`; e.target.value=''; return; }
           const url = URL.createObjectURL(file);
-          try {
-            const ok = await checkDims(url);
-            if (!ok) {
-              errorBox.textContent = `La imagen debe ser al menos ${MIN_W}×${MIN_H}px.`;
-              e.target.value = '';
-              URL.revokeObjectURL(url);
-              return;
-            }
-            img.src = url;
-            img.style.display = 'block';
-            btnCambiar.hidden = false;
-            btnQuitar.hidden = false;
-          } catch {
-            errorBox.textContent = 'No se pudo leer la imagen.';
-            e.target.value = '';
-            URL.revokeObjectURL(url);
-          }
+          const ok = await checkDims(url);
+          if(!ok){ errorBox.textContent=`Mínimo ${MIN_W}×${MIN_H}px.`; e.target.value=''; URL.revokeObjectURL(url); return; }
+          img.src = url; img.style.display='block';
+          btnCambiar.hidden = false; btnQuitar.hidden = false;
         });
 
-        // precio → preview ARS
-        const updatePrecioPreview = () => {
-          const val = parseFloat((precioInput.value || '').toString().replace(',', '.'));
-          precioPreview.textContent = isFinite(val) && val > 0 ? fmtARS.format(val) : '';
+        const updPrecio = ()=>{
+          const val = parseFloat((precioInput.value||'').toString().replace(',','.'));
+          precioPreview.textContent = isFinite(val)&&val>0 ? fmtARS.format(val) : '';
         };
-        precioInput.addEventListener('input', updatePrecioPreview);
-        precioInput.addEventListener('blur', updatePrecioPreview);
+        precioInput.addEventListener('input', updPrecio);
+        precioInput.addEventListener('blur', updPrecio);
 
-        // eliminar tarjeta
-        btnEliminar.addEventListener('click', () => {
+        btnEliminar.addEventListener('click', ()=>{
           node.remove();
-          if (!contenedor.querySelector('.producto-item')) agregarProducto();
+          if(!contenedor.querySelector('.producto-item')) agregar();
         });
 
         return node;
       }
 
-      function agregarProducto() {
-        contenedor.appendChild(nuevaTarjeta());
-      }
+      function agregar(){ contenedor.appendChild(nuevaTarjeta()); }
 
-      function checkDims(objectURL) {
-        return new Promise((resolve) => {
-          const i = new Image();
-          i.onload = () => resolve(i.width >= MIN_W && i.height >= MIN_H);
-          i.onerror = () => resolve(false);
-          i.src = objectURL;
-        });
-      }
-
-      // Inicial
-      btnAgregar.addEventListener('click', agregarProducto);
-      agregarProducto(); // al menos uno
+      btnAgregar.addEventListener('click', agregar);
+      agregar(); // uno mínimo
     })();
   </script>
 </body>
