@@ -41,43 +41,98 @@ body.fondo-proveedor{
 
 /* ===================== Bloque visual (Portada + Avatar) ===================== */
 .perfil-visual{
-  position:relative; border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow); background:var(--panel); margin-bottom:16px;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--panel);
+  /* dejamos espacio para el avatar que “cuelga” de la portada */
+  margin-bottom: 72px;
 }
 
 /* Portada */
-.portada-wrapper{ position:relative; height:240px; background:#0b0d12; }
-.portada{ width:100%; height:240px; object-fit:cover; display:block; }
+.portada-wrapper{
+  position: relative;
+  height: 240px;
+  background: #0b0d12;
+}
+.portada{
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
 img.portada{ background:#0b0d12; }
 
 /* Botón “Cambiar portada” sobre la imagen */
 .portada-wrapper .btn.archivo{
-  position:absolute; right:12px; bottom:12px; z-index:5;
-  background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
-  display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  background:#1f2937;
+  border:1px dashed #2f3a52;
+  color:#cfe0ff;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius:12px;
+  padding:10px 14px;
   transition: filter .2s ease;
 }
 .portada-wrapper .btn.archivo:hover{ filter:brightness(1.05); }
-.portada-wrapper{ position: relative; } /* para el posicionamiento del botón */
 
-/* Avatar */
+/* Avatar (CENTRADO y visible) */
 .avatar-wrapper{
-  position:absolute; bottom:-44px; left:24px;
-  display:flex; align-items:flex-end; gap:12px;
+  position: absolute;
+  left: 50%;
+  bottom: -56px;            /* mitad del avatar por fuera de la portada */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 6;               /* por encima de la portada y del form */
 }
 .avatar{
-  width:104px; height:104px; border-radius:999px; object-fit:cover;
-  border:4px solid var(--panel); background:#0b0d12;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--panel);
+  background: #0b0d12;
   box-shadow: 0 10px 25px rgba(0,0,0,.35);
 }
 img.avatar{ background:#0b0d12; }
 
-/* Botón “Foto de perfil” anclado cerca del avatar */
-.avatar-wrapper{ position: relative; }
+/* Botón “Foto de perfil” debajo del avatar (no absolute) */
 .avatar-wrapper .btn.archivo{
-  position:absolute; left:0; bottom:-8px; z-index:5;
-  background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
-  border-radius:10px; padding:8px 10px; font-size:14px;
+  position: static;         /* evita pisar el posicionamiento del wrapper */
+  background:#1f2937;
+  border:1px dashed #2f3a52;
+  color:#cfe0ff;
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:14px;
+}
+
+/* Input file clickeable en todo el botón */
+.btn.archivo{ position: relative; overflow: hidden; }
+.btn.archivo input[type="file"]{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive: avatar un poco más chico en móvil */
+@media (max-width:760px){
+  .portada-wrapper{ height: 220px; }
+  .portada{ height: 220px; }
+  .avatar{ width: 100px; height: 100px; }
+  .avatar-wrapper{ bottom: -50px; }
 }
 
 /* Truco accesible para inputs de archivo */
