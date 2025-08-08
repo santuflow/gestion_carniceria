@@ -4,22 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registro de Proveedor</title>
+  <!-- Tu CSS externo (lo dejamos, pero no agregamos estilos inline) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor.css') }}">
-  <style>
-    /* Mini estilos puntuales para el selector múltiple */
-    .zonas-wrapper{display:flex;flex-direction:column;gap:8px}
-    .zonas-busqueda{display:flex;gap:8px}
-    .zonas-busqueda input{flex:1;padding:10px;border:1px solid #263147;background:#1b2130;color:#e9edf3;border-radius:10px}
-    .zonas-acciones{display:flex;gap:8px}
-    .btn.chico{padding:8px 10px;font-size:14px}
-    .zonas-lista{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:220px;overflow:auto;border:1px solid #263147;background:#1b2130;border-radius:10px;padding:10px}
-    @media (max-width:720px){.zonas-lista{grid-template-columns:1fr}}
-    .zonas-lista label{display:flex;align-items:center;gap:8px;font-size:14px;color:#cfe0ff}
-    .zonas-chips{display:flex;flex-wrap:wrap;gap:6px}
-    .chip{background:#1f2937;border:1px solid #2e3b55;color:#cfe0ff;border-radius:999px;padding:4px 10px;font-size:12px}
-    .chip button{background:transparent;border:0;color:#cfe0ff;margin-left:6px;cursor:pointer}
-    .help{color:#aab3c5;font-size:12px}
-  </style>
 </head>
 <body class="fondo-proveedor">
   <header class="topbar">
@@ -31,8 +17,7 @@
 
   <main class="proveedor-layout">
     <form id="form-proveedor" action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
-
-      <!-- Portada + avatar con previsualización (dentro del form) -->
+      <!-- Portada + avatar -->
       <section class="perfil-visual">
         <div class="portada-wrapper">
           <img id="preview-portada" class="portada" src="{{ url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
@@ -51,7 +36,8 @@
         </div>
       </section>
 
-      <section class="grid-datos" style="margin-top:56px">
+      <!-- Datos generales -->
+      <section class="grid-datos">
         <div class="form-col">
           <label>Nombre del negocio</label>
           <input type="text" name="nombre" placeholder="Ej: Frigorífico La Buena Carne" required>
@@ -69,7 +55,6 @@
               </div>
             </div>
 
-            <!-- lista de checkboxes: name="zonas_reparto[]" -->
             <div id="zonas-lista" class="zonas-lista">
               {% set zonas_opciones = [
                 'Capital Federal','Zona Norte','Zona Sur','Zona Oeste','Avellaneda','Lanús','Quilmes','Berazategui',
@@ -99,278 +84,93 @@
         </div>
       </section>
 
-      <!-- Productos -->
-<!-- ==================== PRODUCTOS ==================== -->
-<section class="productos-bloque">
-  <div class="productos-header">
-    <h2>Productos</h2>
-    <button type="button" id="btn-agregar" class="btn secundario">+ Agregar otro producto</button>
-  </div>
-
-  <div id="productos-container" class="productos-grid"></div>
-
-  <!-- Template para clonar -->
-  <template id="tpl-producto">
-    <div class="producto-item">
-      <div class="producto-top">
-        <div class="producto-foto">
-          <img class="preview-imagen" alt="Vista previa" />
-          <div class="foto-actions">
-            <label class="btn archivo small">
-              Subir foto
-              <input type="file" name="producto_imagen[]" accept="image/*" class="input-foto" hidden>
-            </label>
-            <button type="button" class="btn texto small btn-cambiar" hidden>Cambiar</button>
-            <button type="button" class="btn texto small btn-quitar" hidden>Quitar</button>
-          </div>
-          <div class="foto-hint">JPG/PNG/WebP • mín. 300×300 • máx. 3MB</div>
-          <div class="msg-error" aria-live="polite"></div>
+      <!-- ==================== PRODUCTOS ==================== -->
+      <section class="productos-bloque">
+        <div class="productos-header">
+          <h2>Productos</h2>
+          <button type="button" id="btn-agregar" class="btn secundario">+ Agregar otro producto</button>
         </div>
 
-        <div class="producto-campos">
-          <div class="campo">
-            <label>Nombre</label>
-            <input type="text" name="producto_nombre[]" placeholder="Ej: Nalga" required>
+        <div id="productos-container" class="productos-grid"></div>
+
+        <!-- Template para clonar -->
+        <template id="tpl-producto">
+          <div class="producto-item">
+            <div class="producto-top">
+              <div class="producto-foto">
+                <img class="preview-imagen" alt="Vista previa" />
+                <div class="foto-actions">
+                  <label class="btn archivo small">
+                    Subir foto
+                    <input type="file" name="producto_imagen[]" accept="image/*" class="input-foto" hidden>
+                  </label>
+                  <button type="button" class="btn texto small btn-cambiar" hidden>Cambiar</button>
+                  <button type="button" class="btn texto small btn-quitar" hidden>Quitar</button>
+                </div>
+                <div class="foto-hint">JPG/PNG/WebP • mín. 300×300 • máx. 3MB</div>
+                <div class="msg-error" aria-live="polite"></div>
+              </div>
+
+              <div class="producto-campos">
+                <div class="campo">
+                  <label>Nombre</label>
+                  <input type="text" name="producto_nombre[]" placeholder="Ej: Nalga" required>
+                </div>
+
+                <div class="campo precio-campo">
+                  <label>Precio</label>
+                  <input type="number" name="producto_precio[]" placeholder="Ej: 4500" min="0.01" step="0.01" inputmode="decimal" required>
+                  <small class="precio-preview" aria-live="polite"></small>
+                </div>
+
+                <div class="campo">
+                  <label>Unidad</label>
+                  <select name="producto_unidad[]" required>
+                    <option value="kg">kg</option>
+                    <option value="unidad">unidad</option>
+                    <option value="docena">docena</option>
+                  </select>
+                </div>
+
+                <div class="campo">
+                  <label>Categoría</label>
+                  <select name="producto_categoria[]">
+                    <option value="">(opcional)</option>
+                    <option value="vacuno">Vacuno</option>
+                    <option value="cerdo">Cerdo</option>
+                    <option value="pollo">Pollo</option>
+                    <option value="embutidos">Embutidos</option>
+                    <option value="congelados">Congelados</option>
+                    <option value="oferta">Oferta</option>
+                  </select>
+                </div>
+
+                <div class="campo">
+                  <label>Stock</label>
+                  <input type="number" name="producto_stock[]" placeholder="(opcional)" min="0" step="1">
+                </div>
+
+                <div class="campo">
+                  <label>Descripción</label>
+                  <textarea name="producto_descripcion[]" rows="2" placeholder="(opcional) Detalles, origen, etc."></textarea>
+                </div>
+
+                <div class="switch-publicar">
+                  <label class="switch">
+                    <input type="checkbox" name="producto_publicar[]" checked>
+                    <span class="slider"></span>
+                  </label>
+                  <span>Publicar</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="producto-actions">
+              <button type="button" class="btn peligro btn-eliminar">Eliminar</button>
+            </div>
           </div>
-
-          <div class="campo precio-campo">
-            <label>Precio</label>
-            <input type="number" name="producto_precio[]" placeholder="Ej: 4500" min="0.01" step="0.01" inputmode="decimal" required>
-            <small class="precio-preview" aria-live="polite"></small>
-          </div>
-
-          <div class="campo">
-            <label>Unidad</label>
-            <select name="producto_unidad[]" required>
-              <option value="kg">kg</option>
-              <option value="unidad">unidad</option>
-              <option value="docena">docena</option>
-            </select>
-          </div>
-
-          <div class="campo">
-            <label>Categoría</label>
-            <select name="producto_categoria[]">
-              <option value="">(opcional)</option>
-              <option value="vacuno">Vacuno</option>
-              <option value="cerdo">Cerdo</option>
-              <option value="pollo">Pollo</option>
-              <option value="embutidos">Embutidos</option>
-              <option value="congelados">Congelados</option>
-              <option value="oferta">Oferta</option>
-            </select>
-          </div>
-
-          <div class="campo">
-            <label>Stock</label>
-            <input type="number" name="producto_stock[]" placeholder="(opcional)" min="0" step="1">
-          </div>
-
-          <div class="campo">
-            <label>Descripción</label>
-            <textarea name="producto_descripcion[]" rows="2" placeholder="(opcional) Detalles, origen, etc."></textarea>
-          </div>
-
-          <div class="switch-publicar">
-            <label class="switch">
-              <input type="checkbox" name="producto_publicar[]" checked>
-              <span class="slider"></span>
-            </label>
-            <span>Publicar</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="producto-actions">
-        <button type="button" class="btn peligro btn-eliminar">Eliminar</button>
-      </div>
-    </div>
-  </template>
-</section>
-
-<script>
-(() => {
-  const contenedor = document.getElementById('productos-container');
-  const btnAgregar = document.getElementById('btn-agregar');
-  const tpl = document.getElementById('tpl-producto');
-
-  const MAX_MB = 3;
-  const MAX_BYTES = MAX_MB * 1024 * 1024;
-  const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
-  const MIN_W = 300, MIN_H = 300;
-
-  const fmtARS = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
-
-  function nuevaTarjeta() {
-    const node = tpl.content.firstElementChild.cloneNode(true);
-
-    // refs
-    const inputFoto = node.querySelector('.input-foto');
-    const img = node.querySelector('.preview-imagen');
-    const errorBox = node.querySelector('.msg-error');
-    const btnCambiar = node.querySelector('.btn-cambiar');
-    const btnQuitar = node.querySelector('.btn-quitar');
-    const btnEliminar = node.querySelector('.btn-eliminar');
-    const precioInput = node.querySelector('input[name="producto_precio[]"]');
-    const precioPreview = node.querySelector('.precio-preview');
-
-    // estado inicial
-    img.style.display = 'none';
-
-    // subir foto (al hacer clic en "Subir foto" se abre input hidden por el label)
-    node.querySelector('.archivo').addEventListener('click', () => inputFoto.click());
-
-    // cambiar/quitar
-    btnCambiar.addEventListener('click', () => inputFoto.click());
-    btnQuitar.addEventListener('click', () => {
-      inputFoto.value = '';
-      img.src = '';
-      img.style.display = 'none';
-      btnCambiar.hidden = true;
-      btnQuitar.hidden = true;
-      errorBox.textContent = '';
-    });
-
-    // validar y previsualizar
-    inputFoto.addEventListener('change', async (e) => {
-      errorBox.textContent = '';
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-
-      // tipo
-      if (!ALLOWED.includes(file.type)) {
-        errorBox.textContent = 'Formato no permitido. Usá JPG, PNG o WebP.';
-        e.target.value = '';
-        return;
-      }
-      // tamaño
-      if (file.size > MAX_BYTES) {
-        errorBox.textContent = `La imagen supera ${MAX_MB}MB.`;
-        e.target.value = '';
-        return;
-      }
-
-      // dimensiones
-      const url = URL.createObjectURL(file);
-      try {
-        const ok = await checkDims(url);
-        if (!ok) {
-          errorBox.textContent = `La imagen debe ser al menos ${MIN_W}×${MIN_H}px.`;
-          e.target.value = '';
-          URL.revokeObjectURL(url);
-          return;
-        }
-        img.src = url;
-        img.style.display = 'block';
-        btnCambiar.hidden = false;
-        btnQuitar.hidden = false;
-      } catch {
-        errorBox.textContent = 'No se pudo leer la imagen.';
-        e.target.value = '';
-        URL.revokeObjectURL(url);
-      }
-    });
-
-    // precio → preview ARS
-    const updatePrecioPreview = () => {
-      const val = parseFloat(precioInput.value.replace(',', '.'));
-      precioPreview.textContent = isFinite(val) && val > 0 ? fmtARS.format(val) : '';
-    };
-    precioInput.addEventListener('input', updatePrecioPreview);
-    precioInput.addEventListener('blur', updatePrecioPreview);
-
-    // eliminar tarjeta
-    btnEliminar.addEventListener('click', () => {
-      node.remove();
-      // si no queda ninguno, agregamos uno vacío para no dejar al usuario sin campos
-      if (!contenedor.querySelector('.producto-item')) agregarProducto();
-    });
-
-    return node;
-  }
-
-  function agregarProducto() {
-    contenedor.appendChild(nuevaTarjeta());
-  }
-
-  function checkDims(objectURL) {
-    return new Promise((resolve) => {
-      const i = new Image();
-      i.onload = () => resolve(i.width >= MIN_W && i.height >= MIN_H);
-      i.onerror = () => resolve(false);
-      i.src = objectURL;
-    });
-  }
-
-  // Inicial
-  btnAgregar.addEventListener('click', agregarProducto);
-  agregarProducto(); // al menos uno
-})();
-</script>
-
-<style>
-/* -------- layout base -------- */
-.productos-bloque { margin-top: 20px; display: grid; gap: 14px; }
-.productos-header { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-.productos-grid { display:grid; gap:14px; }
-
-/* tarjeta */
-.producto-item {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 14px;
-}
-.producto-top { display:grid; gap:14px; grid-template-columns: 140px 1fr; }
-@media (max-width: 720px){ .producto-top{ grid-template-columns: 1fr; } }
-
-.producto-foto { display:flex; flex-direction:column; align-items:center; gap:8px; }
-.preview-imagen {
-  width: 100%; max-width: 140px; aspect-ratio: 1/1; object-fit: cover;
-  border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.25); display:none;
-}
-.foto-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
-.foto-hint { font-size: 12px; opacity: .75; text-align:center; }
-.msg-error { font-size: 12px; color: #ff6b6b; min-height: 16px; text-align:center; }
-
-/* campos */
-.producto-campos { display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
-.producto-campos .campo { display:flex; flex-direction:column; gap:6px; }
-.producto-campos label { font-size: 13px; opacity:.9; }
-.producto-campos input[type="text"],
-.producto-campos input[type="number"],
-.producto-campos select,
-.producto-campos textarea {
-  width: 100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.15);
-  background: rgba(0,0,0,0.25); color: inherit; outline: none;
-}
-.producto-campos textarea { resize: vertical; }
-@media (max-width: 720px){ .producto-campos{ grid-template-columns: 1fr; } }
-
-.precio-campo { position: relative; }
-.precio-preview { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; opacity: .8; }
-
-/* acciones tarjeta */
-.producto-actions { display:flex; justify-content:flex-end; margin-top: 8px; }
-
-/* botones genéricos (adaptá a tu estilo si ya tenés) */
-.btn { cursor:pointer; border:1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
-  color: inherit; padding: 8px 12px; border-radius: 10px; }
-.btn:hover { background: rgba(255,255,255,0.16); }
-.btn.secundario { background: rgba(0,123,255,0.15); border-color: rgba(0,123,255,0.35); }
-.btn.peligro { background: rgba(220,53,69,0.15); border-color: rgba(220,53,69,0.35); }
-.btn.texto { background: transparent; border:1px dashed rgba(255,255,255,0.25); }
-
-/* switch publicar */
-.switch { position: relative; display:inline-block; width: 42px; height: 22px; }
-.switch input { display:none; }
-.slider { position:absolute; cursor:pointer; inset:0; background:#777; border-radius: 999px; transition:.2s; }
-.slider:before { content:""; position:absolute; height:18px; width:18px; left:2px; top:2px; background:white; border-radius:50%; transition:.2s; }
-.switch input:checked + .slider { background:#28a745; }
-.switch input:checked + .slider:before { transform: translateX(20px); }
-.switch-publicar { display:flex; align-items:center; gap:10px; }
-</style>
-
+        </template>
+      </section>
 
       <div class="acciones">
         <button type="submit" class="btn publicar">Publicar proveedor</button>
@@ -379,7 +179,7 @@
   </main>
 
   <script>
-    // ===== Previews portada/avatar =====
+    // =================== PREVIEW PORTADA/AVATAR ===================
     document.getElementById('input-portada')?.addEventListener('change', e => {
       const f = e.target.files?.[0];
       if (f) document.getElementById('preview-portada').src = URL.createObjectURL(f);
@@ -389,27 +189,7 @@
       if (f) document.getElementById('preview-avatar').src = URL.createObjectURL(f);
     });
 
-    // ===== Productos dinámicos =====
-    const cont = document.getElementById('productos-container');
-    document.getElementById('btn-agregar').addEventListener('click', () => {
-      const div = document.createElement('div');
-      div.className = 'producto-item';
-      div.innerHTML = `
-        <div class="producto-campos">
-          <input type="text" name="producto_nombre[]" placeholder="Nombre del producto" required>
-          <input type="text" name="producto_precio[]" placeholder="Precio por kg o unidad" required>
-          <label class="btn archivo small">
-            Foto
-            <input type="file" name="producto_imagen[]" accept="image/*" required>
-          </label>
-          <button type="button" class="btn danger quitar">Quitar</button>
-        </div>
-      `;
-      div.querySelector('.quitar').addEventListener('click', () => div.remove());
-      cont.appendChild(div);
-    });
-
-    // ===== Selector múltiple de zonas con búsqueda + chips =====
+    // =================== ZONAS: BÚSQUEDA + CHIPS ===================
     const lista = document.getElementById('zonas-lista');
     const filtro = document.getElementById('filtro-zonas');
     const chips = document.getElementById('zonas-chips');
@@ -417,7 +197,7 @@
     const btnLimpiar = document.getElementById('btn-limpiar');
     const form = document.getElementById('form-proveedor');
 
-    filtro.addEventListener('input', () => {
+    filtro?.addEventListener('input', () => {
       const q = filtro.value.toLowerCase().trim();
       [...lista.querySelectorAll('label')].forEach(lbl => {
         const txt = lbl.innerText.toLowerCase();
@@ -440,18 +220,18 @@
         chips.appendChild(span);
       });
     }
-    lista.addEventListener('change', renderChips);
+    lista?.addEventListener('change', renderChips);
 
-    btnTodas.addEventListener('click', () => {
+    btnTodas?.addEventListener('click', () => {
       lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
       renderChips();
     });
-    btnLimpiar.addEventListener('click', () => {
+    btnLimpiar?.addEventListener('click', () => {
       lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
       renderChips();
     });
 
-    form.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', (e) => {
       const alguno = lista.querySelector('input[type="checkbox"]:checked');
       if (!alguno) {
         e.preventDefault();
@@ -460,6 +240,121 @@
     });
 
     renderChips();
+
+    // =================== PRODUCTOS (dinámicos con template) ===================
+    (() => {
+      const contenedor = document.getElementById('productos-container');
+      const btnAgregar = document.getElementById('btn-agregar');
+      const tpl = document.getElementById('tpl-producto');
+
+      const MAX_MB = 3;
+      const MAX_BYTES = MAX_MB * 1024 * 1024;
+      const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+      const MIN_W = 300, MIN_H = 300;
+
+      const fmtARS = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
+
+      function nuevaTarjeta() {
+        const node = tpl.content.firstElementChild.cloneNode(true);
+
+        // refs
+        const inputFoto = node.querySelector('.input-foto');
+        const img = node.querySelector('.preview-imagen');
+        const errorBox = node.querySelector('.msg-error');
+        const btnCambiar = node.querySelector('.btn-cambiar');
+        const btnQuitar = node.querySelector('.btn-quitar');
+        const btnEliminar = node.querySelector('.btn-eliminar');
+        const precioInput = node.querySelector('input[name="producto_precio[]"]');
+        const precioPreview = node.querySelector('.precio-preview');
+
+        // estado inicial
+        img.style.display = 'none';
+
+        // subir foto
+        node.querySelector('.archivo').addEventListener('click', () => inputFoto.click());
+
+        // cambiar/quitar
+        btnCambiar.addEventListener('click', () => inputFoto.click());
+        btnQuitar.addEventListener('click', () => {
+          inputFoto.value = '';
+          img.src = '';
+          img.style.display = 'none';
+          btnCambiar.hidden = true;
+          btnQuitar.hidden = true;
+          errorBox.textContent = '';
+        });
+
+        // validar y previsualizar
+        inputFoto.addEventListener('change', async (e) => {
+          errorBox.textContent = '';
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+
+          if (!ALLOWED.includes(file.type)) {
+            errorBox.textContent = 'Formato no permitido. Usá JPG, PNG o WebP.';
+            e.target.value = '';
+            return;
+          }
+          if (file.size > MAX_BYTES) {
+            errorBox.textContent = `La imagen supera ${MAX_MB}MB.`;
+            e.target.value = '';
+            return;
+          }
+
+          const url = URL.createObjectURL(file);
+          try {
+            const ok = await checkDims(url);
+            if (!ok) {
+              errorBox.textContent = `La imagen debe ser al menos ${MIN_W}×${MIN_H}px.`;
+              e.target.value = '';
+              URL.revokeObjectURL(url);
+              return;
+            }
+            img.src = url;
+            img.style.display = 'block';
+            btnCambiar.hidden = false;
+            btnQuitar.hidden = false;
+          } catch {
+            errorBox.textContent = 'No se pudo leer la imagen.';
+            e.target.value = '';
+            URL.revokeObjectURL(url);
+          }
+        });
+
+        // precio → preview ARS
+        const updatePrecioPreview = () => {
+          const val = parseFloat((precioInput.value || '').toString().replace(',', '.'));
+          precioPreview.textContent = isFinite(val) && val > 0 ? fmtARS.format(val) : '';
+        };
+        precioInput.addEventListener('input', updatePrecioPreview);
+        precioInput.addEventListener('blur', updatePrecioPreview);
+
+        // eliminar tarjeta
+        btnEliminar.addEventListener('click', () => {
+          node.remove();
+          if (!contenedor.querySelector('.producto-item')) agregarProducto();
+        });
+
+        return node;
+      }
+
+      function agregarProducto() {
+        contenedor.appendChild(nuevaTarjeta());
+      }
+
+      function checkDims(objectURL) {
+        return new Promise((resolve) => {
+          const i = new Image();
+          i.onload = () => resolve(i.width >= MIN_W && i.height >= MIN_H);
+          i.onerror = () => resolve(false);
+          i.src = objectURL;
+        });
+      }
+
+      // Inicial
+      btnAgregar.addEventListener('click', agregarProducto);
+      agregarProducto(); // al menos uno
+    })();
   </script>
 </body>
 </html>

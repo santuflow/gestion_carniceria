@@ -1,4 +1,4 @@
-/* Layout base */
+/* ===================== Variables / Base ===================== */
 :root{
   --bg:#0f1115;
   --panel:#151923;
@@ -9,119 +9,256 @@
   --primary-2:#2563eb;
   --ok:#22c55e;
   --danger:#ef4444;
+  --warning:#f59e0b;
   --shadow: 0 10px 30px rgba(0,0,0,.35);
   --radius:18px;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+*{ box-sizing:border-box }
+html,body{ height:100% }
 body.fondo-proveedor{
   margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
   background: radial-gradient(1200px 600px at 10% -10%, #182033 0%, #0f1115 40%, #0b0d12 100%);
   color:var(--text);
 }
 
-/* Topbar */
-.topbar{position:sticky;top:0;background:#0c0f16cc;backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1e2535}
-.topbar-inner{max-width:1100px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px}
-.titulo{font-size:20px;margin:0;font-weight:700;letter-spacing:.3px}
-
-/* Contenedor principal */
-.proveedor-layout{max-width:1100px;margin:18px auto;padding:0 16px}
-
-/* Visual */
-.perfil-visual{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--panel);margin-bottom:16px}
-.portada-wrapper{position:relative;height:220px;background:#0b0d12}
-.portada{width:100%;height:220px;object-fit:cover;display:block}
-.avatar-wrapper{position:absolute;bottom:-40px;left:24px;display:flex;align-items:end;gap:12px}
-.avatar{width:96px;height:96px;border-radius:999px;border:4px solid var(--panel);object-fit:cover;background:#0b0d12}
-
-/* Form */
-.proveedor-form{margin-top:56px;background:var(--panel);border:1px solid #1e2535;border-radius:var(--radius);box-shadow:var(--shadow)}
-.grid-datos{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:18px}
-.form-col{display:flex;flex-direction:column;gap:10px}
-label{font-size:14px;color:var(--muted)}
-input[type="text"], textarea, select{
-  width:100%;border:1px solid #263147;background:var(--panel-2);color:var(--text);
-  border-radius:12px;padding:12px 12px;font-size:15px;outline:none
+/* ===================== Topbar ===================== */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  background:#0c0f16cc; backdrop-filter:blur(6px);
+  border-bottom:1px solid #1e2535;
 }
-select{height:140px}
-textarea{resize vertical}
+.topbar-inner{
+  max-width:1100px; margin:0 auto;
+  display:flex; gap:12px; align-items:center; justify-content:space-between;
+  padding:12px 16px;
+}
+.titulo{ font-size:20px; margin:0; font-weight:700; letter-spacing:.3px; }
 
-/* Productos */
-.productos-bloque{border-top:1px solid #1e2535;padding:18px}
-.productos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.productos-header h2{margin:0;font-size:18px}
-.productos-grid{display:flex;flex-direction:column;gap:12px}
-.producto-item{background:var(--panel-2);border:1px solid #263147;border-radius:14px;padding:12px}
-.producto-campos{display:grid;grid-template-columns: 1fr 1fr auto auto;gap:10px}
-@media (max-width:760px){
-  .grid-datos{grid-template-columns:1fr}
-  .producto-campos{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+/* ===================== Contenedor principal ===================== */
+.proveedor-layout{ max-width:1100px; margin:18px auto; padding:0 16px; }
+
+/* ===================== Bloque visual (Portada + Avatar) ===================== */
+.perfil-visual{
+  position:relative; border-radius:var(--radius); overflow:hidden;
+  box-shadow:var(--shadow); background:var(--panel); margin-bottom:16px;
 }
 
-/* Botones */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:10px 14px;border-radius:12px;border:1px solid transparent;
-  font-weight:600;cursor:pointer;text-decoration:none;user-select:none;transition:transform .05s ease, background .2s, border-color .2s
-}
-.btn:active{transform:translateY(1px)}
-.btn.publicar{background:var(--ok);color:#06110a;border-color:#1ea24e}
-.btn.publicar:hover{filter:brightness(1.05)}
-.btn.secundario{background:#1e283f;border-color:#2a3550;color:var(--text)}
-.btn.secundario:hover{background:#223056}
-.btn.archivo{background:#1f2937;border:1px dashed #2f3a52;color:#cfe0ff}
-.btn.archivo.small{padding:8px 10px;font-size:14px}
-.btn.danger{background:#2b0f13;border-color:#3a161b;color:#ffccd0}
-.btn.volver{background:#152033;border-color:#23314a;color:#d9e5ff}
-.btn input[type="file"]{display:none}
+/* Portada */
+.portada-wrapper{ position:relative; height:240px; background:#0b0d12; }
+.portada{ width:100%; height:240px; object-fit:cover; display:block; }
+img.portada{ background:#0b0d12; }
 
-.acciones{border-top:1px solid #1e2535;padding:16px;display:flex;justify-content:flex-end}
-
-/* Placeholders */
-img.portada, img.avatar{background:#0b0d12}
-
-/* Scroll select multiple */
-select[multiple]{scrollbar-width:thin;scrollbar-color:#334161 transparent}
-select[multiple]::-webkit-scrollbar{width:8px}
-select[multiple]::-webkit-scrollbar-thumb{background:#334161;border-radius:8px}
-
-
-/* Botón de archivo accesible */
-.portada-wrapper{ position: relative; }
-.avatar-wrapper{ position: relative; }
-
-/* Que el botón “Cambiar portada” quede sobre la imagen de portada */
+/* Botón “Cambiar portada” sobre la imagen */
 .portada-wrapper .btn.archivo{
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  z-index: 5;
+  position:absolute; right:12px; bottom:12px; z-index:5;
+  background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
+  display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px;
+  transition: filter .2s ease;
 }
+.portada-wrapper .btn.archivo:hover{ filter:brightness(1.05); }
+.portada-wrapper{ position: relative; } /* para el posicionamiento del botón */
 
-/* Que el botón “Foto de perfil” esté arriba del avatar si querés moverlo */
+/* Avatar */
+.avatar-wrapper{
+  position:absolute; bottom:-44px; left:24px;
+  display:flex; align-items:flex-end; gap:12px;
+}
+.avatar{
+  width:104px; height:104px; border-radius:999px; object-fit:cover;
+  border:4px solid var(--panel); background:#0b0d12;
+  box-shadow: 0 10px 25px rgba(0,0,0,.35);
+}
+img.avatar{ background:#0b0d12; }
+
+/* Botón “Foto de perfil” anclado cerca del avatar */
+.avatar-wrapper{ position: relative; }
 .avatar-wrapper .btn.archivo{
-  position: absolute;
-  left: 0;
-  bottom: -8px;
-  z-index: 5;
+  position:absolute; left:0; bottom:-8px; z-index:5;
+  background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
+  border-radius:10px; padding:8px 10px; font-size:14px;
 }
 
-/* Truco para que el click funcione siempre */
-.btn.archivo{
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  overflow: hidden;
-}
+/* Truco accesible para inputs de archivo */
+.btn.archivo{ position:relative; overflow:hidden; }
 .btn.archivo input[type="file"]{
-  position: absolute;
-  inset: 0;         /* top/right/bottom/left: 0 */
-  opacity: 0;       /* invisible pero clickeable */
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
+  position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+}
+
+/* ===================== Formulario general ===================== */
+.proveedor-form{
+  margin-top:56px;
+  background:var(--panel);
+  border:1px solid #1e2535;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.grid-datos{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:18px; padding:18px;
+}
+.form-col{ display:flex; flex-direction:column; gap:10px; }
+label{ font-size:14px; color:var(--muted); }
+
+input[type="text"], input[type="number"], input[type="search"],
+textarea, select{
+  width:100%;
+  border:1px solid #263147;
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:12px;
+  padding:12px 12px;
+  font-size:15px;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+input:focus, textarea:focus, select:focus{
+  border-color: #2b3a5c;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+textarea{ resize:vertical; min-height:96px; }
+
+/* Ayuda / textos auxiliares */
+.help{ color:var(--muted); font-size:12px; }
+
+/* ===================== Zonas (búsqueda + chips) ===================== */
+.zonas-wrapper{ display:flex; flex-direction:column; gap:8px; }
+.zonas-busqueda{ display:flex; gap:8px; }
+.zonas-busqueda input{
+  flex:1; padding:10px;
+  border:1px solid #263147; background:var(--panel-2); color:var(--text);
+  border-radius:10px; font-size:14px;
+}
+.zonas-acciones{ display:flex; gap:8px; }
+.btn.chico{ padding:8px 10px; font-size:14px; }
+
+.zonas-lista{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
+  max-height:220px; overflow:auto;
+  border:1px solid #263147; background:var(--panel-2);
+  border-radius:10px; padding:10px;
+}
+.zonas-lista label{
+  display:flex; align-items:center; gap:8px;
+  font-size:14px; color:#cfe0ff;
+}
+
+.zonas-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  background:#1f2937; border:1px solid #2e3b55; color:#cfe0ff;
+  border-radius:999px; padding:4px 10px; font-size:12px;
+}
+.chip button{
+  background:transparent; border:0; color:#cfe0ff; margin-left:6px; cursor:pointer;
+}
+
+/* ===================== Productos ===================== */
+.productos-bloque{ border-top:1px solid #1e2535; padding:18px; }
+.productos-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.productos-header h2{ margin:0; font-size:18px; }
+
+.productos-grid{ display:flex; flex-direction:column; gap:12px; }
+.producto-item{
+  background:var(--panel-2);
+  border:1px solid #263147;
+  border-radius:14px;
+  padding:12px;
+}
+
+/* Estructura superior de producto */
+.producto-top{ display:grid; gap:12px; grid-template-columns: 140px 1fr; }
+.producto-foto{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+.preview-imagen{
+  width:100%; max-width:140px; aspect-ratio:1/1; object-fit:cover;
+  border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(0,0,0,.25);
+  display:none;
+}
+.foto-actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+.foto-hint{ font-size:12px; color:var(--muted); text-align:center; }
+.msg-error{ font-size:12px; color:#ff6b6b; min-height:16px; text-align:center; }
+
+/* Grilla de campos */
+.producto-campos{ display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+.producto-campos .campo{ display:flex; flex-direction:column; gap:6px; }
+.producto-campos label{ font-size:13px; color:var(--muted); }
+.producto-campos textarea{ resize:vertical; }
+
+/* Precio con preview ARS */
+.precio-campo{ position:relative; }
+.precio-preview{
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  font-size:12px; color:var(--muted);
+}
+
+/* Acciones de la tarjeta */
+.producto-actions{ display:flex; justify-content:flex-end; margin-top:8px; }
+
+/* ===================== Switch “Publicar” ===================== */
+.switch{ position:relative; display:inline-block; width:42px; height:22px; }
+.switch input{ display:none; }
+.slider{
+  position:absolute; inset:0; cursor:pointer;
+  background:#777; border-radius:999px; transition:.2s;
+}
+.slider:before{
+  content:""; position:absolute; height:18px; width:18px; left:2px; top:2px;
+  background:#fff; border-radius:50%; transition:.2s;
+}
+.switch input:checked + .slider{ background:#28a745; }
+.switch input:checked + .slider:before{ transform:translateX(20px); }
+.switch-publicar{ display:flex; align-items:center; gap:10px; }
+
+/* ===================== Botones genéricos ===================== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 14px; border-radius:12px; border:1px solid transparent;
+  font-weight:600; cursor:pointer; text-decoration:none; user-select:none;
+  transition: transform .05s ease, background .2s, border-color .2s, filter .2s;
+}
+.btn:active{ transform: translateY(1px); }
+
+.btn.publicar{ background:var(--ok); color:#06110a; border-color:#1ea24e; }
+.btn.publicar:hover{ filter:brightness(1.05); }
+
+.btn.secundario{ background:#1e283f; border-color:#2a3550; color:var(--text); }
+.btn.secundario:hover{ background:#223056; }
+
+.btn.archivo{
+  background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
+}
+.btn.archivo.small{ padding:8px 10px; font-size:14px; }
+
+.btn.peligro{ background:#2b0f13; border-color:#3a161b; color:#ffccd0; }
+.btn.peligro:hover{ filter:brightness(1.05); }
+
+.btn.volver{ background:#152033; border-color:#23314a; color:#d9e5ff; }
+
+/* ===================== Pie del formulario ===================== */
+.acciones{
+  border-top:1px solid #1e2535;
+  padding:16px;
+  display:flex; justify-content:flex-end;
+}
+
+/* ===================== Select multiple (scroll bonito) ===================== */
+select[multiple]{ scrollbar-width:thin; scrollbar-color:#334161 transparent; }
+select[multiple]::-webkit-scrollbar{ width:8px; }
+select[multiple]::-webkit-scrollbar-thumb{ background:#334161; border-radius:8px; }
+
+/* ===================== Responsive ===================== */
+@media (max-width:1024px){
+  .proveedor-layout{ padding: 0 12px; }
+}
+@media (max-width:900px){
+  .portada-wrapper{ height:220px; }
+  .portada{ height:220px; }
+}
+@media (max-width:760px){
+  .grid-datos{ grid-template-columns:1fr; }
+  .zonas-lista{ grid-template-columns:1fr; }
+  .producto-top{ grid-template-columns:1fr; }
+  .producto-campos{ grid-template-columns:1fr; }
+  .avatar-wrapper{ left:16px; bottom:-40px; }
+  .avatar{ width:96px; height:96px; }
 }
