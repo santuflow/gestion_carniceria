@@ -87,3 +87,41 @@ img.portada, img.avatar{background:#0b0d12}
 select[multiple]{scrollbar-width:thin;scrollbar-color:#334161 transparent}
 select[multiple]::-webkit-scrollbar{width:8px}
 select[multiple]::-webkit-scrollbar-thumb{background:#334161;border-radius:8px}
+
+
+/* Botón de archivo accesible */
+.portada-wrapper{ position: relative; }
+.avatar-wrapper{ position: relative; }
+
+/* Que el botón “Cambiar portada” quede sobre la imagen de portada */
+.portada-wrapper .btn.archivo{
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+}
+
+/* Que el botón “Foto de perfil” esté arriba del avatar si querés moverlo */
+.avatar-wrapper .btn.archivo{
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  z-index: 5;
+}
+
+/* Truco para que el click funcione siempre */
+.btn.archivo{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+.btn.archivo input[type="file"]{
+  position: absolute;
+  inset: 0;         /* top/right/bottom/left: 0 */
+  opacity: 0;       /* invisible pero clickeable */
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
