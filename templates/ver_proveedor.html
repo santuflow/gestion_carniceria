@@ -6,49 +6,124 @@
   <title>{{ p.nombre }} – Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor_perfil.css') }}">
   <style>
-    /* Pequeños toques sin pisar tu CSS principal */
-    .topbar{position:sticky;top:0;background:#0f172a;border-bottom:1px solid #1f2a44;z-index:20}
-    .topbar-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 16px}
-    .topbar h1{margin:0;text-align:center;font-size:1.1rem;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .btn{border:1px solid #334155;padding:8px 12px;border-radius:10px;text-decoration:none;color:#e2e8f0;background:#111827;display:inline-flex;align-items:center;gap:6px}
-    .btn:hover{filter:brightness(1.05)}
-    .btn.primary{background:#0b5; border-color:#094; color:#041}
-    .perfil-wrapper{max-width:1100px;margin:18px auto;padding:0 16px}
-    .perfil-visual{position:relative;margin-bottom:14px}
-    .perfil-visual .portada img{width:100%;height:240px;object-fit:cover;border-radius:14px}
-    .perfil-visual .avatar{position:absolute;bottom:-36px;left:18px}
-    .perfil-visual .avatar img{width:96px;height:96px;border-radius:999px;border:4px solid #0f172a;object-fit:cover;background:#0b1020}
-    .card{background:#0b1020;border:1px solid #1f2a44;border-radius:14px;padding:16px;margin-top:48px}
-    .perfil-datos{display:grid;grid-template-columns:1fr auto;gap:16px}
-    .muted{color:#94a3b8}
-    .desc{margin-top:8px;color:#cbd5e1;white-space:pre-wrap}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .chip{background:#111827;border:1px solid #1f2a44;color:#cfe0ff;border-radius:999px;padding:4px 10px;font-size:.85rem}
-    .productos h3{margin:0 0 10px}
-    .grid-productos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    @media (max-width:1024px){.grid-productos{grid-template-columns:repeat(3,1fr)}}
-    @media (max-width:720px){.grid-productos{grid-template-columns:repeat(2,1fr)} .perfil-visual .portada img{height:180px}}
-    .prod-card{background:#0a1222;border:1px solid #1f2a44;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-    .prod-img img{width:100%;height:160px;object-fit:cover;background:#0b1020}
-    .prod-info{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .precio{font-weight:700;color:#22d3ee}
-    .tools{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:8px}
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      border-bottom: 1px solid #1f2a44;
+      z-index: 20;
+    }
+    .topbar-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 16px;
+    }
+    .topbar h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn {
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #e2e8f0;
+      background: #111827;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .btn.primary { background: #0b5; border-color: #094; color: #041; }
+    .btn.peligro { background:#2b0f13; border-color:#3a161b; color:#ffccd0; }
+    .perfil-wrapper { max-width: 1100px; margin: 18px auto; padding: 0 16px; }
+    .perfil-visual { position: relative; margin-bottom: 14px; }
+    .perfil-visual .portada img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+    .perfil-visual .avatar { position: absolute; bottom: -36px; left: 18px; }
+    .perfil-visual .avatar img {
+      width: 96px;
+      height: 96px;
+      border-radius: 999px;
+      border: 4px solid #0f172a;
+      object-fit: cover;
+      background: #0b1020;
+    }
+    .card { background: #0b1020; border: 1px solid #1f2a44; border-radius: 14px; padding: 16px; margin-top: 48px; }
+    .perfil-datos { display: grid; grid-template-columns: 1fr auto; gap: 16px; }
+    .muted { color: #94a3b8; }
+    .desc { margin-top: 8px; color: #cbd5e1; white-space: pre-wrap; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip {
+      background: #111827;
+      border: 1px solid #1f2a44;
+      color: #cfe0ff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .85rem;
+    }
+    .productos h3 { margin: 0 0 10px; }
+    .grid-productos {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width:1024px) { .grid-productos { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width:720px) { .grid-productos { grid-template-columns: repeat(2, 1fr); } .perfil-visual .portada img { height: 180px; } }
+    .prod-card {
+      background: #0a1222;
+      border: 1px solid #1f2a44;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .prod-img img { width: 100%; height: 160px; object-fit: cover; background: #0b1020; }
+    .prod-info {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .precio { font-weight: 700; color: #22d3ee; }
+    .tools { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px; }
+    .inline-actions { display:flex; gap:8px; }
+    .edit-form { padding:10px 12px; display:grid; gap:8px; }
+    .edit-grid { display:grid; grid-template-columns: 1fr 140px; gap:8px; }
+    .edit-row { display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    input[type="text"], input[type="file"]{
+      border:1px solid #2a3655; background:#0f172a; color:#e2e8f0; border-radius:8px; padding:8px 10px;
+    }
+    label{ color:#94a3b8; font-size:14px; display:block; margin-bottom:4px; }
   </style>
 </head>
 <body class="perfil-body">
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="btn" href="{{ url_for('proveedores') }}" aria-label="Volver a proveedores">← Volver</a>
+      <div style="display:flex; gap:8px;">
+        <a class="btn" href="{{ url_for('proveedores') }}" aria-label="Volver a proveedores">← Volver</a>
+        <a class="btn" href="{{ url_for('index') }}" aria-label="Ir a la página principal">🏠 Página principal</a>
+      </div>
       <h1 title="{{ p.nombre }}">{{ p.nombre }}</h1>
-
       <div class="tools">
         <button class="btn" id="copy-link" type="button" aria-label="Copiar enlace">🔗 Copiar enlace</button>
         {% if es_dueno %}
-          <a class="btn" href="{{ url_for('soy_proveedor') }}">✏️ Editar perfil</a>
-          <!-- Dejalo preparado por si querés enganchar ruta para editar solo precios -->
-          <a class="btn primary" href="{{ url_for('soy_proveedor') }}#productos">💲 Actualizar precios</a>
-        {% else %}
-          <span></span>
+          <a class="btn" href="{{ url_for('editar_proveedor', id=p.id) }}">✏️ Editar perfil</a>
         {% endif %}
       </div>
     </div>
@@ -79,34 +154,19 @@
     <section class="perfil-datos card" aria-label="Datos del proveedor">
       <div class="datos-izq">
         <h2 style="margin:0">{{ p.nombre }}</h2>
-        {% if p.direccion %}
-          <p class="muted">{{ p.direccion }}</p>
-        {% endif %}
-
-        {% if p.descripcion %}
-          <p class="desc">{{ p.descripcion }}</p>
-        {% endif %}
-
+        {% if p.direccion %}<p class="muted">{{ p.direccion }}</p>{% endif %}
+        {% if p.descripcion %}<p class="desc">{{ p.descripcion }}</p>{% endif %}
         {% if zonas and zonas|length %}
           <div class="chips" aria-label="Zonas de reparto">
-            {% for z in zonas %}
-              <span class="chip">{{ z }}</span>
-            {% endfor %}
+            {% for z in zonas %}<span class="chip">{{ z }}</span>{% endfor %}
           </div>
         {% endif %}
       </div>
-
       <div class="datos-der">
         {% if p.contacto %}
-          <a
-            class="btn large"
-            href="https://wa.me/{{ (p.contacto or '') | replace(' ', '') | replace('+', '') | replace('-', '') | replace('(', '') | replace(')', '') }}"
-            target="_blank"
-            rel="noopener"
-            aria-label="Contactar por WhatsApp"
-          >
-            💬 Contactar por WhatsApp
-          </a>
+          <a class="btn large"
+             href="https://wa.me/{{ (p.contacto or '') | replace(' ', '') | replace('+', '') | replace('-', '') | replace('(', '') | replace(')', '') }}"
+             target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">💬 Contactar</a>
           <p class="muted" style="margin-top:6px">{{ p.contacto }}</p>
         {% endif %}
       </div>
@@ -116,15 +176,37 @@
     <section class="productos card" aria-label="Productos">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
         <h3 style="margin:0">Productos</h3>
-        {% if productos %}
-          <span class="muted">{{ productos|length }} ítem{{ '' if productos|length==1 else 's' }}</span>
-        {% endif %}
+        {% if productos %}<span class="muted">{{ productos|length }} ítem{{ '' if productos|length==1 else 's' }}</span>{% endif %}
       </div>
+
+      {% if es_dueno %}
+        <!-- AGREGAR producto -->
+        <form method="post"
+              action="{{ url_for('crear_producto', provider_id=p.id) }}"
+              enctype="multipart/form-data"
+              style="margin:12px 0; display:grid; grid-template-columns: 1fr 160px 220px auto; gap:8px; align-items:end;">
+          <div>
+            <label>Nombre</label>
+            <input type="text" name="nombre" placeholder="Ej: Nalga" required>
+          </div>
+          <div>
+            <label>Precio</label>
+            <input type="text" name="precio" placeholder="Ej: 4500" required>
+          </div>
+          <div>
+            <label>Imagen</label>
+            <input type="file" name="imagen" accept="image/*">
+          </div>
+          <div>
+            <button class="btn" type="submit" style="width:100%">+ Agregar</button>
+          </div>
+        </form>
+      {% endif %}
 
       {% if productos %}
         <div class="grid-productos">
           {% for prod in productos %}
-            <article class="prod-card">
+            <article class="prod-card" data-prod-id="{{ prod.id }}">
               <div class="prod-img">
                 <img
                   src="{{ prod.imagen_path or url_for('static', filename='img/placeholder_producto.jpg') }}"
@@ -133,10 +215,38 @@
                   onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_producto.jpg') }}';"
                 >
               </div>
-              <div class="prod-info">
-                <h4 style="margin:0; font-size:1rem">{{ prod.nombre }}</h4>
-                <p class="precio" aria-label="Precio">{{ prod.precio }}</p>
-              </div>
+
+              {% if es_dueno %}
+                <!-- EDITAR producto -->
+                <form class="edit-form"
+                      method="post"
+                      action="{{ url_for('actualizar_producto', prod_id=prod.id) }}"
+                      enctype="multipart/form-data">
+                  <div class="edit-grid">
+                    <div>
+                      <label>Nombre</label>
+                      <input type="text" name="nombre" value="{{ prod.nombre }}" required>
+                    </div>
+                    <div>
+                      <label>Precio</label>
+                      <input type="text" name="precio" value="{{ prod.precio }}" required>
+                    </div>
+                  </div>
+                  <div class="edit-row">
+                    <input type="file" name="imagen" accept="image/*">
+                    <div class="inline-actions">
+                      <button class="btn" type="submit">💾 Guardar</button>
+                      <button class="btn peligro btn-eliminar" type="button" data-delete-url="{{ url_for('eliminar_producto', prod_id=prod.id) }}">Eliminar</button>
+                    </div>
+                  </div>
+                </form>
+              {% else %}
+                <!-- Vista pública -->
+                <div class="prod-info">
+                  <h4 style="margin:0; font-size:1rem">{{ prod.nombre }}</h4>
+                  <p class="precio">{{ prod.precio }}</p>
+                </div>
+              {% endif %}
             </article>
           {% endfor %}
         </div>
@@ -147,7 +257,7 @@
   </main>
 
   <script>
-    // Copiar enlace del perfil
+    // Copiar link
     document.getElementById('copy-link')?.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
@@ -155,9 +265,28 @@
         const old = b.textContent;
         b.textContent = '✅ Copiado';
         setTimeout(()=> b.textContent = old, 1500);
-      } catch (e) {
-        alert('No se pudo copiar el enlace');
-      }
+      } catch { alert('No se pudo copiar el enlace'); }
+    });
+
+    // Eliminar producto con fetch (evita formularios anidados)
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const url = btn.getAttribute('data-delete-url');
+        if (!url) return;
+        if (!confirm('¿Eliminar este producto?')) return;
+        try {
+          const res = await fetch(url, { method: 'POST' });
+          if (res.ok) {
+            // Removemos la card del DOM
+            const card = btn.closest('.prod-card');
+            if (card) card.remove();
+          } else {
+            alert('No se pudo eliminar. Actualizá la página.');
+          }
+        } catch (e) {
+          alert('Error de red al eliminar.');
+        }
+      });
     });
   </script>
 </body>

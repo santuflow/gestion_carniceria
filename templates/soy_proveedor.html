@@ -19,22 +19,20 @@
     <form id="form-proveedor" action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
       <!-- Portada + avatar -->
       <section class="perfil-visual">
-        <div class="portada-wrapper">
-          <img id="preview-portada" class="portada" src="{{ url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
-          <label class="btn archivo">
-            Cambiar portada
-            <input type="file" name="portada" id="input-portada" accept="image/*" required>
-          </label>
-        </div>
+  <div class="portada-wrapper" id="portada-trigger">
+    <img id="preview-portada" class="portada" src="{{ portada_url or url_for('static', filename='img/portada-placeholder.jpg') }}" alt="Portada">
+    <input type="file" id="portada-file" name="portada" accept="image/*" hidden>
+    <button type="button" class="btn cambiar-portada" id="btn-cambiar-portada">Cambiar portada</button>
+  </div>
 
-        <div class="avatar-wrapper">
-          <img id="preview-avatar" class="avatar" src="{{ url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
-          <label class="btn archivo small">
-            Foto de perfil
-            <input type="file" name="avatar" id="input-avatar" accept="image/*">
-          </label>
-        </div>
-      </section>
+  <!-- AVATAR MÁS GRANDE A LA IZQUIERDA Y CLICKEABLE -->
+  <div class="avatar-wrapper" id="avatar-trigger" title="Cambiar foto de perfil">
+    <img id="preview-avatar" class="avatar" src="{{ avatar_url or url_for('static', filename='img/avatar-placeholder.png') }}" alt="Avatar">
+    <input type="file" id="avatar-file" name="avatar" accept="image/*" hidden>
+    <div class="avatar-overlay">Cambiar</div>
+  </div>
+</section>
+
 
       <!-- Datos generales -->
       <section class="grid-datos">

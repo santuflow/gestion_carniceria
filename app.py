@@ -144,16 +144,31 @@ class ProviderProduct(db.Model):
 import time
 from werkzeug.utils import secure_filename
 
+ALLOWED_EXT = {'png','jpg','jpeg','webp'}
+
 def save_image(file_storage, subdir='providers'):
+    """Guarda la imagen en static/uploads/<subdir>/ con nombre único.
+       Devuelve la ruta absoluta web: /static/uploads/<subdir>/<archivo>"""
     if not file_storage or file_storage.filename == '':
         return None
+
+    # extensión segura
     filename = secure_filename(file_storage.filename)
     base, ext = os.path.splitext(filename)
-    unique = f"{current_user.id}_{int(time.time()*1000)}{ext.lower()}"
+    ext = ext.lower().lstrip('.')
+    if ext not in ALLOWED_EXT:
+        return None
+
+    # carpeta destino
     folder = os.path.join(app.root_path, 'static', 'uploads', subdir)
     os.makedirs(folder, exist_ok=True)
+
+    # nombre único
+    unique = f"{current_user.id}_{int(time.time()*1000)}.{ext}"
     path_abs = os.path.join(folder, unique)
     file_storage.save(path_abs)
+
+    # ruta para usar en <img src="...">
     return f"/static/uploads/{subdir}/{unique}"
 
 
@@ -601,6 +616,8 @@ def api_cerrar_caja():
 
 # --- PROVEEDORES ---
 
+# ==== RUTAS CORREGIDAS PARA PROVEEDOR ====
+
 @app.route("/soy_proveedor")
 @login_required
 def soy_proveedor():
@@ -623,11 +640,7 @@ def publicar_proveedor():
         flash('Completá nombre, dirección, contacto y zonas de reparto.', 'warning')
         return redirect(request.referrer or url_for('soy_proveedor'))
 
-    # Guardar imágenes si se subieron
-    portada = save_image(request.files.get('portada'), 'providers') if request.files.get('portada') else None
-    avatar  = save_image(request.files.get('avatar'),  'providers') if request.files.get('avatar') else None
-
-    # Crear o actualizar el proveedor
+    # 1) Crear o actualizar el proveedor **sin** imágenes todavía
     provider = Provider.query.filter_by(user_id=current_user.id).first()
     if not provider:
         provider = Provider(
@@ -637,41 +650,50 @@ def publicar_proveedor():
             contacto=contacto,
             descripcion=descripcion,
             zonas_reparto_json=json.dumps(zonas_reparto),
-            portada_path=portada,
-            avatar_path=avatar
+            portada_path=None,
+            avatar_path=None
         )
         db.session.add(provider)
-        db.session.flush()  # para tener provider.id
+        db.session.flush()  # Necesitamos provider.id para armar subcarpetas
     else:
         provider.nombre = nombre
         provider.direccion = direccion
         provider.contacto = contacto
         provider.descripcion = descripcion
         provider.zonas_reparto_json = json.dumps(zonas_reparto)
-        if portada:
-            provider.portada_path = portada
-        if avatar:
-            provider.avatar_path = avatar
-        # Eliminar productos previos
-        ProviderProduct.query.filter_by(provider_id=provider.id).delete()
+        db.session.flush()  # Aseguramos que provider.id esté disponible
 
-    # Guardar productos
+    # 2) Guardar imágenes (ya con provider.id disponible)
+    portada_fs = request.files.get('portada')
+    avatar_fs  = request.files.get('avatar')
+
+    if portada_fs and portada_fs.filename:
+        # guarda en /static/uploads/providers/<id>/
+        provider.portada_path = save_image(portada_fs, f'providers/{provider.id}')
+    if avatar_fs and avatar_fs.filename:
+        provider.avatar_path = save_image(avatar_fs, f'providers/{provider.id}')
+
+    # 3) Guardar productos NUEVOS (no borramos los existentes)
     nombres  = request.form.getlist('producto_nombre[]')
     precios  = request.form.getlist('producto_precio[]')
     imagenes = request.files.getlist('producto_imagen[]')
 
+    # Nota: si querés forzar imagen obligatoria, verificá img_url antes de crear
     for i in range(len(nombres)):
         nom = (nombres[i] or '').strip()
         pre = (precios[i] or '').strip()
+        if not (nom and pre):
+            continue
+
         img_fs = imagenes[i] if i < len(imagenes) else None
-        img_url = save_image(img_fs, 'providers') if img_fs else None
-        if nom and pre:
-            db.session.add(ProviderProduct(
-                provider_id=provider.id,
-                nombre=nom,
-                precio=pre,
-                imagen_path=img_url
-            ))
+        img_url = save_image(img_fs, f'providers/{provider.id}/products') if (img_fs and img_fs.filename) else None
+
+        db.session.add(ProviderProduct(
+            provider_id=provider.id,
+            nombre=nom,
+            precio=pre,
+            imagen_path=img_url
+        ))
 
     db.session.commit()
     flash('Perfil de proveedor publicado/actualizado.', 'success')
@@ -686,13 +708,135 @@ def ver_proveedor(id):
     return render_template('ver_proveedor.html',
                            p=provider, zonas=zonas, productos=productos, es_dueno=es_dueno)
 
+# --- EDITAR PERFIL (muestra el mismo form con datos precargados) ---
+@app.route('/proveedor/<int:id>/editar', methods=['GET'])
+@login_required
+def editar_proveedor(id):
+    p = Provider.query.get_or_404(id)
+    if p.user_id != current_user.id:
+        flash('No podes editar este perfil.', 'warning')
+        return redirect(url_for('ver_proveedor', id=id))
+
+    productos = ProviderProduct.query.filter_by(provider_id=p.id).all()
+    zonas = json.loads(p.zonas_reparto_json or '[]')
+    # usamos el mismo template "soy_proveedor.html" pero en modo edición
+    return render_template('soy_proveedor.html', p=p, zonas_existentes=zonas, productos_existentes=productos, modo_edicion=True)
+
+
+# --- CREAR PRODUCTO DESDE EL PERFIL ---
+@app.route('/proveedor/<int:provider_id>/producto/nuevo', methods=['POST'])
+@login_required
+def crear_producto(provider_id):
+    prov = Provider.query.get_or_404(provider_id)
+    if prov.user_id != current_user.id:
+        flash('No tenés permiso para agregar productos aquí.', 'warning')
+        return redirect(url_for('ver_proveedor', id=provider_id))
+
+    nombre = (request.form.get('nombre') or '').strip()
+    precio = (request.form.get('precio') or '').strip()
+    img_fs = request.files.get('imagen')
+
+    if not nombre or not precio:
+        flash('Completá nombre y precio.', 'warning')
+        return redirect(url_for('ver_proveedor', id=provider_id))
+
+    img_url = None
+    if img_fs and img_fs.filename:
+        img_url = save_image(img_fs, f'providers/{prov.id}/products')
+
+    prod = ProviderProduct(
+        provider_id=prov.id,
+        nombre=nombre,
+        precio=precio,
+        imagen_path=img_url
+    )
+    db.session.add(prod)
+    db.session.commit()
+    flash('Producto agregado.', 'success')
+    return redirect(url_for('ver_proveedor', id=provider_id))
+
+
+# --- ACTUALIZAR PRODUCTO DESDE EL PERFIL ---
+@app.route('/producto/<int:prod_id>/actualizar', methods=['POST'])
+@login_required
+def actualizar_producto(prod_id):
+    prod = ProviderProduct.query.get_or_404(prod_id)
+    prov = Provider.query.get_or_404(prod.provider_id)
+    if prov.user_id != current_user.id:
+        flash('No tenés permiso para editar este producto.', 'warning')
+        return redirect(url_for('ver_proveedor', id=prov.id))
+
+    nombre = (request.form.get('nombre') or '').strip()
+    precio = (request.form.get('precio') or '').strip()
+    img_fs = request.files.get('imagen')
+
+    if nombre:
+        prod.nombre = nombre
+    if precio:
+        prod.precio = precio
+    if img_fs and img_fs.filename:
+        prod.imagen_path = save_image(img_fs, f'providers/{prov.id}/products')
+
+    db.session.commit()
+    flash('Producto actualizado.', 'success')
+    return redirect(url_for('ver_proveedor', id=prov.id))
+
+
+# --- ELIMINAR PRODUCTO ---
+@app.route('/producto/<int:prod_id>/eliminar', methods=['POST'])
+@login_required
+def eliminar_producto(prod_id):
+    prod = ProviderProduct.query.get_or_404(prod_id)
+    prov = Provider.query.get_or_404(prod.provider_id)
+    if prov.user_id != current_user.id:
+        flash('No tenés permiso para eliminar este producto.', 'warning')
+        return redirect(url_for('ver_proveedor', id=prov.id))
+
+    db.session.delete(prod)
+    db.session.commit()
+    flash('Producto eliminado.', 'success')
+    return redirect(request.referrer or url_for('ver_proveedor', id=prov.id))
 
 @app.route('/proveedores')
 def proveedores():
-    provs = Provider.query.order_by(Provider.id.desc()).all()
-    return render_template('proveedores.html', proveedores=provs)
+    # parámetros de búsqueda
+    q = (request.args.get('q') or '').strip().lower()
+    zona_filtro = (request.args.get('zona') or '').strip().lower()
 
+    # traemos todo y filtramos en Python (zonas están guardadas como JSON en un Text)
+    all_provs = Provider.query.order_by(Provider.id.desc()).all()
 
+    # todas las zonas únicas (para el combo)
+    zonas_unicas = set()
+    for p in all_provs:
+        try:
+            for z in json.loads(p.zonas_reparto_json or '[]'):
+                zonas_unicas.add(z)
+        except Exception:
+            pass
+    zonas_unicas = sorted(zonas_unicas)
+
+    # filtrado por nombre y zona
+    items = []
+    for p in all_provs:
+        zonas = []
+        try:
+            zonas = json.loads(p.zonas_reparto_json or '[]')
+        except Exception:
+            zonas = []
+
+        if q and q not in (p.nombre or '').lower():
+            continue
+        if zona_filtro and zona_filtro not in [z.lower() for z in zonas]:
+            continue
+
+        items.append({'p': p, 'zonas': zonas})
+
+    return render_template('proveedores.html',
+                           items=items,
+                           zonas=zonas_unicas,
+                           q=q,
+                           zona=zona_filtro)
 
 @app.route('/historial_cajas')
 @login_required

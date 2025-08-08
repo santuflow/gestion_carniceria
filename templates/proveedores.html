@@ -4,42 +4,83 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Proveedores</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='proveedor_perfil.css') }}">
+  <style>
+    :root{
+      --bg:#0b1020;--card:#0b1020;--line:#1f2a44;--muted:#94a3b8;--text:#e2e8f0;
+      --chip-bg:#111827;--chip-line:#1f2a44;--accent:#22d3ee;--radius:14px;
+    }
+    *{box-sizing:border-box} body{margin:0;background:#0b1020;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    .wrap{max-width:1100px;margin:18px auto;padding:0 16px 28px;}
+    .titlebar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+    h1{margin:0;font-size:1.25rem}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid #2a3655;background:#111827;color:var(--text);text-decoration:none}
+    .btn:hover{filter:brightness(1.06)}
+    form.filtros{display:grid;grid-template-columns:1fr 220px auto;gap:10px;margin:12px 0 16px}
+    form.filtros input, form.filtros select{padding:10px 12px;border-radius:10px;border:1px solid #283453;background:#0f172a;color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:620px){.grid{grid-template-columns:1fr} form.filtros{grid-template-columns:1fr 1fr; grid-auto-rows:auto}}
+    .card{background:linear-gradient(180deg,#0b1020,#0a1222);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit}
+    .cover{height:140px;background:#0f172a;background-size:cover;background-position:center}
+    .body{display:flex;gap:10px;padding:12px}
+    .avatar{width:56px;height:56px;border-radius:999px;object-fit:cover;border:3px solid #0b1020;background:#0b1020;margin-top:-28px}
+    .info{flex:1;min-width:0}
+    .name{margin:0 0 6px;font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{background:var(--chip-bg);border:1px solid var(--chip-line);padding:4px 10px;border-radius:999px;font-size:.8rem;color:#cfe0ff}
+    .empty{border:1px dashed #2b3a60;border-radius:12px;padding:20px;text-align:center;color:var(--muted)}
+  </style>
 </head>
-<body class="proveedores-body">
-  <header class="topbar">
-    <div class="topbar-inner">
+<body>
+  <div class="wrap">
+    <div class="titlebar">
       <h1>Proveedores</h1>
       <a class="btn" href="{{ url_for('soy_proveedor') }}">+ Soy proveedor</a>
     </div>
-  </header>
 
-  <main class="grid-proveedores">
-    {% if proveedores %}
-      {% for pr in proveedores %}
-        <article class="prov-card">
-          <a href="{{ url_for('ver_proveedor', id=pr.id) }}" class="prov-link">
-            <div class="prov-portada">
-              <img src="{{ pr.portada_path or url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
-            </div>
-            <div class="prov-info">
-              <div class="prov-avatar">
-                <img src="{{ pr.avatar_path or url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
-              </div>
-              <div class="prov-textos">
-                <h2>{{ pr.nombre }}</h2>
-                <p class="muted">{{ pr.direccion }}</p>
-                <p class="tags">
-                  {% set zonas = (pr.zonas_reparto_json or '[]') | tojson | safe %}
-                </p>
+    <form class="filtros" method="get" action="{{ url_for('proveedores') }}">
+      <input name="q" value="{{ q or '' }}" placeholder="Buscar por nombre…">
+      <select name="zona">
+        <option value="">Todas las zonas</option>
+        {% for z in zonas %}
+          <option value="{{ z }}" {% if zona==z|lower %}selected{% endif %}>{{ z }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn" type="submit">Filtrar</button>
+    </form>
+
+    {% if items and items|length %}
+      <div class="grid">
+        {% for it in items %}
+          {% set p = it.p %}
+          {% set zs = it.zonas %}
+          <a class="card" href="{{ url_for('ver_proveedor', id=p.id) }}" aria-label="Ver {{ p.nombre }}">
+            <div class="cover"
+                 style="background-image:url('{{ p.portada_path or url_for('static', filename='img/placeholder_portada.jpg') }}')"></div>
+            <div class="body">
+              <img class="avatar" src="{{ p.avatar_path or url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
+              <div class="info">
+                <h3 class="name">{{ p.nombre }}</h3>
+                <div class="chips">
+                  {% if zs and zs|length %}
+                    {% for z in zs[:3] %}
+                      <span class="chip">{{ z }}</span>
+                    {% endfor %}
+                    {% if zs|length > 3 %}
+                      <span class="chip">+{{ zs|length - 3 }}</span>
+                    {% endif %}
+                  {% else %}
+                    <span class="chip">Sin zona</span>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </a>
-        </article>
-      {% endfor %}
+        {% endfor %}
+      </div>
     {% else %}
-      <p class="muted" style="text-align:center;margin-top:24px">Todavía no hay proveedores publicados.</p>
+      <div class="empty">No hay proveedores que coincidan con tu búsqueda.</div>
     {% endif %}
-  </main>
+  </div>
 </body>
 </html>
