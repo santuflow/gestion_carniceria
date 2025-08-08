@@ -44,7 +44,8 @@ body.fondo-proveedor{
 .perfil-visual{
   position: relative;
   border-radius: var(--radius);
-  overflow: hidden;
+  /* *** FIX: permitir que el avatar “cuelgue” sin cortarlo *** */
+  overflow: visible;
   box-shadow: var(--shadow);
   background: var(--panel);
   margin-bottom: 72px; /* deja espacio al avatar */
@@ -56,9 +57,9 @@ body.fondo-proveedor{
   width: 100%;
   height: 260px;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: hidden;            /* la portada sí recorta */
   background: #0f1724;
-  cursor: pointer; /* clic en toda la portada */
+  cursor: pointer;             /* clic en toda la portada */
 }
 .portada{ width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -78,7 +79,7 @@ body.fondo-proveedor{
 .avatar-wrapper{
   position: absolute;
   left: 28px;
-  bottom: -54px;               /* mitad fuera para que "cuelgue" */
+  bottom: -40px;               /* cuelga sin quedar tan abajo */
   width: 180px; height: 180px;
   border-radius: 50%;
   overflow: hidden;
@@ -98,8 +99,17 @@ body.fondo-proveedor{
 }
 .avatar-wrapper:hover .avatar-overlay{ opacity:1; }
 
+/* Botón chico en el borde para cambiar (opcional visual) */
+.avatar-action{
+  position:absolute; right:-6px; bottom:-6px; z-index:7;
+  background:#1f2937; color:#cfe0ff;
+  border:1px dashed #2f3a52; border-radius:999px;
+  padding:6px 10px; font-size:12px; line-height:1; cursor:pointer;
+}
+.avatar-action:hover{ filter:brightness(1.05); }
+
 /* Empujar formulario para no tapar el avatar */
-.proveedor-form{ padding-top: 86px; }
+.proveedor-form{ padding-top: 100px; }
 
 /* ===================== Formulario general ===================== */
 .proveedor-form{
@@ -266,6 +276,6 @@ select[multiple]::-webkit-scrollbar-thumb{ background:#334161; border-radius:8px
   .zonas-lista{ grid-template-columns:1fr; }
   .producto-top{ grid-template-columns:1fr; }
   .producto-campos{ grid-template-columns:1fr; }
-  .avatar-wrapper{ left:16px; bottom:-44px; width:150px; height:150px; }
-  .proveedor-form{ padding-top:76px; }
+  .avatar-wrapper{ left:16px; bottom:-36px; width:150px; height:150px; }
+  .proveedor-form{ padding-top:88px; }
 }
