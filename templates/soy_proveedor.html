@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registro de Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor.css') }}">
+  <style>
+    /* Mini estilos puntuales para el selector múltiple */
+    .zonas-wrapper{display:flex;flex-direction:column;gap:8px}
+    .zonas-busqueda{display:flex;gap:8px}
+    .zonas-busqueda input{flex:1;padding:10px;border:1px solid #263147;background:#1b2130;color:#e9edf3;border-radius:10px}
+    .zonas-acciones{display:flex;gap:8px}
+    .btn.chico{padding:8px 10px;font-size:14px}
+    .zonas-lista{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:220px;overflow:auto;border:1px solid #263147;background:#1b2130;border-radius:10px;padding:10px}
+    @media (max-width:720px){.zonas-lista{grid-template-columns:1fr}}
+    .zonas-lista label{display:flex;align-items:center;gap:8px;font-size:14px;color:#cfe0ff}
+    .zonas-chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{background:#1f2937;border:1px solid #2e3b55;color:#cfe0ff;border-radius:999px;padding:4px 10px;font-size:12px}
+    .chip button{background:transparent;border:0;color:#cfe0ff;margin-left:6px;cursor:pointer}
+    .help{color:#aab3c5;font-size:12px}
+  </style>
 </head>
 <body class="fondo-proveedor">
   <header class="topbar">
@@ -15,28 +30,28 @@
   </header>
 
   <main class="proveedor-layout">
-    <!-- Portada + avatar con previsualización -->
-    <section class="perfil-visual">
-      <div class="portada-wrapper">
-        <img id="preview-portada" class="portada" src="{{ url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
-        <label class="btn archivo">
-          Cambiar portada
-          <input type="file" name="portada" id="input-portada" accept="image/*" form="form-proveedor" required>
-        </label>
-      </div>
-
-      <div class="avatar-wrapper">
-        <img id="preview-avatar" class="avatar" src="{{ url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
-        <label class="btn archivo small">
-          Foto de perfil
-          <input type="file" name="avatar" id="input-avatar" accept="image/*" form="form-proveedor">
-        </label>
-      </div>
-    </section>
-
     <form id="form-proveedor" action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
 
-      <section class="grid-datos">
+      <!-- Portada + avatar con previsualización (ahora DENTRO del form) -->
+      <section class="perfil-visual">
+        <div class="portada-wrapper">
+          <img id="preview-portada" class="portada" src="{{ url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
+          <label class="btn archivo">
+            Cambiar portada
+            <input type="file" name="portada" id="input-portada" accept="image/*" required>
+          </label>
+        </div>
+
+        <div class="avatar-wrapper">
+          <img id="preview-avatar" class="avatar" src="{{ url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
+          <label class="btn archivo small">
+            Foto de perfil
+            <input type="file" name="avatar" id="input-avatar" accept="image/*">
+          </label>
+        </div>
+      </section>
+
+      <section class="grid-datos" style="margin-top:56px">
         <div class="form-col">
           <label>Nombre del negocio</label>
           <input type="text" name="nombre" placeholder="Ej: Frigorífico La Buena Carne" required>
@@ -45,41 +60,34 @@
           <input type="text" name="direccion" placeholder="Calle y localidad" required>
 
           <label>Zonas de reparto</label>
-          <select name="zonas_reparto[]" multiple required>
-            <option>Capital Federal</option>
-            <option>Zona Norte</option>
-            <option>Zona Sur</option>
-            <option>Zona Oeste</option>
-            <option>Avellaneda</option>
-            <option>Lanús</option>
-            <option>Quilmes</option>
-            <option>Berazategui</option>
-            <option>Florencio Varela</option>
-            <option>La Plata</option>
-            <option>Ensenada</option>
-            <option>Monte Grande</option>
-            <option>Lomas de Zamora</option>
-            <option>Banfield</option>
-            <option>San Justo</option>
-            <option>Castelar</option>
-            <option>Ituzaingó</option>
-            <option>Haedo</option>
-            <option>Moreno</option>
-            <option>Merlo</option>
-            <option>Pilar</option>
-            <option>Escobar</option>
-            <option>San Miguel</option>
-            <option>José C. Paz</option>
-            <option>Villa Ballester</option>
-            <option>San Martín</option>
-            <option>San Isidro</option>
-            <option>Vicente López</option>
-            <option>Tigre</option>
-            <option>San Fernando</option>
-            <option>Luján</option>
-            <option>Campana</option>
-            <option>Zárate</option>
-          </select>
+          <div class="zonas-wrapper">
+            <div class="zonas-busqueda">
+              <input type="text" id="filtro-zonas" placeholder="Buscar zona...">
+              <div class="zonas-acciones">
+                <button type="button" class="btn chico" id="btn-todas">Seleccionar todo</button>
+                <button type="button" class="btn chico danger" id="btn-limpiar">Limpiar</button>
+              </div>
+            </div>
+
+            <!-- lista de checkboxes: name="zonas_reparto[]" -->
+            <div id="zonas-lista" class="zonas-lista">
+              {% set zonas_opciones = [
+                'Capital Federal','Zona Norte','Zona Sur','Zona Oeste','Avellaneda','Lanús','Quilmes','Berazategui',
+                'Florencio Varela','La Plata','Ensenada','Monte Grande','Lomas de Zamora','Banfield','San Justo',
+                'Castelar','Ituzaingó','Haedo','Moreno','Merlo','Pilar','Escobar','San Miguel','José C. Paz',
+                'Villa Ballester','San Martín','San Isidro','Vicente López','Tigre','San Fernando','Luján','Campana','Zárate'
+              ] %}
+              {% for z in zonas_opciones %}
+              <label>
+                <input type="checkbox" name="zonas_reparto[]" value="{{ z }}">
+                <span>{{ z }}</span>
+              </label>
+              {% endfor %}
+            </div>
+
+            <div class="zonas-chips" id="zonas-chips"></div>
+            <span class="help">En PC: Ctrl/Cmd + click no es necesario; marcá varias con check. En celular, tocá para marcar.</span>
+          </div>
         </div>
 
         <div class="form-col">
@@ -119,7 +127,7 @@
   </main>
 
   <script>
-    // Previews portada/avatar
+    // ===== Previews portada/avatar =====
     const inputPortada = document.getElementById('input-portada');
     const previewPortada = document.getElementById('preview-portada');
     const inputAvatar = document.getElementById('input-avatar');
@@ -138,7 +146,7 @@
       });
     }
 
-    // Agregar productos
+    // ===== Productos dinámicos =====
     const cont = document.getElementById('productos-container');
     document.getElementById('btn-agregar').addEventListener('click', () => {
       const div = document.createElement('div');
@@ -157,6 +165,62 @@
       div.querySelector('.quitar').addEventListener('click', () => div.remove());
       cont.appendChild(div);
     });
+
+    // ===== Selector múltiple de zonas con búsqueda + chips =====
+    const lista = document.getElementById('zonas-lista');
+    const filtro = document.getElementById('filtro-zonas');
+    const chips = document.getElementById('zonas-chips');
+    const btnTodas = document.getElementById('btn-todas');
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    const form = document.getElementById('form-proveedor');
+
+    // filtrar
+    filtro.addEventListener('input', () => {
+      const q = filtro.value.toLowerCase().trim();
+      [...lista.querySelectorAll('label')].forEach(lbl => {
+        const txt = lbl.innerText.toLowerCase();
+        lbl.style.display = txt.includes(q) ? 'flex' : 'none';
+      });
+    });
+
+    // chips de seleccionadas
+    function renderChips(){
+      chips.innerHTML = '';
+      const checks = lista.querySelectorAll('input[type="checkbox"]:checked');
+      checks.forEach(chk => {
+        const span = document.createElement('span');
+        span.className = 'chip';
+        span.textContent = chk.value;
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.textContent = '×';
+        x.addEventListener('click', () => { chk.checked = false; renderChips(); });
+        span.appendChild(x);
+        chips.appendChild(span);
+      });
+    }
+    lista.addEventListener('change', renderChips);
+
+    btnTodas.addEventListener('click', () => {
+      lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+      renderChips();
+    });
+    btnLimpiar.addEventListener('click', () => {
+      lista.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      renderChips();
+    });
+
+    // Validación: al menos 1 zona
+    form.addEventListener('submit', (e) => {
+      const alguno = lista.querySelector('input[type="checkbox"]:checked');
+      if (!alguno) {
+        e.preventDefault();
+        alert('Seleccioná al menos una zona de reparto.');
+      }
+    });
+
+    // Render inicial (por si el navegador recuerda checks)
+    renderChips();
   </script>
 </body>
 </html>
