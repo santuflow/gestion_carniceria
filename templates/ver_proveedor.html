@@ -2,61 +2,81 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Perfil del Proveedor</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ p.nombre }} – Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor_perfil.css') }}">
 </head>
-<body>
-
-  <header>
-    <h1>Gestión de Carnicería</h1>
-    <div class="auth-buttons">
-      <a href="{{ url_for('index') }}" class="btn-auth">Volver</a>
+<body class="perfil-body">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="btn" href="{{ url_for('proveedores') }}">← Volver</a>
+      <h1>{{ p.nombre }}</h1>
+      {% if es_dueno %}
+        <a class="btn" href="{{ url_for('soy_proveedor') }}">Editar perfil</a>
+      {% else %}
+        <span></span>
+      {% endif %}
     </div>
   </header>
 
-  <main class="perfil-proveedor">
-    <!-- Foto de portada -->
-    <div class="foto-portada" style="background-image: url('{{ proveedor.foto_portada }}');"></div>
-
-    <section class="info-general">
-      <h2>{{ proveedor.nombre }}</h2>
-      <p><strong>Dirección / Zona:</strong> {{ proveedor.zona }}</p>
-
-      <div class="zonas-reparto">
-        <strong>Zonas de reparto:</strong>
-        <ul>
-          {% for zona in proveedor.zonas_reparto %}
-            <li>{{ zona }}</li>
-          {% endfor %}
-        </ul>
+  <main class="perfil-wrapper">
+    <!-- Portada + avatar -->
+    <section class="perfil-visual">
+      <div class="portada">
+        <img src="{{ p.portada_path or url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
       </div>
+      <div class="avatar">
+        <img src="{{ p.avatar_path or url_for('static', filename='img/placeholder_avatar.png') }}" alt="Avatar">
+      </div>
+    </section>
 
-      <div class="contacto">
-        <p><strong>Teléfono:</strong> {{ proveedor.telefono }}</p>
-        {% if proveedor.telefono and 'whatsapp' in proveedor.telefono|lower %}
-          <a href="https://wa.me/{{ proveedor.telefono | replace('+', '') | replace(' ', '') }}" target="_blank" class="btn-wsp">WhatsApp</a>
+    <!-- Datos -->
+    <section class="perfil-datos card">
+      <div class="datos-izq">
+        <h2>{{ p.nombre }}</h2>
+        <p class="muted">{{ p.direccion }}</p>
+        {% if p.descripcion %}
+        <p class="desc">{{ p.descripcion }}</p>
+        {% endif %}
+        {% if zonas and zonas|length %}
+          <div class="chips">
+            {% for z in zonas %}
+              <span class="chip">{{ z }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="datos-der">
+        {% if p.contacto %}
+          <a class="btn large" href="https://wa.me/{{ p.contacto | replace(' ', '') | replace('+', '') }}" target="_blank" rel="noopener">
+            Contactar por WhatsApp
+          </a>
+          <p class="muted" style="margin-top:6px">{{ p.contacto }}</p>
         {% endif %}
       </div>
     </section>
 
-    <section class="productos">
-      <h3>Productos que ofrece</h3>
-      <div class="lista-productos">
-        {% for producto in proveedor.productos %}
-          <div class="producto-card">
-            <img src="{{ producto.foto }}" alt="Producto">
-            <div class="producto-info">
-              <h4>{{ producto.nombre }}</h4>
-              <p><strong>Precio:</strong> ${{ producto.precio }}</p>
-              <p><strong>Unidad:</strong> {{ producto.unidad }}</p>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+    <!-- Productos -->
+    <section class="productos card">
+      <h3>Productos</h3>
+      {% if productos %}
+        <div class="grid-productos">
+          {% for prod in productos %}
+            <article class="prod-card">
+              <div class="prod-img">
+                <img src="{{ prod.imagen_path or url_for('static', filename='img/placeholder_producto.jpg') }}" alt="{{ prod.nombre }}">
+              </div>
+              <div class="prod-info">
+                <h4>{{ prod.nombre }}</h4>
+                <p class="precio">{{ prod.precio }}</p>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">Aún no hay productos publicados.</p>
+      {% endif %}
     </section>
   </main>
-
 </body>
 </html>

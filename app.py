@@ -117,14 +117,44 @@ class CVProfesional(db.Model):
     cv_archivo = db.Column(db.String(255))
 
 
-    class Proveedor(db.Model):
+class Provider(db.Model):
+    __tablename__ = 'provider'
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    nombre = db.Column(db.String(100), nullable=False)
+    direccion = db.Column(db.String(200), nullable=False)
     zona = db.Column(db.String(100))
-    zonas_reparto = db.Column(db.Text)  # JSON como string
-    telefono = db.Column(db.String(50))
-    productos = db.Column(db.Text)  # JSON como string
-    foto_portada = db.Column(db.String(300))
+    contacto = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text)
+    zonas_reparto_json = db.Column(db.Text, default='[]')
+    portada_path = db.Column(db.String(300))
+    avatar_path  = db.Column(db.String(300))
+    productos = db.relationship('ProviderProduct', backref='provider', cascade='all, delete-orphan', lazy=True)
+
+class ProviderProduct(db.Model):
+    __tablename__ = 'provider_product'
+    id = db.Column(db.Integer, primary_key=True)
+    provider_id = db.Column(db.Integer, db.ForeignKey('provider.id'), nullable=False)
+    nombre = db.Column(db.String(120), nullable=False)
+    precio = db.Column(db.String(50), nullable=False)
+    imagen_path = db.Column(db.String(300))
+
+
+# ====== FUNCIONES AUXILIARES ======
+import time
+from werkzeug.utils import secure_filename
+
+def save_image(file_storage, subdir='providers'):
+    if not file_storage or file_storage.filename == '':
+        return None
+    filename = secure_filename(file_storage.filename)
+    base, ext = os.path.splitext(filename)
+    unique = f"{current_user.id}_{int(time.time()*1000)}{ext.lower()}"
+    folder = os.path.join(app.root_path, 'static', 'uploads', subdir)
+    os.makedirs(folder, exist_ok=True)
+    path_abs = os.path.join(folder, unique)
+    file_storage.save(path_abs)
+    return f"/static/uploads/{subdir}/{unique}"
 
 
 
@@ -569,76 +599,98 @@ def api_cerrar_caja():
 
     return jsonify(success=True, resumen=resumen), 200
 
+# --- PROVEEDORES ---
+
 @app.route("/soy_proveedor")
+@login_required
 def soy_proveedor():
+    existing = Provider.query.filter_by(user_id=current_user.id).first()
+    if existing:
+        return redirect(url_for('ver_proveedor', id=existing.id))
     return render_template("soy_proveedor.html")
 
-
-@app.route('/ver_proveedor/<int:id>')
-def ver_proveedor(id):
-    proveedor = Proveedor.query.get_or_404(id)
-
-    # Parsear zonas_reparto y productos desde texto JSON si están así guardados
-    import json
-    zonas = json.loads(proveedor.zonas_reparto)
-    productos = json.loads(proveedor.productos)
-
-    data = {
-        'foto_portada': proveedor.foto_portada,
-        'nombre': proveedor.nombre,
-        'zona': proveedor.zona,
-        'zonas_reparto': zonas,
-        'telefono': proveedor.telefono,
-        'productos': productos
-    }
-
-    return render_template('ver_proveedor.html', proveedor=data)
 
 @app.route('/publicar_proveedor', methods=['POST'])
 @login_required
 def publicar_proveedor():
-    nombre = request.form.get('nombre')
-    zona = request.form.get('zona')
-    zonas_reparto = request.form.getlist('zonas_reparto')
-    telefono = request.form.get('telefono')
-    productos = []
-    
-    for i in range(len(request.form.getlist('producto_nombre'))):
-        producto = {
-            'nombre': request.form.getlist('producto_nombre')[i],
-            'precio': request.form.getlist('producto_precio')[i],
-            'unidad': request.form.getlist('producto_unidad')[i]
-        }
-        foto = request.files.getlist('producto_foto')[i]
-        if foto:
-            filename = secure_filename(foto.filename)
-            ruta = os.path.join(app.root_path, 'static/uploads', filename)
-            foto.save(ruta)
-            producto['foto'] = f'/static/uploads/{filename}'
-        productos.append(producto)
+    nombre      = (request.form.get('nombre') or '').strip()
+    direccion   = (request.form.get('direccion') or '').strip()
+    contacto    = (request.form.get('contacto') or '').strip()
+    descripcion = (request.form.get('descripcion') or '').strip()
+    zonas_reparto = request.form.getlist('zonas_reparto[]')  # 👈 importante los []
 
-    portada = request.files.get('foto_portada')
-    if portada:
-        portada_filename = secure_filename(portada.filename)
-        portada_path = os.path.join(app.root_path, 'static/uploads', portada_filename)
-        portada.save(portada_path)
-        foto_portada_url = f'/static/uploads/{portada_filename}'
+    if not nombre or not direccion or not contacto or not zonas_reparto:
+        flash('Completá nombre, dirección, contacto y zonas de reparto.', 'warning')
+        return redirect(request.referrer or url_for('soy_proveedor'))
+
+    # Imágenes (usa la helper save_image que pegamos antes)
+    portada = save_image(request.files.get('portada'), 'providers')
+    avatar  = save_image(request.files.get('avatar'),  'providers')
+
+    # Crear/actualizar perfil
+    provider = Provider.query.filter_by(user_id=current_user.id).first()
+    if not provider:
+        provider = Provider(
+            user_id=current_user.id,
+            nombre=nombre,
+            direccion=direccion,
+            contacto=contacto,
+            descripcion=descripcion,
+            zonas_reparto_json=json.dumps(zonas_reparto),
+            portada_path=portada,
+            avatar_path=avatar
+        )
+        db.session.add(provider)
+        db.session.flush()  # para obtener provider.id
     else:
-        foto_portada_url = ''
+        provider.nombre = nombre
+        provider.direccion = direccion
+        provider.contacto = contacto
+        provider.descripcion = descripcion
+        provider.zonas_reparto_json = json.dumps(zonas_reparto)
+        if portada: provider.portada_path = portada
+        if avatar:  provider.avatar_path  = avatar
+        # Por ahora recargamos productos desde cero
+        ProviderProduct.query.filter_by(provider_id=provider.id).delete()
 
-    proveedor = {
-        'foto_portada': foto_portada_url,
-        'nombre': nombre,
-        'zona': zona,
-        'zonas_reparto': zonas_reparto,
-        'telefono': telefono,
-        'productos': productos
-    }
+    # Productos
+    nombres  = request.form.getlist('producto_nombre[]')
+    precios  = request.form.getlist('producto_precio[]')
+    imagenes = request.files.getlist('producto_imagen[]')
 
-    # Podés guardar el proveedor en la base de datos o una lista temporal
-    session['proveedor'] = proveedor
+    for i in range(len(nombres)):
+        nom = (nombres[i] or '').strip()
+        pre = (precios[i] or '').strip()
+        img_fs = imagenes[i] if i < len(imagenes) else None
+        img_url = save_image(img_fs, 'providers') if img_fs else None
+        if nom and pre:
+            db.session.add(ProviderProduct(
+                provider_id=provider.id,
+                nombre=nom,
+                precio=pre,
+                imagen_path=img_url
+            ))
 
-    return redirect(url_for('ver_proveedor'))
+    db.session.commit()
+    flash('Perfil de proveedor publicado/actualizado.', 'success')
+    return redirect(url_for('ver_proveedor', id=provider.id))
+
+
+@app.route('/ver_proveedor/<int:id>')
+def ver_proveedor(id):
+    provider = Provider.query.get_or_404(id)
+    zonas = json.loads(provider.zonas_reparto_json or '[]')
+    productos = ProviderProduct.query.filter_by(provider_id=provider.id).all()
+    es_dueno = current_user.is_authenticated and (provider.user_id == current_user.id)
+    return render_template('ver_proveedor.html',
+                           p=provider, zonas=zonas, productos=productos, es_dueno=es_dueno)
+
+
+@app.route('/proveedores')
+def proveedores():
+    provs = Provider.query.order_by(Provider.id.desc()).all()
+    return render_template('proveedores.html', proveedores=provs)
+
 
 
 @app.route('/historial_cajas')
