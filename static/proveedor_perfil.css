@@ -1,7 +1,6 @@
 /* ================================
    Proveedor – Perfil público
    Archivo: static/proveedor_perfil.css
-   Autor: vos 😎
    ================================ */
 
 /* --------- Reset suave + base --------- */
@@ -15,8 +14,8 @@
   --text-soft: #cbd5e1;
   --chip-bg: #111827;
   --chip-line: #1f2a44;
-  --accent: #22d3ee; /* cyan precio */
-  --primary: #10b981; /* verde botones primarios */
+  --accent: #22d3ee;        /* cyan precio */
+  --primary: #10b981;       /* verde botones primarios */
   --primary-dark: #0a9468;
   --shadow: 0 10px 30px rgba(0,0,0,.35);
   --radius: 14px;
@@ -82,6 +81,12 @@ body{
   color:#042e22;
   border-color: #0a6f51;
 }
+/* NUEVAS variantes que usa el HTML */
+.btn.secundario{ background:#162033; border-color:#23314a; color:#e2e8f0; }
+.btn.peligro{ background:#2b0f13; border-color:#3a161b; color:#ffccd0; }
+.btn.chico{ padding:6px 10px; font-size:.9rem; }
+.btn.whatsapp{ background:#25D366; border-color:#1db954; color:#0b2815; font-weight:700; }
+.btn.whatsapp svg{ width:18px; height:18px }
 
 /* --------- Wrapper principal --------- */
 .perfil-wrapper{
@@ -165,6 +170,10 @@ body{
   font-size: .86rem;
 }
 
+/* “Ver más / Ver menos” zonas */
+.zonas-wrap{ margin-top:10px; }
+.zonas-wrap .chip{ margin:4px; }
+
 /* --------- Productos --------- */
 .productos h3{ margin: 0 0 10px; }
 
@@ -206,6 +215,8 @@ body{
   object-fit: cover;
   display:block;
 }
+/* Cursor de zoom para imágenes con atributo data-zoom */
+[data-zoom]{ cursor: zoom-in; }
 
 .prod-info{
   padding: 10px 12px 12px;
@@ -251,12 +262,27 @@ a, button{ cursor: pointer; }
   .topbar h1{ text-align: left; }
 }
 
-/* --------- Placeholders (por si no hay imágenes) --------- */
-img[onerror]{
-  /* nada, el onerror lo maneja el HTML; esto es por si querés darles un borde */
+/* --------- Zoom modal --------- */
+.zoom-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.86);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+.zoom-modal[hidden]{ display:none }
+.zoom-modal img{
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.6);
 }
 
-/* --------- Helper: skeleton (opcional si cargás via JS) --------- */
+/* --------- Placeholders (opcional) --------- */
+img[onerror]{}
+
+/* --------- Skeleton (opcional si cargás via JS) --------- */
 .skeleton{
   position: relative;
   overflow: hidden;

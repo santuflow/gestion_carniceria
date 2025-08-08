@@ -44,26 +44,25 @@ body.fondo-proveedor{
 .perfil-visual{
   position: relative;
   border-radius: var(--radius);
-  /* *** FIX: permitir que el avatar “cuelgue” sin cortarlo *** */
-  overflow: visible;
+  overflow: visible;                 /* ✅ no cortar avatar colgando */
   box-shadow: var(--shadow);
   background: var(--panel);
-  margin-bottom: 72px; /* deja espacio al avatar */
+  margin-bottom: 72px;               /* deja espacio al avatar */
 }
 
 /* ----- Portada ----- */
 .portada-wrapper{
   position: relative;
   width: 100%;
-  height: 260px;
+  height: clamp(220px, 32vw, 300px); /* ✅ alto responsivo */
   border-radius: 16px;
-  overflow: hidden;            /* la portada sí recorta */
+  overflow: hidden;                  /* la portada sí recorta */
   background: #0f1724;
-  cursor: pointer;             /* clic en toda la portada */
+  cursor: pointer;                   /* clic en toda la portada */
 }
 .portada{ width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Botón "Cambiar portada" */
+/* Botón "Cambiar portada" (no bloquea click general) */
 .cambiar-portada{
   position: absolute; right: 16px; bottom: 16px; z-index: 5;
   display:inline-flex; align-items:center; gap:8px;
@@ -71,6 +70,7 @@ body.fondo-proveedor{
   border:1px dashed #2f3a52; border-radius:12px;
   padding:10px 14px; font-weight:600; cursor:pointer;
   transition: filter .2s ease, transform .05s ease;
+  pointer-events: auto;              /* ✅ asegura click */
 }
 .cambiar-portada:hover{ filter:brightness(1.05); }
 .cambiar-portada:active{ transform: translateY(1px); }
@@ -79,7 +79,7 @@ body.fondo-proveedor{
 .avatar-wrapper{
   position: absolute;
   left: 28px;
-  bottom: -40px;               /* cuelga sin quedar tan abajo */
+  bottom: -40px;                     /* cuelga sin quedar tan abajo */
   width: 180px; height: 180px;
   border-radius: 50%;
   overflow: hidden;
@@ -96,6 +96,7 @@ body.fondo-proveedor{
   font-size:14px; color:#cbd5e1;
   background:rgba(0,0,0,.28);
   opacity:0; transition:opacity .18s ease;
+  pointer-events:none;               /* ✅ no tapa el click */
 }
 .avatar-wrapper:hover .avatar-overlay{ opacity:1; }
 
@@ -189,6 +190,7 @@ textarea{ resize:vertical; min-height:96px; }
 }
 .producto-top{ display:grid; gap:12px; grid-template-columns: 140px 1fr; }
 .producto-foto{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+
 .preview-imagen{
   width:100%; max-width:140px; aspect-ratio:1/1; object-fit:cover;
   border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(0,0,0,.25);
@@ -198,17 +200,20 @@ textarea{ resize:vertical; min-height:96px; }
 .foto-hint{ font-size:12px; color:var(--muted); text-align:center; }
 .msg-error{ font-size:12px; color:#ff6b6b; min-height:16px; text-align:center; }
 
+/* Grilla de campos */
 .producto-campos{ display:grid; gap:10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
 .producto-campos .campo{ display:flex; flex-direction:column; gap:6px; }
 .producto-campos label{ font-size:13px; color:var(--muted); }
 .producto-campos textarea{ resize:vertical; }
 
+/* Precio con preview ARS */
 .precio-campo{ position:relative; }
 .precio-preview{
   position:absolute; right:10px; top:50%; transform:translateY(-50%);
   font-size:12px; color:var(--muted);
 }
 
+/* Acciones de la tarjeta */
 .producto-actions{ display:flex; justify-content:flex-end; margin-top:8px; }
 
 /* ===================== Switch “Publicar” ===================== */
@@ -241,12 +246,15 @@ textarea{ resize:vertical; min-height:96px; }
 .btn.secundario{ background:#1e283f; border:1px solid #2a3550; color:var(--text); }
 .btn.secundario:hover{ background:#223056; }
 
+/* Alias por si usaste "danger" en HTML */
+.btn.danger{ background:#2b0f13; border:1px solid #3a161b; color:#ffccd0; }
+
 .btn.archivo{
   background:#1f2937; border:1px dashed #2f3a52; color:#cfe0ff;
 }
 .btn.archivo.small{ padding:8px 10px; font-size:14px; }
 
-/* Para inputs file sobre botones (si usás este patrón en otros lados) */
+/* Inputs file sobre botones */
 .btn.archivo{ position: relative; overflow: hidden; }
 .btn.archivo input[type="file"]{
   position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;
@@ -269,7 +277,7 @@ select[multiple]::-webkit-scrollbar-thumb{ background:#334161; border-radius:8px
   .proveedor-layout{ padding: 0 12px; }
 }
 @media (max-width:900px){
-  .portada-wrapper{ height:220px; }
+  .portada-wrapper{ height: clamp(200px, 30vw, 260px); }
 }
 @media (max-width:760px){
   .grid-datos{ grid-template-columns:1fr; }

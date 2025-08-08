@@ -6,110 +6,70 @@
   <title>{{ p.nombre }} – Proveedor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='proveedor_perfil.css') }}">
   <style>
-    .topbar {
-      position: sticky;
-      top: 0;
-      background: #0f172a;
-      border-bottom: 1px solid #1f2a44;
-      z-index: 20;
-    }
-    .topbar-inner {
-      max-width: 1100px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 16px;
-    }
-    .topbar h1 {
-      margin: 0;
-      text-align: center;
-      font-size: 1.1rem;
-      color: #e2e8f0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .btn {
-      border: 1px solid #334155;
-      padding: 8px 12px;
-      border-radius: 10px;
-      text-decoration: none;
-      color: #e2e8f0;
-      background: #111827;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-    .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .btn.primary { background: #0b5; border-color: #094; color: #041; }
-    .btn.peligro { background:#2b0f13; border-color:#3a161b; color:#ffccd0; }
-    .perfil-wrapper { max-width: 1100px; margin: 18px auto; padding: 0 16px; }
-    .perfil-visual { position: relative; margin-bottom: 14px; }
-    .perfil-visual .portada img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 14px;
-    }
-    .perfil-visual .avatar { position: absolute; bottom: -36px; left: 18px; }
-    .perfil-visual .avatar img {
-      width: 96px;
-      height: 96px;
-      border-radius: 999px;
-      border: 4px solid #0f172a;
-      object-fit: cover;
-      background: #0b1020;
-    }
-    .card { background: #0b1020; border: 1px solid #1f2a44; border-radius: 14px; padding: 16px; margin-top: 48px; }
-    .perfil-datos { display: grid; grid-template-columns: 1fr auto; gap: 16px; }
-    .muted { color: #94a3b8; }
-    .desc { margin-top: 8px; color: #cbd5e1; white-space: pre-wrap; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .chip {
-      background: #111827;
-      border: 1px solid #1f2a44;
-      color: #cfe0ff;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: .85rem;
-    }
-    .productos h3 { margin: 0 0 10px; }
-    .grid-productos {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-    @media (max-width:1024px) { .grid-productos { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width:720px) { .grid-productos { grid-template-columns: repeat(2, 1fr); } .perfil-visual .portada img { height: 180px; } }
-    .prod-card {
-      background: #0a1222;
-      border: 1px solid #1f2a44;
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .prod-img img { width: 100%; height: 160px; object-fit: cover; background: #0b1020; }
-    .prod-info {
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .precio { font-weight: 700; color: #22d3ee; }
-    .tools { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 8px; }
-    .inline-actions { display:flex; gap:8px; }
-    .edit-form { padding:10px 12px; display:grid; gap:8px; }
-    .edit-grid { display:grid; grid-template-columns: 1fr 140px; gap:8px; }
-    .edit-row { display:flex; gap:8px; align-items:center; justify-content:space-between; }
-    input[type="text"], input[type="file"]{
-      border:1px solid #2a3655; background:#0f172a; color:#e2e8f0; border-radius:8px; padding:8px 10px;
-    }
+    /* ===== Topbar ===== */
+    .topbar{ position:sticky; top:0; background:#0f172a; border-bottom:1px solid #1f2a44; z-index:20; }
+    .topbar-inner{ max-width:1100px; margin:auto; display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:10px 16px; }
+    .topbar h1{ margin:0; text-align:center; font-size:1.1rem; color:#e2e8f0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* ===== Botones ===== */
+    .btn{ border:1px solid #334155; padding:8px 12px; border-radius:10px; text-decoration:none; color:#e2e8f0; background:#111827; display:inline-flex; align-items:center; gap:6px; transition:background .2s, transform .2s, filter .2s; }
+    .btn:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+    .btn.primary{ background:#0b5; border-color:#094; color:#041; }
+    .btn.peligro{ background:#2b0f13; border-color:#3a161b; color:#ffccd0; }
+    .btn.whatsapp{ background:#25D366; border-color:#1db954; color:#0b2815; font-weight:700; }
+    .btn.whatsapp svg{ width:18px; height:18px; }
+
+    /* ===== Layout ===== */
+    .perfil-wrapper{ max-width:1100px; margin:18px auto; padding:0 16px; }
+    .card{ background:#0b1020; border:1px solid #1f2a44; border-radius:14px; padding:16px; margin-top:48px; }
+    .muted{ color:#94a3b8; }
+    .desc{ margin-top:8px; color:#cbd5e1; white-space:pre-wrap; }
+
+    /* ===== Visual (portada + avatar) ===== */
+    .perfil-visual{ position:relative; margin-bottom:14px; }
+    .perfil-visual .portada img{ width:100%; height:240px; object-fit:cover; border-radius:14px; display:block; }
+    .perfil-visual .avatar{ position:absolute; bottom:-36px; left:18px; }
+    .perfil-visual .avatar img{ width:96px; height:96px; border-radius:999px; border:4px solid #0f172a; object-fit:cover; background:#0b1020; }
+
+    /* ===== Datos ===== */
+    .perfil-datos{ display:grid; grid-template-columns:1fr auto; gap:16px; }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .chip{ background:#111827; border:1px solid #1f2a44; color:#cfe0ff; border-radius:999px; padding:6px 10px; font-size:.85rem; }
+    .zonas-wrap .chip{ margin:4px; }
+
+    /* ===== Productos ===== */
+    .productos h3{ margin:0 0 10px; }
+    .grid-productos{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:14px; }
+    .prod-card{ background:#0a1222; border:1px solid #1f2a44; border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+    .prod-img img{ width:100%; height:160px; object-fit:cover; background:#0b1020; display:block; }
+    .prod-info{ padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .precio{ font-weight:700; color:#22d3ee; }
+
+    /* ===== Editar (dueño) ===== */
+    .inline-actions{ display:flex; gap:8px; }
+    .edit-form{ padding:10px 12px; display:grid; gap:8px; }
+    .edit-grid{ display:grid; grid-template-columns:1fr 140px; gap:8px; }
+    .edit-row{ display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    input[type="text"], input[type="file"]{ border:1px solid #2a3655; background:#0f172a; color:#e2e8f0; border-radius:8px; padding:8px 10px; width:100%; }
     label{ color:#94a3b8; font-size:14px; display:block; margin-bottom:4px; }
+
+    /* ===== Zoom modal ===== */
+    .zoom-modal{ position:fixed; inset:0; background:rgba(0,0,0,.86); display:grid; place-items:center; z-index:9999; }
+    .zoom-modal[hidden]{ display:none; }
+    .zoom-modal img{ max-width:92vw; max-height:92vh; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6); }
+
+    /* ===== Responsive ===== */
+    @media (max-width:1024px){ .grid-productos{ grid-template-columns:repeat(3, 1fr); } }
+    @media (max-width:720px){
+      .perfil-visual .portada img{ height:180px; }
+      .perfil-datos{ grid-template-columns:1fr; }
+      .grid-productos{ grid-template-columns:repeat(2, 1fr); }
+      .prod-img img{ height:150px; }
+    }
+    @media (max-width:480px){
+      .grid-productos{ grid-template-columns:1fr; }
+      .prod-img img{ height:180px; }
+    }
   </style>
 </head>
 <body class="perfil-body">
@@ -120,7 +80,7 @@
         <a class="btn" href="{{ url_for('index') }}" aria-label="Ir a la página principal">🏠 Página principal</a>
       </div>
       <h1 title="{{ p.nombre }}">{{ p.nombre }}</h1>
-      <div class="tools">
+      <div class="tools" style="display:flex; gap:8px; align-items:center;">
         <button class="btn" id="copy-link" type="button" aria-label="Copiar enlace">🔗 Copiar enlace</button>
         {% if es_dueno %}
           <a class="btn" href="{{ url_for('editar_proveedor', id=p.id) }}">✏️ Editar perfil</a>
@@ -130,49 +90,66 @@
   </header>
 
   <main class="perfil-wrapper">
-    <!-- Portada + avatar -->
+    <!-- ===== Portada + avatar ===== -->
     <section class="perfil-visual" aria-label="Imágenes del proveedor">
       <div class="portada">
         <img
           src="{{ p.portada_path or url_for('static', filename='img/placeholder_portada.jpg') }}"
           alt="Portada de {{ p.nombre }}"
           loading="lazy"
-          onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_portada.jpg') }}';"
-        >
+          onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_portada.jpg') }}';">
       </div>
       <div class="avatar">
         <img
           src="{{ p.avatar_path or url_for('static', filename='img/placeholder_avatar.png') }}"
           alt="Foto de {{ p.nombre }}"
           loading="lazy"
-          onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_avatar.png') }}';"
-        >
+          onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_avatar.png') }}';">
       </div>
     </section>
 
-    <!-- Datos -->
+    <!-- ===== Datos ===== -->
     <section class="perfil-datos card" aria-label="Datos del proveedor">
       <div class="datos-izq">
         <h2 style="margin:0">{{ p.nombre }}</h2>
         {% if p.direccion %}<p class="muted">{{ p.direccion }}</p>{% endif %}
         {% if p.descripcion %}<p class="desc">{{ p.descripcion }}</p>{% endif %}
-        {% if zonas and zonas|length %}
-          <div class="chips" aria-label="Zonas de reparto">
-            {% for z in zonas %}<span class="chip">{{ z }}</span>{% endfor %}
+
+        {% set zonas = zonas or [] %}
+        {% set total = zonas|length %}
+        {% set primeras = zonas[:10] %}
+        {% if total %}
+          <div class="zonas-wrap" aria-label="Zonas de reparto">
+            <div id="zonas-principales">
+              {% for z in primeras %}<span class="chip">{{ z }}</span>{% endfor %}
+            </div>
+
+            {% if total > 10 %}
+              <div id="zonas-ocultas" hidden>
+                {% for z in zonas[10:] %}<span class="chip">{{ z }}</span>{% endfor %}
+              </div>
+              <button type="button" id="btn-ver-mas" class="btn chico secundario">
+                Ver más ({{ total-10 }})
+              </button>
+            {% endif %}
           </div>
         {% endif %}
       </div>
-      <div class="datos-der">
+
+      <div class="datos-der" style="display:flex; flex-direction:column; align-items:flex-end;">
         {% if p.contacto %}
-          <a class="btn large"
+          <a class="btn whatsapp" target="_blank" rel="noopener"
              href="https://wa.me/{{ (p.contacto or '') | replace(' ', '') | replace('+', '') | replace('-', '') | replace('(', '') | replace(')', '') }}"
-             target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">💬 Contactar</a>
+             aria-label="Contactar por WhatsApp">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M19.1 17.4c-.3-.1-1.8-.9-2-.9s-.5-.1-.7.2-.8.9-1 .9-.5 0-.8-.2-1.5-.7-2.8-2.1-2.1-2.6-2.3-3-.1-.6.1-.8.5-.6.6-.8.1-.5 0-.7c-.1-.2-.7-1.7-1-2.3s-.5-.5-.7-.5h-.6c-.2 0-.7.1-1 .5s-1.3 1.3-1.3 3.1 1.3 3.6 1.5 3.8c.2.2 2.5 3.8 6 5.3.8.4 1.5.6 2 .8.8.3 1.6.2 2.2.1.7-.1 1.8-.8 2-1.6.2-.8.2-1.4.1-1.6-.1-.2-.3-.3-.6-.4z"/><path fill="currentColor" d="M27.1 4.9A13.6 13.6 0 0 0 4.8 27.1L3 29l2.8-.7A13.6 13.6 0 1 0 27.1 4.9Zm-9.1 23A10.9 10.9 0 0 1 6.4 8.3a10.9 10.9 0 0 1 15.4 15.4 10.8 10.8 0 0 1-3.8 2.2 10.6 10.6 0 0 1-3 .9Z"/></svg>
+            WhatsApp
+          </a>
           <p class="muted" style="margin-top:6px">{{ p.contacto }}</p>
         {% endif %}
       </div>
     </section>
 
-    <!-- Productos -->
+    <!-- ===== Productos ===== -->
     <section class="productos card" aria-label="Productos">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
         <h3 style="margin:0">Productos</h3>
@@ -180,7 +157,7 @@
       </div>
 
       {% if es_dueno %}
-        <!-- AGREGAR producto -->
+        <!-- Agregar producto -->
         <form method="post"
               action="{{ url_for('crear_producto', provider_id=p.id) }}"
               enctype="multipart/form-data"
@@ -197,9 +174,7 @@
             <label>Imagen</label>
             <input type="file" name="imagen" accept="image/*">
           </div>
-          <div>
-            <button class="btn" type="submit" style="width:100%">+ Agregar</button>
-          </div>
+          <div><button class="btn" type="submit" style="width:100%">+ Agregar</button></div>
         </form>
       {% endif %}
 
@@ -212,16 +187,13 @@
                   src="{{ prod.imagen_path or url_for('static', filename='img/placeholder_producto.jpg') }}"
                   alt="{{ prod.nombre }}"
                   loading="lazy"
-                  onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_producto.jpg') }}';"
-                >
+                  data-zoom
+                  onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_producto.jpg') }}';">
               </div>
 
               {% if es_dueno %}
-                <!-- EDITAR producto -->
-                <form class="edit-form"
-                      method="post"
-                      action="{{ url_for('actualizar_producto', prod_id=prod.id) }}"
-                      enctype="multipart/form-data">
+                <!-- Editar producto (dueño) -->
+                <form class="edit-form" method="post" action="{{ url_for('actualizar_producto', prod_id=prod.id) }}" enctype="multipart/form-data">
                   <div class="edit-grid">
                     <div>
                       <label>Nombre</label>
@@ -244,7 +216,7 @@
                 <!-- Vista pública -->
                 <div class="prod-info">
                   <h4 style="margin:0; font-size:1rem">{{ prod.nombre }}</h4>
-                  <p class="precio">{{ prod.precio }}</p>
+                  <p class="precio">$ {{ prod.precio }}</p>
                 </div>
               {% endif %}
             </article>
@@ -256,36 +228,57 @@
     </section>
   </main>
 
+  <!-- ===== Scripts ===== -->
   <script>
     // Copiar link
     document.getElementById('copy-link')?.addEventListener('click', async () => {
-      try {
+      try{
         await navigator.clipboard.writeText(window.location.href);
-        const b = document.getElementById('copy-link');
-        const old = b.textContent;
-        b.textContent = '✅ Copiado';
-        setTimeout(()=> b.textContent = old, 1500);
-      } catch { alert('No se pudo copiar el enlace'); }
+        const b = document.getElementById('copy-link'); const old = b.textContent;
+        b.textContent = '✅ Copiado'; setTimeout(()=> b.textContent = old, 1500);
+      }catch{ alert('No se pudo copiar el enlace'); }
     });
 
-    // Eliminar producto con fetch (evita formularios anidados)
-    document.querySelectorAll('.btn-eliminar').forEach(btn => {
-      btn.addEventListener('click', async () => {
+    // Ver más / menos zonas
+    (function(){
+      const btn = document.getElementById('btn-ver-mas');
+      if(!btn) return;
+      const ocultas = document.getElementById('zonas-ocultas');
+      const labelMas = btn.textContent;
+      btn.addEventListener('click', ()=>{
+        const abierta = !ocultas.hidden;
+        ocultas.hidden = abierta;
+        btn.textContent = abierta ? labelMas : 'Ver menos';
+      });
+    })();
+
+    // Zoom de imágenes de producto
+    (function(){
+      const overlay = document.createElement('div');
+      overlay.className = 'zoom-modal'; overlay.hidden = true;
+      overlay.innerHTML = '<img id="zoom-img" alt="">';
+      document.body.appendChild(overlay);
+      const zi = overlay.querySelector('#zoom-img');
+
+      document.querySelectorAll('[data-zoom]').forEach(img=>{
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', ()=>{
+          zi.src = img.src; overlay.hidden = false;
+        });
+      });
+      overlay.addEventListener('click', ()=>{ overlay.hidden = true; zi.src=''; });
+    })();
+
+    // Eliminar producto (dueño) con fetch
+    document.querySelectorAll('.btn-eliminar').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
         const url = btn.getAttribute('data-delete-url');
-        if (!url) return;
-        if (!confirm('¿Eliminar este producto?')) return;
-        try {
-          const res = await fetch(url, { method: 'POST' });
-          if (res.ok) {
-            // Removemos la card del DOM
-            const card = btn.closest('.prod-card');
-            if (card) card.remove();
-          } else {
-            alert('No se pudo eliminar. Actualizá la página.');
-          }
-        } catch (e) {
-          alert('Error de red al eliminar.');
-        }
+        if(!url || !confirm('¿Eliminar este producto?')) return;
+        try{
+          const res = await fetch(url, { method:'POST' });
+          if(res.ok){ btn.closest('.prod-card')?.remove(); }
+          else{ alert('No se pudo eliminar. Actualizá la página.'); }
+        }catch{ alert('Error de red al eliminar.'); }
       });
     });
   </script>
