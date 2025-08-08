@@ -617,17 +617,17 @@ def publicar_proveedor():
     direccion   = (request.form.get('direccion') or '').strip()
     contacto    = (request.form.get('contacto') or '').strip()
     descripcion = (request.form.get('descripcion') or '').strip()
-    zonas_reparto = request.form.getlist('zonas_reparto[]')  # 👈 importante los []
+    zonas_reparto = request.form.getlist('zonas_reparto[]')
 
     if not nombre or not direccion or not contacto or not zonas_reparto:
         flash('Completá nombre, dirección, contacto y zonas de reparto.', 'warning')
         return redirect(request.referrer or url_for('soy_proveedor'))
 
-    # Imágenes (usa la helper save_image que pegamos antes)
-    portada = save_image(request.files.get('portada'), 'providers')
-    avatar  = save_image(request.files.get('avatar'),  'providers')
+    # Guardar imágenes si se subieron
+    portada = save_image(request.files.get('portada'), 'providers') if request.files.get('portada') else None
+    avatar  = save_image(request.files.get('avatar'),  'providers') if request.files.get('avatar') else None
 
-    # Crear/actualizar perfil
+    # Crear o actualizar el proveedor
     provider = Provider.query.filter_by(user_id=current_user.id).first()
     if not provider:
         provider = Provider(
@@ -641,19 +641,21 @@ def publicar_proveedor():
             avatar_path=avatar
         )
         db.session.add(provider)
-        db.session.flush()  # para obtener provider.id
+        db.session.flush()  # para tener provider.id
     else:
         provider.nombre = nombre
         provider.direccion = direccion
         provider.contacto = contacto
         provider.descripcion = descripcion
         provider.zonas_reparto_json = json.dumps(zonas_reparto)
-        if portada: provider.portada_path = portada
-        if avatar:  provider.avatar_path  = avatar
-        # Por ahora recargamos productos desde cero
+        if portada:
+            provider.portada_path = portada
+        if avatar:
+            provider.avatar_path = avatar
+        # Eliminar productos previos
         ProviderProduct.query.filter_by(provider_id=provider.id).delete()
 
-    # Productos
+    # Guardar productos
     nombres  = request.form.getlist('producto_nombre[]')
     precios  = request.form.getlist('producto_precio[]')
     imagenes = request.files.getlist('producto_imagen[]')
@@ -674,7 +676,6 @@ def publicar_proveedor():
     db.session.commit()
     flash('Perfil de proveedor publicado/actualizado.', 'success')
     return redirect(url_for('ver_proveedor', id=provider.id))
-
 
 @app.route('/ver_proveedor/<int:id>')
 def ver_proveedor(id):

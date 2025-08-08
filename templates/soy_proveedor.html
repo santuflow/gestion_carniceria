@@ -32,7 +32,7 @@
   <main class="proveedor-layout">
     <form id="form-proveedor" action="/publicar_proveedor" method="POST" enctype="multipart/form-data" class="proveedor-form">
 
-      <!-- Portada + avatar con previsualización (ahora DENTRO del form) -->
+      <!-- Portada + avatar con previsualización (dentro del form) -->
       <section class="perfil-visual">
         <div class="portada-wrapper">
           <img id="preview-portada" class="portada" src="{{ url_for('static', filename='img/placeholder_portada.jpg') }}" alt="Portada">
@@ -86,7 +86,7 @@
             </div>
 
             <div class="zonas-chips" id="zonas-chips"></div>
-            <span class="help">En PC: Ctrl/Cmd + click no es necesario; marcá varias con check. En celular, tocá para marcar.</span>
+            <span class="help">Marcá todas las zonas que correspondan.</span>
           </div>
         </div>
 
@@ -128,23 +128,14 @@
 
   <script>
     // ===== Previews portada/avatar =====
-    const inputPortada = document.getElementById('input-portada');
-    const previewPortada = document.getElementById('preview-portada');
-    const inputAvatar = document.getElementById('input-avatar');
-    const previewAvatar = document.getElementById('preview-avatar');
-
-    if (inputPortada) {
-      inputPortada.addEventListener('change', e => {
-        const f = e.target.files?.[0];
-        if (f) previewPortada.src = URL.createObjectURL(f);
-      });
-    }
-    if (inputAvatar) {
-      inputAvatar.addEventListener('change', e => {
-        const f = e.target.files?.[0];
-        if (f) previewAvatar.src = URL.createObjectURL(f);
-      });
-    }
+    document.getElementById('input-portada')?.addEventListener('change', e => {
+      const f = e.target.files?.[0];
+      if (f) document.getElementById('preview-portada').src = URL.createObjectURL(f);
+    });
+    document.getElementById('input-avatar')?.addEventListener('change', e => {
+      const f = e.target.files?.[0];
+      if (f) document.getElementById('preview-avatar').src = URL.createObjectURL(f);
+    });
 
     // ===== Productos dinámicos =====
     const cont = document.getElementById('productos-container');
@@ -174,7 +165,6 @@
     const btnLimpiar = document.getElementById('btn-limpiar');
     const form = document.getElementById('form-proveedor');
 
-    // filtrar
     filtro.addEventListener('input', () => {
       const q = filtro.value.toLowerCase().trim();
       [...lista.querySelectorAll('label')].forEach(lbl => {
@@ -183,7 +173,6 @@
       });
     });
 
-    // chips de seleccionadas
     function renderChips(){
       chips.innerHTML = '';
       const checks = lista.querySelectorAll('input[type="checkbox"]:checked');
@@ -210,7 +199,6 @@
       renderChips();
     });
 
-    // Validación: al menos 1 zona
     form.addEventListener('submit', (e) => {
       const alguno = lista.querySelector('input[type="checkbox"]:checked');
       if (!alguno) {
@@ -219,7 +207,6 @@
       }
     });
 
-    // Render inicial (por si el navegador recuerda checks)
     renderChips();
   </script>
 </body>
