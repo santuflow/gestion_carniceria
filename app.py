@@ -244,13 +244,17 @@ def logout():
 @app.route('/')
 def index():
     visita = Visita.query.first()
-    
+    visitas_total = 0  # <--- Definimos un valor por defecto
+
     if not (current_user.is_authenticated and current_user.username.lower() == 'santua'):
         if visita:
             visita.total += 1
             db.session.commit()
-
-    return render_template('index.html', visitas=visita.total)
+    
+    if visita:
+        visitas_total = visita.total
+        
+    return render_template('index.html', visitas=visitas_total)
 
 
 
