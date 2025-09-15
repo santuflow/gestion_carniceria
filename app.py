@@ -30,7 +30,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # protege la cookie de accesos por
 
 
 # Base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gestion_carniceria_db_user:TWNXKoWlu6sgYHpXfVHpDZL5UjPzlbJs@dpg-d1trns2dbo4c73du9mtg-a.oregon-postgres.render.com:5432/gestion_carniceria_db?sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
